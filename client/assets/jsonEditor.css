@@ -1,0 +1,68 @@
+/* Syntax highlighting for JSON objects */
+.json-obj,
+.json-array {
+    list-style-type: none;
+    margin: 0 0 0 1px;
+    border-left: 1px dotted #ccc;
+    padding-left: 2em;
+}
+
+.json-key {
+    color: #ac8d27;
+    margin-right: 0.9em;
+    margin-left: 0.9em;
+}
+
+.json-key-quote {
+    color: whitesmoke;
+}
+
+.json-string {
+    color: #0B7500;
+
+}
+
+.json-int,
+.json-float {
+    color: #4390cc;
+}
+
+.json-null {
+    color: #002aa3;
+}
+
+.json-bool {
+    color: #a500a3;
+}
+
+.json-toggle {
+    position: relative;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.json-toggle:hover {
+    text-decoration: underline;
+}
+
+.json-toggle:before {
+    color: #aaa;
+    content: "\25BC"; /* down arrow */
+    position: absolute;
+    display: inline-block;
+    width: 1em;
+    left: -1em;
+}
+
+.json-toggle.json-collapsed:before {
+    content: "\25B6"; /* left arrow */
+}
+
+.json-placeholder {
+    color: #aaa;
+    cursor: pointer;
+}
+
+.json-placeholder:hover {
+    text-decoration: underline;
+}

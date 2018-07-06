@@ -1,0 +1,64 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Nakadi UI",
+    "description": "Nakadi UI backend API",
+    "version": "0.0.1"
+  },
+  "schemes": [
+    "https"
+  ],
+  "basePath": "/",
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health statistics",
+        "description": "Provides statistics about running instance of node.js",
+        "tags": [
+          "monitoring"
+        ],
+        "responses": {
+          "200": {
+            "description": "Object containing statistics fields",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Statistics"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Statistics": {
+      "type": "object",
+      "properties": {
+        "free": {
+          "type": "integer",
+          "description": "Free memory of the host in megabytes."
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total memory of the host in megabytes."
+        },
+        "rss": {
+          "type": "integer",
+          "description": "Rss memory of node.js process in megabytes."
+        },
+        "heapTotal": {
+          "type": "integer",
+          "description": "Total heap memory of node.js process in megabytes."
+        },
+        "heapUsed": {
+          "type": "integer",
+          "description": "Used heap memory of node.js process in megabytes."
+        }
+      }
+    }
+  }
+}

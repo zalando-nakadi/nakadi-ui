@@ -1,0 +1,10 @@
+elm-stuff
+elm.js
+node_modules
+dist/
+deploy/
+.env
+*.iml
+.idea
+npm-debug.log
+reports

@@ -1,0 +1,6 @@
+instrumentation:
+  root: server
+
+reporting:
+  dir: reports
+

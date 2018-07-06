@@ -1,0 +1,64 @@
+/* Dress-code fixes */
+
+.dc-overlay {
+    pointer-events: auto;
+    z-index: 7000;
+}
+
+/* Make some space for sorting arrows. */
+.dc-table__th--sortable {
+    cursor: pointer;
+    padding-right: 20px;
+}
+
+.dc-table__th {
+    white-space: nowrap;
+}
+
+@media (min-width: 64em) {
+    .dc-row {
+        margin-right: 0;
+        margin-left: 0;
+    }
+}
+
+.dc-textarea--is-error,
+.dc-textarea--is-error:hover,
+.dc-textarea--is-error:focus {
+    border-color: #ff4a25;
+}
+
+.dc-textarea {
+    font-family: 'Roboto Mono', monospace;
+}
+
+.dc-btn:focus {
+    box-shadow: 0 0 5px dodgerblue;
+}
+
+.dc--text-less-important {
+    color: #b1b1b1;
+}
+
+.dc-dialog {
+    box-shadow: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    position: absolute;
+}
+
+.dc-input--small {
+    margin: 3px 0;
+    height: 2.2rem;
+    font-size: 1.1rem;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.dc-checkbox + .dc-label--compact {
+    margin-right: 5px;
+    margin-left: 5px;
+}

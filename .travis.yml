@@ -1,0 +1,21 @@
+language: node_js
+node_js: node
+
+env:
+  - ELM_VERSION=0.18.0
+
+cache:
+  directories: # so subsequent builds run faster
+    - elm-stuff/build-artifacts
+    - elm-stuff/packages
+    - $HOME/.npm # https://stackoverflow.com/a/42523517/1148249
+
+install:
+  - node --version
+  - npm --version
+  - npm install -g elm@$ELM_VERSION
+  - npm install
+  - elm package install -y
+
+script:
+  - npm run test:client

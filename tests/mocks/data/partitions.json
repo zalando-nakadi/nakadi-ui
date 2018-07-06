@@ -1,0 +1,12 @@
+[
+  {
+    "oldest_available_offset": "178990",
+    "newest_available_offset": "179016",
+    "partition": "0"
+  },
+  {
+    "oldest_available_offset": "0",
+    "newest_available_offset": "10",
+    "partition": "1"
+  }
+]

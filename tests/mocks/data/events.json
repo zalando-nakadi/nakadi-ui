@@ -1,0 +1,23 @@
+{
+  "cursor": {
+    "partition": "0",
+    "offset": "17000"
+  },
+  "events": [
+    {
+      "some_data": "000aaa-12345",
+      "some_int": 12345,
+      "some_bool": true
+    },
+    {
+      "some_data": "111aaa-12345",
+      "some_int": 12345,
+      "some_bool": true
+    },
+    {
+      "some_data": "222aaa-12345",
+      "some_int": 12345,
+      "some_bool": true
+    }
+  ]
+}

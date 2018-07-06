@@ -1,0 +1,57 @@
+{
+  "items": [
+    {
+      "event_type": "aruha.test-event-test2.ver_6",
+      "partitions": [
+        {
+          "partition": "0",
+          "state": "unassigned",
+          "unconsumed_events": 0,
+          "stream_id": ""
+        },
+        {
+          "partition": "1",
+          "state": "unassigned",
+          "unconsumed_events": 0,
+          "stream_id": ""
+        },
+        {
+          "partition": "2",
+          "state": "unassigned",
+          "unconsumed_events": 0,
+          "stream_id": ""
+        },
+        {
+          "partition": "3",
+          "state": "unassigned",
+          "unconsumed_events": 0,
+          "stream_id": ""
+        },
+        {
+          "partition": "4",
+          "state": "unassigned",
+          "unconsumed_events": 0,
+          "stream_id": ""
+        },
+        {
+          "partition": "5",
+          "state": "unassigned",
+          "unconsumed_events": 0,
+          "stream_id": ""
+        },
+        {
+          "partition": "6",
+          "state": "unassigned",
+          "unconsumed_events": 0,
+          "stream_id": ""
+        },
+        {
+          "partition": "7",
+          "state": "unassigned",
+          "unconsumed_events": 0,
+          "stream_id": ""
+        }
+      ]
+    }
+  ]
+}

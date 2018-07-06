@@ -1,0 +1,154 @@
+[
+  {
+    "name": "aruha.test-event.ver_5",
+    "owning_application": "nakadi-ui",
+    "category": "business",
+    "enrichment_strategies": [
+      "metadata_enrichment"
+    ],
+    "partition_strategy": "random",
+    "partition_key_fields": [],
+    "schema": {
+      "type": "json_schema",
+      "schema": "{\"fields\":[\"classname\",\"request\"],\"properties\":{\"classname\":{\"type\":\"string\"},\"request\":{\"type\":\"string\"}},\"type\":\"object\"}"
+    },
+    "default_statistic": null,
+    "options": {
+      "retention_time": 172800000
+    },
+    "write_scopes": [],
+    "read_scopes": [],
+    "authorization": {
+      "admins": [
+        {
+          "data_type": "user",
+          "value": "skamenskyi"
+        },
+        {
+          "data_type": "user",
+          "value": "skamenskyi"
+        }
+      ],
+      "readers": [
+        {
+          "data_type": "*",
+          "value": "*"
+        }
+      ],
+      "writers": [
+        {
+          "data_type": "user",
+          "value": "skamenskyi"
+        },
+        {
+          "data_type": "service",
+          "value": "stups_updater"
+        },
+        {
+          "data_type": "crazy-type",
+          "value": "stups_updater"
+        }
+      ]
+    }
+  },
+  {
+    "name": "aruha.test-event-test1.ver_6",
+    "owning_application": "nakadi-ui-test",
+    "category": "business",
+    "enrichment_strategies": [
+      "metadata_enrichment"
+    ],
+    "partition_strategy": "random",
+    "partition_key_fields": [],
+    "schema": {
+      "type": "json_schema",
+      "schema": "{\"fields\":[\"classname\",\"request\"],\"properties\":{\"classname\":{\"type\":\"string\"},\"request\":{\"type\":\"string\"}},\"type\":\"object\"}"
+    },
+    "default_statistic": null,
+    "options": {
+      "retention_time": 172800000
+    },
+    "write_scopes": [],
+    "read_scopes": []
+  },
+  {
+    "name": "aruha.test-event-test2.ver_6",
+    "owning_application": "nakadi-ui-test",
+    "category": "business",
+    "enrichment_strategies": [
+      "metadata_enrichment"
+    ],
+    "partition_strategy": "random",
+    "partition_key_fields": [],
+    "schema": {
+      "type": "json_schema",
+      "schema": "{\"fields\":[\"classname\",\"request\"],\"properties\":{\"classname\":{\"type\":\"string\"},\"request\":{\"type\":\"string\"}},\"type\":\"object\"}"
+    },
+    "default_statistic": null,
+    "options": {
+      "retention_time": 172800000
+    },
+    "write_scopes": [],
+    "read_scopes": []
+  },
+  {
+    "name": "aruha.test-event-test3.ver_6",
+    "owning_application": "nakadi-ui-test",
+    "category": "business",
+    "enrichment_strategies": [
+      "metadata_enrichment"
+    ],
+    "partition_strategy": "random",
+    "partition_key_fields": [],
+    "schema": {
+      "type": "json_schema",
+      "schema": "{\"fields\":[\"classname\",\"request\"],\"properties\":{\"classname\":{\"type\":\"string\"},\"request\":{\"type\":\"string\"}},\"type\":\"object\"}"
+    },
+    "default_statistic": null,
+    "options": {
+      "retention_time": 172800000
+    },
+    "write_scopes": [],
+    "read_scopes": []
+  },
+  {
+    "name": "aruha.test-event-test4.ver_6",
+    "owning_application": "nakadi-ui-test",
+    "category": "business",
+    "enrichment_strategies": [
+      "metadata_enrichment"
+    ],
+    "partition_strategy": "random",
+    "partition_key_fields": [],
+    "schema": {
+      "type": "json_schema",
+      "schema": "{\"fields\":[\"classname\",\"request\"],\"properties\":{\"classname\":{\"type\":\"string\"},\"request\":{\"type\":\"string\"}},\"type\":\"object\"}"
+    },
+    "default_statistic": null,
+    "options": {
+      "retention_time": 172800000
+    },
+    "write_scopes": [],
+    "read_scopes": []
+  },
+  {
+    "name": "aruha.test-event-test5.ver_6",
+    "owning_application": "nakadi-ui-test",
+    "category": "business",
+    "enrichment_strategies": [
+      "metadata_enrichment"
+    ],
+    "partition_strategy": "random",
+    "partition_key_fields": [],
+    "schema": {
+      "type": "json_schema",
+      "schema": "{\"fields\":[\"classname\",\"request\"],\"properties\":{\"classname\":{\"type\":\"string\"},\"request\":{\"type\":\"string\"}},\"type\":\"object\"}"
+    },
+    "default_statistic": null,
+    "options": {
+      "retention_time": 172800000
+    },
+    "write_scopes": [],
+    "read_scopes": []
+  }
+]
