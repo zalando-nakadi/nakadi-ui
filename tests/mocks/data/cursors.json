@@ -1,0 +1,52 @@
+{
+  "items": [
+    {
+      "partition": "0",
+      "offset": "000000000000000009",
+      "event_type": "aruha.test-event-test2.ver_6",
+      "cursor_token": "440f4893-6042-46c7-a361-d64da402d6f2"
+    },
+    {
+      "partition": "1",
+      "offset": "BEGIN",
+      "event_type": "aruha.test-event-test2.ver_6",
+      "cursor_token": "6a4b9c98-9d8d-4d5e-b907-07641da134e0"
+    },
+    {
+      "partition": "2",
+      "offset": "BEGIN",
+      "event_type": "aruha.test-event-test2.ver_6",
+      "cursor_token": "df882a37-1221-49fb-aad2-c00274d5bbf8"
+    },
+    {
+      "partition": "3",
+      "offset": "000000000000000006",
+      "event_type": "aruha.test-event-test2.ver_6",
+      "cursor_token": "5b1c036c-e436-4579-9e27-0c03eab5e84c"
+    },
+    {
+      "partition": "4",
+      "offset": "BEGIN",
+      "event_type": "aruha.test-event-test2.ver_6",
+      "cursor_token": "3cb09ad9-9661-4fd1-9de4-ea2f8daa549a"
+    },
+    {
+      "partition": "5",
+      "offset": "BEGIN",
+      "event_type": "aruha.test-event-test2.ver_6",
+      "cursor_token": "1b29db26-cea1-4817-8b12-266323c56bee"
+    },
+    {
+      "partition": "6",
+      "offset": "BEGIN",
+      "event_type": "aruha.test-event-test2.ver_6",
+      "cursor_token": "c5f91100-986c-4460-b380-25ce9012b596"
+    },
+    {
+      "partition": "7",
+      "offset": "BEGIN",
+      "event_type": "aruha.test-event-test2.ver_6",
+      "cursor_token": "ec49c02f-4bd5-4393-af0e-71bde6c53ada"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "owning_application": "aruha-test",
+      "event_types": [
+        "aruha.test-event.ver_5",
+        "aruha.test-event-test1.ver_6"
+      ],
+      "consumer_group": "default",
+      "read_from": "end",
+      "initial_cursors": [],
+      "id": "1151d17e-a6a2-4661-bdc8-22222222222",
+      "created_at": "2016-06-20T11:18:44.770Z"
+    },
+    {
+      "owning_application": "aruha-test",
+      "event_types": [
+        "aruha.test-event-test2.ver_6"
+      ],
+      "consumer_group": "default",
+      "read_from": "end",
+      "initial_cursors": [],
+      "id": "2151d17e-a6a2-4661-bdc8-010101010101",
+      "created_at": "2016-06-20T11:18:44.770Z"
+    }
+  ],
+  "_links": {
+    "prev": {
+      "href": "/subscriptions?offset=2000&limit=1000"
+    }
+  }
+}

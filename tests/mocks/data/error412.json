@@ -1,0 +1,6 @@
+{
+  "type": "http://httpstatus.es/412",
+  "title": "Precondition Failed",
+  "status": 412,
+  "detail": "partition 0 is empty"
+}

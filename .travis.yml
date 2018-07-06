@@ -1,0 +1,23 @@
+sudo: false
+
+os:
+  - linux
+
+env:
+  - ELM_VERSION=0.18
+  - TARGET_NODE_VERSION=6
+
+before_install:
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+
+install:
+  - nvm install $TARGET_NODE_VERSION
+  - nvm use $TARGET_NODE_VERSION
+  - node --version
+  - npm --version
+  - npm install -g elm@$ELM_VERSION
+  - npm install
+  - elm package install
+
+script:
+  - npm run test:client
