@@ -1,0 +1,51 @@
+{
+  "productionMode": false,
+  "port": "3000",
+  "baseUrl": "http://localhost:3000",
+  "nakadiApiUrl": "http://localhost:5341",
+  "serverOptions": {},
+  "auth": {
+    "strategy": "../tests/mocks/testPassportStrategy",
+    "options": {
+      "clientID": "123.apps.googleusercontent.com",
+      "clientSecret": "123",
+      "scope": "profile email",
+      "callbackURL": "http://localhost:3000/auth/callback"
+    }
+  },
+  "settings": {
+    "appsInfoUrl": "https://example.com/apps/",
+    "usersInfoUrl": "https://example.com/users/",
+    "nakadiApiUrl": "http://localhost:5341",
+    "monitoringUrl": "https://zmon.example.com/grafana/dashboard/db/nakadi-staging",
+    "sloMonitoringUrl": "https://zmon.example.com/grafana/dashboard/db/nakadi-slos",
+    "eventTypeMonitoringUrl": "https://zmon.example.com/grafana/dashboard/db/nakadi-et/?var-stack=nakadi-staging&var-et={et}",
+    "subscriptionMonitoringUrl": "https://zmon.example.com/grafana/dashboard/db/nakadi-subscription/?var-stack=nakadi-staging&var-id={id}",
+    "allowDeleteEvenType": true
+  },
+  "logsApi": {
+    "scalyrUrl": "http://localhost:5342",
+    "scalyrKey": "1234secret"
+  },
+  "authorize": {
+    "strategy": ""
+  },
+  "analytics": {
+    "url": "http://localhost:5341",
+    "name": "aruha.nakadi-ui.access-log",
+    "credentialsDir": "tests/mocks/data"
+  },
+  "cookie": {
+    "cookieName": "session",
+    "secret": "liuHHy^fdjy6b!khl_ig6%^#vGdsljhgl Bfdes&8yh3e",
+    "duration": 86400000,
+    "activeDuration": 300000,
+    "cookie": {
+      "path": "/",
+      "ephemeral": true,
+      "httpOnly": true,
+      "secure": false
+    }
+  },
+  "credentialsDir": "tests/mocks/data"
+}

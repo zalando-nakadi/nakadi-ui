@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:cc="http://creativecommons.org/ns#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:svg="http://www.w3.org/2000/svg"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        sodipodi:docname="logo.svg"
+        viewBox="0 0 64 64"
+        inkscape:version="0.91 r13725"
+        version="1.1"
+        id="svg3416"
+        height="64"
+        width="64">
+    <defs
+            id="defs3418">
+        <inkscape:perspective
+                sodipodi:type="inkscape:persp3d"
+                inkscape:vp_x="-19.785492 : 33.09091 : 1"
+                inkscape:vp_y="0 : 1000 : 0"
+                inkscape:vp_z="91.924964 : 33.09091 : 1"
+                inkscape:persp3d-origin="36.069736 : 22.424243 : 1"
+                id="perspective3424"/>
+    </defs>
+    <sodipodi:namedview
+            inkscape:snap-text-baseline="true"
+            inkscape:window-maximized="1"
+            inkscape:window-y="24"
+            inkscape:window-x="0"
+            inkscape:window-height="1004"
+            inkscape:window-width="1920"
+            inkscape:grid-bbox="true"
+            inkscape:document-units="px"
+            showgrid="true"
+            inkscape:current-layer="layer1"
+            inkscape:cy="51.473484"
+            inkscape:cx="-21.636364"
+            inkscape:zoom="5.5"
+            inkscape:pageshadow="2"
+            inkscape:pageopacity="0.0"
+            borderopacity="1.0"
+            bordercolor="#666666"
+            pagecolor="#ffffff"
+            id="base"/>
+    <metadata
+            id="metadata3421">
+        <rdf:RDF>
+            <cc:Work
+                    rdf:about="">
+                <dc:format>image/svg+xml</dc:format>
+                <dc:type
+                        rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+                <dc:title></dc:title>
+            </cc:Work>
+        </rdf:RDF>
+    </metadata>
+    <g
+            id="g4535"
+            transform="matrix(-0.00598055,0.22741014,-0.54379053,-0.00869732,63.058192,3.5700077)"
+            style="fill:#ff6600">
+        <path
+                id="path4539"
+                d="M 0,55 250,110 195,55 250,0 Z"
+                inkscape:connector-curvature="0"
+                style="fill:#ff6600"/>
+    </g>
+</svg>

@@ -1,0 +1,56 @@
+/*pie*/
+:root {
+    --negative-color: #cc3a1d;
+    --positive-color: #4dcc76;
+    --animation-duration: 2s;
+}
+
+.pie {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--negative-color);
+    background-image: linear-gradient(to right, transparent 50%, var(--positive-color) 0);
+    box-shadow: white 0 0 10px;
+    padding: 5px;
+}
+
+.pie__cover {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    border-radius: 0 100% 100% 0 / 50%;
+    transform-origin: left;
+    animation: rotate-reset calc(var(--animation-duration) / 2) ease-in 1;
+    background: var(--negative-color);
+}
+
+.pie__cover--past-half {
+    animation: rotate-past-half var(--animation-duration) linear 1;
+    background: var(--positive-color);
+}
+
+@keyframes rotate-reset {
+    from {
+        transform: rotate(0);
+    }
+}
+
+@keyframes rotate-past-half {
+    from {
+        transform: rotate(0);
+        background: var(--negative-color);
+    }
+    49.99% {
+        background: var(--negative-color);
+        transform: rotate(.4999turn);
+
+    }
+    50% {
+        transform: rotate(0);
+        background: var(--positive-color);
+    }
+}

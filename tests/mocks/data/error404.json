@@ -1,0 +1,6 @@
+{
+  "type": "http://httpstatus.es/404",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "EventType \"example-company.example-team.example-event_type_error\" does not exist."
+}
