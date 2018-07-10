@@ -1,4 +1,4 @@
-const _skamenskyi_fake$nakadi_ui$Native_Browser = function() {
+const _zalando_incubator$nakadi_ui$Native_Browser = function() {
 
 
     function setLocation(url) {
@@ -60,15 +60,15 @@ const _skamenskyi_fake$nakadi_ui$Native_Browser = function() {
     }
 
     function copyToClipboard(str) {
-        const el = document.createElement('textarea')
-        el.value = str
-        el.setAttribute('readonly', '')
-        el.style.position = 'absolute'
-        el.style.left = '-9999px'
-        document.body.appendChild(el)
-        el.select()
-        document.execCommand('copy')
-        document.body.removeChild(el)
+        const el = document.createElement('textarea');
+        el.value = str;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
         return _elm_lang$core$Platform_Cmd$none
     }
 

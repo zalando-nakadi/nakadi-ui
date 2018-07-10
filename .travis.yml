@@ -1,23 +1,21 @@
-sudo: false
-
-os:
-  - linux
+language: node_js
+node_js: node
 
 env:
-  - ELM_VERSION=0.18
-  - TARGET_NODE_VERSION=6
+  - ELM_VERSION=0.18.0
 
-before_install:
-  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+cache:
+  directories: # so subsequent builds run faster
+    - elm-stuff/build-artifacts
+    - elm-stuff/packages
+    - $HOME/.npm # https://stackoverflow.com/a/42523517/1148249
 
 install:
-  - nvm install $TARGET_NODE_VERSION
-  - nvm use $TARGET_NODE_VERSION
   - node --version
   - npm --version
   - npm install -g elm@$ELM_VERSION
   - npm install
-  - elm package install
+  - elm package install -y
 
 script:
   - npm run test:client
