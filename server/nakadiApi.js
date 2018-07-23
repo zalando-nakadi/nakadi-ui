@@ -23,6 +23,12 @@ module.exports = function NakadiProxyRoute(config) {
                     return;
                 }
 
+                // Workaround for https://github.com/zalando/nakadi/issues/792
+                // Nakadi doesn't accept fake tokens even with NAKADI_OAUTH2_MODE=OFF
+                if (origReq.authorizationToken === '__NONE__') {
+                    return proxyReq;
+                }
+
                 proxyReq.headers['Authorization'] = 'Bearer ' + origReq.authorizationToken;
                 return proxyReq;
             }
