@@ -1,14 +1,17 @@
-FROM node:latest as builder
+FROM node:10.7.0-stretch as builder
 WORKDIR /src
 
-COPY . .
-RUN npm install
-RUN npm run build
+COPY client client
+COPY server server
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY webpack.config.prod.js webpack.config.prod.js
+COPY elm-package.json elm-package.json
+RUN npm install && npm run build
 
-
-FROM node:latest
+FROM registry.opensource.zalan.do/stups/node:8.9.4-alpine-34
 MAINTAINER Sergii Kamenskyi <sergukam@sergukam.com>
-LABEL Description="This Nakadi UI do not check auth by default. Please use Auth plugins for use in production."
+LABEL Description="This Nakadi UI does not check auth by default. Please use Auth plugins for use in production."
 
 WORKDIR /app
 COPY --from=builder /src/dist dist
