@@ -7,9 +7,9 @@ import Stores.EventType
         , allCategories
         , compatibilityModes
         , allModes
-        , partitionStrategies,
-        cleanupPolicies,
-        audiences
+        , partitionStrategies
+        , cleanupPolicies
+        , audiences
         )
 import Stores.Partition
 import Helpers.Store exposing (Status(Unknown), ErrorMessage)
