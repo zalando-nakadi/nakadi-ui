@@ -13,7 +13,8 @@ const issueType = {
     MISC_DATA_NOT_HASH: 301,
     MISC_SCHEMA_NOT_COMPATIBLE: 302,
     MISC_NAME_IS_NOT_LOWERCASE: 303,
-    MISC_NAME_CONTAINS_VERSION: 304
+    MISC_NAME_CONTAINS_VERSION: 304,
+    MISC_NO_AUDIENCE: 305
 };
 
 const MANUAL = "https://nakadi.io/manual.html";
@@ -219,7 +220,7 @@ function miscChecks(eventType, issues) {
     if (eventType.compatibility_mode !== "compatible") {
         issues.push({
             id: issueType.MISC_SCHEMA_NOT_COMPATIBLE,
-            title: " Use compatible for compatibility_mode",
+            title: "Use compatible for compatibility_mode",
             message:
             "Changes to events must be based around making additive and backward compatible changes." +
             " Please update the event type and change compatibility_mode to \"compatible\".",
@@ -260,6 +261,21 @@ function miscChecks(eventType, issues) {
             severity: 10
         });
     }
+
+    if (!eventType.audience ) {
+        issues.push({
+            id: issueType.MISC_NO_AUDIENCE,
+            title: "Set an audience for the event type",
+            message:
+            "Intended target audience for this event type is not set. " +
+            " Please update the event type and set an audience",
+
+            link: "https://opensource.zalando.com/restful-api-guidelines/#219",
+            group: "misc",
+            severity: 20
+        });
+    }
+
 }
 
 /********************* Helpers *****************************/

@@ -311,6 +311,9 @@ submitCreate model =
             , ( "partition_strategy", asString FieldPartitionStrategy )
             , ( "partition_key_fields", partitionKeyFields )
             , ( "compatibility_mode", asString FieldCompatibilityMode )
+            , ( "audience", asString FieldAudience )
+            , ( "cleanup_policy", asString FieldCleanupPolicy )
+            , ( "compatibility_mode", asString FieldCompatibilityMode )
             , ( "schema"
               , Json.object
                     [ ( "type", Json.string "json_schema" )
@@ -389,6 +392,7 @@ submitUpdate model =
             , ( "partition_strategy", asString FieldPartitionStrategy )
             , ( "partition_key_fields", partitionKeyFields )
             , ( "compatibility_mode", asString FieldCompatibilityMode )
+            , ( "audience", asString FieldAudience )
             , ( "schema"
               , Json.object
                     [ ( "type", Json.string "json_schema" )

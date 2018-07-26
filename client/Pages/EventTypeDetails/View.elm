@@ -17,6 +17,7 @@ import Stores.EventType
         , EventTypeOptions
         , categories
         , compatibilityModes
+        , cleanupPolicies
         )
 import Stores.Partition
 import Stores.EventTypeSchema
@@ -191,8 +192,15 @@ detailsLayout typeName eventType model =
                                 infoListToText eventType.partition_key_fields
                             , infoField "Default statistic " Help.defaultStatistic TopRight <|
                                 infoStatisticsToText eventType.default_statistic
-                            , infoField "Options " Help.options TopRight <|
-                                infoOptionsToText eventType.options
+                            , infoField "Cleanup policy " Help.cleanupPolicy TopRight <|
+                                infoStringToText (Just eventType.cleanup_policy)
+                            , if eventType.cleanup_policy == cleanupPolicies.delete then
+                                infoField "Options " Help.options TopRight <|
+                                    infoOptionsToText eventType.options
+                              else
+                                none
+                            , infoField "Audience " Help.audience TopRight <|
+                                infoStringToText eventType.audience
                             , infoField "Created " Help.createdAt TopRight <|
                                 infoDateToText eventType.created_at
                             , infoField "Updated " Help.updatedAt TopRight <|

@@ -21,6 +21,9 @@ import Stores.EventType
         , compatibilityModes
         , allModes
         , partitionStrategies
+        , allAudiences
+        , cleanupPolicies
+        , allCleanupPolicies
         )
 import Helpers.AccessEditor as AccessEditor
 import Config
@@ -69,6 +72,7 @@ viewFormCreate model =
         , successMessage = "Event Type Created!"
         , categoriesOptions = allCategories
         , compatibilityModeOptions = allModes
+        , cleanupPoliciesOptions = allCleanupPolicies
         , blockPartitionStrategy = False
         }
 
@@ -100,6 +104,9 @@ viewFormUpdate model originalEventType =
                 ]
             else
                 [ originalEventType.category ]
+
+        cleanupPoliciesOptions =
+            [ originalEventType.cleanup_policy ]
     in
         viewForm model
             { updateMode = True
@@ -107,6 +114,7 @@ viewFormUpdate model originalEventType =
             , successMessage = "Event Type Updated!"
             , categoriesOptions = categoriesOptions
             , compatibilityModeOptions = compatibilityModeOptions
+            , cleanupPoliciesOptions = cleanupPoliciesOptions
             , blockPartitionStrategy = blockPartitionStrategy
             }
 
@@ -119,6 +127,7 @@ viewFormClone model originalEventType =
         , successMessage = "Event Type Cloned!"
         , categoriesOptions = allCategories
         , compatibilityModeOptions = allModes
+        , cleanupPoliciesOptions = allCleanupPolicies
         , blockPartitionStrategy = False
         }
 
@@ -129,6 +138,7 @@ type alias FormSetup =
     , successMessage : String
     , categoriesOptions : List String
     , compatibilityModeOptions : List String
+    , cleanupPoliciesOptions : List String
     , blockPartitionStrategy : Bool
     }
 
@@ -136,7 +146,7 @@ type alias FormSetup =
 viewForm : AppModel -> FormSetup -> Html Msg
 viewForm model setup =
     let
-        { updateMode, formTitle, successMessage, categoriesOptions, compatibilityModeOptions, blockPartitionStrategy } =
+        { updateMode, formTitle, successMessage, categoriesOptions, compatibilityModeOptions, cleanupPoliciesOptions, blockPartitionStrategy } =
             setup
 
         formModel =
@@ -172,7 +182,7 @@ viewForm model setup =
                     "Category"
                     ""
                     Help.category
-                    (List.length categoriesOptions == 1)
+                    False
                     categoriesOptions
                 , div [ class "dc-row form-create__input-row" ]
                     [ selectInput formModel
@@ -212,18 +222,35 @@ viewForm model setup =
                         False
                         (List.range 1 Config.maxPartitionNumber |> List.map toString)
                 , selectInput formModel
-                    FieldRetentionTime
-                    "Retention Time (Days)"
+                    FieldAudience
+                    "Audience"
                     ""
-                    Help.options
+                    Help.audience
                     False
-                    [ "2", "3", "4" ]
+                    allAudiences
+                , selectInput formModel
+                    FieldCleanupPolicy
+                    "Cleanup policy"
+                    ""
+                    Help.cleanupPolicy
+                    False
+                    cleanupPoliciesOptions
+                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.delete then
+                    selectInput formModel
+                        FieldRetentionTime
+                        "Retention Time (Days)"
+                        ""
+                        Help.options
+                        False
+                        [ "2", "3", "4" ]
+                  else
+                    none
                 , selectInput formModel
                     FieldCompatibilityMode
                     "Schema Compatibility Mode"
                     ""
                     Help.compatibilityMode
-                    (List.length compatibilityModeOptions == 1)
+                    False
                     compatibilityModeOptions
                 , schemaEditor formModel
                 , hr [ class "dc-divider" ] []
@@ -347,6 +374,12 @@ selectInput formModel field inputLabel hint help isDisabled options =
     let
         selectedValue =
             (getValue field formModel.values)
+
+        isDisabledOrOne =
+            if (List.length options) <= 1 then
+                True
+            else
+                isDisabled
     in
         inputFrame field inputLabel hint help False formModel <|
             select
@@ -354,7 +387,7 @@ selectInput formModel field inputLabel hint help isDisabled options =
                 , validationClass field "dc-select" formModel
                 , id (inputId field)
                 , tabindex 1
-                , disabled isDisabled
+                , disabled isDisabledOrOne
                 ]
                 (options
                     |> List.map

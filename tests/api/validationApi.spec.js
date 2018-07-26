@@ -99,7 +99,7 @@ describe('Event Type validation', function() {
                         },
                         {
                             id: 302,
-                            title: ' Use compatible for compatibility_mode',
+                            title: 'Use compatible for compatibility_mode',
                             message: 'Changes to events must be based around making additive and backward compatible changes. Please update the event type and change compatibility_mode to "compatible".',
                             link: 'http://zalando.github.io/restful-api-guidelines/#209',
                             group: 'misc',
@@ -120,7 +120,16 @@ describe('Event Type validation', function() {
                             link: 'http://zalando.github.io/restful-api-guidelines/#113',
                             group: 'misc',
                             severity: 10
-                        }]
+                        },
+                        {
+                            id: 305,
+                            title: 'Set an audience for the event type',
+                            message: 'Intended target audience for this event type is not set.  Please update the event type and set an audience',
+                            link: 'https://opensource.zalando.com/restful-api-guidelines/#219',
+                            group: 'misc',
+                            severity: 20
+                        }
+                    ]
             }
         ;
 

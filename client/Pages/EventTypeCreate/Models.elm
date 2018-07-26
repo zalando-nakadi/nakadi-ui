@@ -7,7 +7,9 @@ import Stores.EventType
         , allCategories
         , compatibilityModes
         , allModes
-        , partitionStrategies
+        , partitionStrategies,
+        cleanupPolicies,
+        audiences
         )
 import Stores.Partition
 import Helpers.Store exposing (Status(Unknown), ErrorMessage)
@@ -33,6 +35,8 @@ type Field
     | FieldCompatibilityMode
     | FieldSchema
     | FieldAccess
+    | FieldAudience
+    | FieldCleanupPolicy
 
 
 type alias ValuesDict =
@@ -87,6 +91,8 @@ defaultValues =
     , ( FieldRetentionTime, toString defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
+    , ( FieldAudience, audiences.component_internal )
+    , ( FieldCleanupPolicy, cleanupPolicies.delete )
     ]
         |> List.map (\( field, value ) -> ( toString field, value ))
 
@@ -116,6 +122,8 @@ loadValues eventType =
             |> maybeSetValue FieldCompatibilityMode eventType.compatibility_mode
             |> setValue FieldSchema eventType.schema.schema
             |> setValue FieldRetentionTime retentionTime
+            |> maybeSetValue FieldAudience eventType.audience
+            |> setValue FieldCleanupPolicy eventType.cleanup_policy
 
 
 defaultSchema : String

@@ -63,6 +63,8 @@ testJson =
           "retention_time": null
         },
         "compatibility_mode": "fixed",
+        "audience": "company-internal",
+        "cleanup_policy": "compact",
         "updated_at": "2016-11-09T19:32:00.000Z",
         "created_at": "2016-11-09T19:32:00.000Z",
         "authorization": {
@@ -111,6 +113,8 @@ all =
                    , created_at = Just "2016-11-09T19:32:00.000Z"
                    , updated_at = Just "2016-11-09T19:32:00.000Z"
                    , authorization = Nothing
+                   , cleanup_policy = "delete"
+                   , audience = Nothing
                    }
                  , { category = "business"
                    , name = "eventlog.e6810a_generic_time_allocation"
@@ -169,6 +173,8 @@ all =
                                   }
                                 ]
                             }
+                   , cleanup_policy = "compact"
+                   , audience = Just "company-internal"
                    }
                  ]
                 )

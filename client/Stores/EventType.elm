@@ -19,12 +19,18 @@ type alias EventType =
       enrichment_strategies : Maybe (List String)
     , --enum from /registry/partition-strategies ["hash","user_defined","random"]
       partition_strategy : Maybe String
-    , --enum fixed,none,compatible
+    , --enum fixed, none, compatible
       compatibility_mode : Maybe String
     , partition_key_fields : Maybe (List String)
     , default_statistic : Maybe EventTypeStatistics
     , options : Maybe EventTypeOptions
-    , authorization : Maybe Authorization
+    , authorization :
+        Maybe Authorization
+    , --enum delete, compact
+      cleanup_policy : String
+    , --enum component-internal, business-unit-internal,
+      -- company-internal, external-partner, external-public
+      audience : Maybe String
     , created_at : Maybe String
     , updated_at : Maybe String
     }
@@ -103,6 +109,49 @@ allModes =
     ]
 
 
+audiences :
+    { component_internal : String
+    , business_unit_internal : String
+    , company_internal : String
+    , external_partner : String
+    , external_public : String
+    }
+audiences =
+    { component_internal = "component-internal"
+    , business_unit_internal = "business-unit-internal"
+    , company_internal = "company-internal"
+    , external_partner = "external-partner"
+    , external_public = "external-public"
+    }
+
+
+allAudiences : List String
+allAudiences =
+    [ audiences.component_internal
+    , audiences.business_unit_internal
+    , audiences.company_internal
+    , audiences.external_partner
+    , audiences.external_public
+    ]
+
+
+cleanupPolicies :
+    { delete : String
+    , compact : String
+    }
+cleanupPolicies =
+    { delete = "delete"
+    , compact = "compact"
+    }
+
+
+allCleanupPolicies : List String
+allCleanupPolicies =
+    [ cleanupPolicies.delete
+    , cleanupPolicies.compact
+    ]
+
+
 config : Dict.Dict String String -> Helpers.Store.Config EventType
 config params =
     { getKey = (\index eventType -> eventType.name)
@@ -145,6 +194,8 @@ memberDecoder =
         |> optional "default_statistic" (nullable defaultStatisticDecoder) Nothing
         |> optional "options" (nullable optionsDecoder) Nothing
         |> optional "authorization" (nullable Stores.EventTypeAuthorization.collectionDecoder) Nothing
+        |> optional "cleanup_policy" string cleanupPolicies.delete
+        |> optional "audience" (nullable string) Nothing
         |> optional "created_at" (nullable string) Nothing
         |> optional "updated_at" (nullable string) Nothing
 

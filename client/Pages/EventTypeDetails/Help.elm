@@ -387,3 +387,54 @@ subscription =
     , newline
     , spec "#/subscriptions_get"
     ]
+
+
+audience : List (Html msg)
+audience =
+    [ text "Intended target audience of the event type."
+    , newline
+    , text "Relevant for standards around quality of design and documentation,"
+    , text " reviews, discoverability, changeability, and permission granting."
+    , newline
+    , newline
+    , link "See the guidelines" "https://opensource.zalando.com/restful-api-guidelines/#219"
+    , newline
+    , newline
+    , bold "Key: "
+    , mono "audience"
+    , newline
+    , bold "optional"
+    , newline
+    , man "#definition_EventType*audience"
+    ]
+
+
+cleanupPolicy : List (Html msg)
+cleanupPolicy =
+    [ text "Event type cleanup policy."
+    , newline
+    , bold "Possible cleanup policies are:"
+    , newline
+    , text "- "
+    , mono "delete"
+    , text " will delete old events after retention time expires."
+    , newline
+    , text "- "
+    , mono "compact"
+    , text " will keep only the latest event for each event key."
+    , text " The key that will be used as a compaction key should be"
+    , text " specified in "
+    , link "partition_compaction_key" (Config.urlManual ++ "#definition_EventMetadata*partition_compaction_key")
+    , text " field of "
+    , link "event metadata." (Config.urlManual ++ "#definition_EventMetadata")
+    , newline
+    , newline
+    , bold "Key: "
+    , mono "cleanup_policy"
+    , bold "optional"
+    , newline
+    , bold "Default: "
+    , mono "delete"
+    , newline
+    , man "#definition_EventType*cleanup_policy"
+    ]

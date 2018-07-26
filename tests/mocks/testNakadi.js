@@ -43,6 +43,8 @@ app.post('/event-types', (req, res) => {
         partition_strategy: 'random',
         partition_key_fields: [],
         compatibility_mode: 'forward',
+        audience: 'component-internal',
+        cleanup_policy: 'delete',
         schema: {
             type: 'json_schema',
             schema: '{\n    "description": "Sample event type schema. It accepts any event.",\n    "type": "object",\n    "properties": {\n        "example_item": {\n            "type": "string"\n        },\n        "example_money": {\n            "$ref": "#/definitions/Money"\n        }\n    },\n    "required": [],\n    "definitions": {\n        "Money": {\n            "type": "object",\n            "properties": {\n                "amount": {\n                    "type": "number",\n                    "format": "decimal"\n                },\n                "currency": {\n                    "type": "string",\n                    "format": "iso-4217"\n                }\n            },\n            "required": [\n                "amount",\n                "currency"\n            ]\n        }\n    }\n}'
@@ -63,7 +65,7 @@ app.post('/event-types', (req, res) => {
         res.sendStatus(200)
     } else {
         console.log(JSON.stringify(req.body));
-        res.sendStatus(400)
+        res.status(400).send(JSON.stringify(req.body));
     }
 
 });
