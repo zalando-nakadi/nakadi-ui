@@ -37,8 +37,22 @@ It consist of the [node.js](https://nodejs.org) backend and the frontend written
 * [Dress-code](https://zalando.github.io/dress-code/)
 * [webpack](http://webpack.github.io/)
 
+## Quick start
+Use [docker-compose](https://docs.docker.com/compose/) to play with Nakadi and Nakadi UI locally.
+
+```
+docker-compose up
+```
+
+and then login to http://localhost:3000/
+
+*Security Warning: Nakadi and Nakadi UI authentication is disabled.*
+
 ## Installation
 See [INSTALL.md](INSTALL.md)
+
+You can also use [the docker image](https://hub.docker.com/r/nakadi/nakadi-ui/).
+
 
 # Development & Contributing
 
