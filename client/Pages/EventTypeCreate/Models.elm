@@ -30,6 +30,7 @@ type Field
     | FieldCategory
     | FieldPartitionStrategy
     | FieldPartitionKeyFields
+    | FieldOrderingKeyFields
     | FieldPartitionsNumber
     | FieldRetentionTime
     | FieldCompatibilityMode
@@ -88,6 +89,7 @@ defaultValues =
     , ( FieldPartitionStrategy, partitionStrategies.random )
     , ( FieldPartitionsNumber, "1" )
     , ( FieldPartitionKeyFields, emptyString )
+    , ( FieldOrderingKeyFields, emptyString )
     , ( FieldRetentionTime, toString defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
@@ -119,6 +121,7 @@ loadValues eventType =
             |> setValue FieldCategory eventType.category
             |> maybeSetValue FieldPartitionStrategy eventType.partition_strategy
             |> maybeSetListValue FieldPartitionKeyFields eventType.partition_key_fields
+            |> maybeSetListValue FieldOrderingKeyFields eventType.ordering_key_fields
             |> maybeSetValue FieldCompatibilityMode eventType.compatibility_mode
             |> setValue FieldSchema eventType.schema.schema
             |> setValue FieldRetentionTime retentionTime

@@ -22,6 +22,7 @@ type alias EventType =
     , --enum fixed, none, compatible
       compatibility_mode : Maybe String
     , partition_key_fields : Maybe (List String)
+    , ordering_key_fields: Maybe (List String)
     , default_statistic : Maybe EventTypeStatistics
     , options : Maybe EventTypeOptions
     , authorization :
@@ -191,6 +192,7 @@ memberDecoder =
         |> optional "partition_strategy" (nullable string) Nothing
         |> optional "compatibility_mode" (nullable string) Nothing
         |> optional "partition_key_fields" (nullable (list string)) Nothing
+        |> optional "ordering_key_fields" (nullable (list string)) Nothing
         |> optional "default_statistic" (nullable defaultStatisticDecoder) Nothing
         |> optional "options" (nullable optionsDecoder) Nothing
         |> optional "authorization" (nullable Stores.EventTypeAuthorization.collectionDecoder) Nothing

@@ -438,3 +438,20 @@ cleanupPolicy =
     , newline
     , man "#definition_EventType*cleanup_policy"
     ]
+
+
+orderingKeyFields : List (Html msg)
+orderingKeyFields =
+    [ text "This field is useful in case the producer wants to communicate the complete"
+     , text "order accross all the events published to all partitions."
+     , text " This is the case when there is an incremental generator on the producer side."
+    , newline
+    , bold "This is only an informational field. No reordering is done by Nakadi."
+    , newline
+    , newline
+    , bold "Key: "
+    , mono "ordering_key_fields"
+    , bold "optional"
+    , newline
+    , man "#definition_EventType*ordering_key_fields"
+    ]

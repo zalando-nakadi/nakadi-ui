@@ -190,6 +190,8 @@ detailsLayout typeName eventType model =
                                 infoStringToText eventType.partition_strategy
                             , infoField "Partition key fields " Help.partitionKeyFields BottomRight <|
                                 infoListToText eventType.partition_key_fields
+                            , infoField "Ordering key fields " Help.orderingKeyFields BottomRight <|
+                                infoListToText eventType.ordering_key_fields
                             , infoField "Default statistic " Help.defaultStatistic TopRight <|
                                 infoStatisticsToText eventType.default_statistic
                             , infoField "Cleanup policy " Help.cleanupPolicy TopRight <|

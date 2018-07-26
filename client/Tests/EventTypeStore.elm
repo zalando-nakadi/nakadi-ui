@@ -52,6 +52,9 @@ testJson =
         "partition_key_fields": [
           "metadata.eid"
         ],
+        "ordering_key_fields": [
+          "data.order_index"
+        ],
         "schema": {
           "type": "json_schema",
           "schema": "",
@@ -102,6 +105,7 @@ all =
                    , partition_strategy = Just "hash"
                    , compatibility_mode = Just "fixed"
                    , partition_key_fields = Just [ "metadata.eid" ]
+                   , ordering_key_fields = Nothing
                    , default_statistic =
                         Just
                             { messages_per_minute = 2400
@@ -128,6 +132,7 @@ all =
                    , partition_strategy = Just "hash"
                    , compatibility_mode = Just "fixed"
                    , partition_key_fields = Just [ "metadata.eid" ]
+                   , ordering_key_fields = Just ["data.order_index"]
                    , default_statistic = Nothing
                    , options =
                         Just

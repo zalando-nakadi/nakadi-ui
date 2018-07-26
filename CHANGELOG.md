@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added support for the event type [audience](https://nakadi.io/manual.html#definition_EventType*audience) field.
 - Added support for the event type [cleanup_policy](https://nakadi.io/manual.html#definition_EventType*cleanup_policy) field.
+- Added support for the event type [ordering_key_fields](https://nakadi.io/manual.html#definition_EventType*ordering_key_fields) field.
 - Added Dockerfile and docker-compose
 
 ### Changed

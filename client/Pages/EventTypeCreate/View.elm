@@ -221,6 +221,14 @@ viewForm model setup =
                         Help.defaultStatistic
                         False
                         (List.range 1 Config.maxPartitionNumber |> List.map toString)
+                , textInput formModel
+                    FieldOrderingKeyFields
+                    "Ordering Key Fields"
+                    "Example: order.day, order.index"
+                    "Comma-separated list of keys."
+                    Help.orderingKeyFields
+                    False
+                    False
                 , selectInput formModel
                     FieldAudience
                     "Audience"

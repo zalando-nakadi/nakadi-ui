@@ -42,6 +42,7 @@ app.post('/event-types', (req, res) => {
         category: 'business',
         partition_strategy: 'random',
         partition_key_fields: [],
+        ordering_key_fields: [],
         compatibility_mode: 'forward',
         audience: 'component-internal',
         cleanup_policy: 'delete',
