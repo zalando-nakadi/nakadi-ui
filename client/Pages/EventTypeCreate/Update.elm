@@ -319,7 +319,6 @@ submitCreate model =
             , ( "compatibility_mode", asString FieldCompatibilityMode )
             , ( "audience", asString FieldAudience )
             , ( "cleanup_policy", asString FieldCleanupPolicy )
-            , ( "compatibility_mode", asString FieldCompatibilityMode )
             , ( "schema"
               , Json.object
                     [ ( "type", Json.string "json_schema" )
