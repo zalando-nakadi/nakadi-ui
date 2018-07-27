@@ -15,9 +15,13 @@ import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import User.Commands exposing (logoutIfExpired)
+import Json.Encode
+import Json.Decode
 import Constants
 import Http
 import Config
+import RemoteData exposing (WebData)
+import HttpBuilder exposing (..)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
@@ -78,6 +82,9 @@ update message model =
 
                         ConsumerTab ->
                             dispatch LoadConsumers
+
+                        PublishTab ->
+                            Cmd.none
 
                         AuthTab ->
                             Cmd.none
@@ -191,6 +198,15 @@ update message model =
                     in
                         ( { model | validationIssuesStore = newSubModel }, Cmd.map ValidationStoreMsg newSubMsg )
 
+                EditEvent value ->
+                    ( { model | editEvent = value }, Cmd.none )
+
+                SendEvent ->
+                    ( model, sendEvent SendEventResponse model.name model.editEvent )
+
+                SendEventResponse value ->
+                    ( { model | sendEventResponse = value }, Cmd.none )
+
                 OpenDeletePopup ->
                     let
                         newDeletePopup =
@@ -301,3 +317,23 @@ callDelete name =
 loadSubStoreMsg : String -> Store.Msg entity
 loadSubStoreMsg name =
     Store.SetParams [ ( Constants.eventTypeName, name ) ]
+
+
+sendEvent : (WebData String -> msg) -> String -> String -> Cmd msg
+sendEvent tagger name event =
+    case (Json.Decode.decodeString Json.Decode.value event) of
+        Ok val ->
+            Http.request
+                { method = "POST"
+                , headers = []
+                , url = Config.urlNakadiApi ++ "event-types/" ++ (Http.encodeUri name) ++ "/events"
+                , body = Http.jsonBody val
+                , expect = Http.expectString
+                , timeout = Nothing
+                , withCredentials = False
+                }
+                |> RemoteData.sendRequest
+                |> Cmd.map tagger
+
+        Err err ->
+            Debug.log ("event JSON decode error:" ++ err) Cmd.none

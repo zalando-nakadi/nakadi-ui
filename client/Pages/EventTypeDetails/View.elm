@@ -53,6 +53,7 @@ import Helpers.UI
         , newline
         , popup
         )
+import RemoteData
 
 
 view : AppModel -> Html Msg
@@ -220,7 +221,7 @@ detailsLayout typeName eventType model =
                           )
                         , ( PublisherTab
                           , "Publishers"
-                          , publishTab
+                          , publisherTab
                                 eventType
                                 pageState.publishersStore
                                 appsInfoUrl
@@ -241,6 +242,10 @@ detailsLayout typeName eventType model =
                                 appsInfoUrl
                                 usersInfoUrl
                                 eventType
+                          )
+                        , ( PublishTab
+                          , "Publish"
+                          , publishTab pageState
                           )
                         ]
                     ]
@@ -541,8 +546,8 @@ renderPartition totalsStore name partition =
             ]
 
 
-publishTab : EventType -> Stores.Publisher.Model -> String -> String -> Html Msg
-publishTab eventType publishersStore appsInfoUrl usersInfoUrl =
+publisherTab : EventType -> Stores.Publisher.Model -> String -> String -> Html Msg
+publisherTab eventType publishersStore appsInfoUrl usersInfoUrl =
     let
         publishersList =
             Store.items publishersStore
@@ -575,6 +580,32 @@ renderPublishers name appsInfoUrl usersInfoUrl item =
         , td [ class "dc-table__td" ] [ text (toString item.count) ]
         , td [ class "dc-table__td" ]
             []
+        ]
+
+
+publishTab : Model -> Html Msg
+publishTab pageState =
+    div [ class "dc-card" ]
+        [ h3 [ class "dc-h3" ] [ text "Publish event to this Event Type" ]
+        , div [ class "dc-card" ]
+            [ textarea [ onInput EditEvent, value pageState.editEvent, rows 10, class "dc-textarea" ] []
+            ]
+        , case pageState.sendEventResponse of
+            RemoteData.NotAsked ->
+                div [ class "dc-card" ] [ none ]
+
+            RemoteData.Loading ->
+                div [ class "dc-card" ] [ text "Loadding..." ]
+
+            RemoteData.Success resp ->
+                div [ class "dc-card" ] [ text ("Events succsessfuly published! " ++ resp) ]
+
+            RemoteData.Failure resp ->
+                div [ class "dc-card" ] [ text (toString resp) ]
+        , div [ class "dc-card" ]
+            [ button [ onClick SendEvent, class "dc-btn dc-btn--primary" ] [ text "Send" ]
+            , button [ class "dc-btn " ] [ text "Reset" ]
+            ]
         ]
 
 
