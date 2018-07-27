@@ -52,6 +52,9 @@ testJson =
         "partition_key_fields": [
           "metadata.eid"
         ],
+        "ordering_key_fields": [
+          "data.order_index"
+        ],
         "schema": {
           "type": "json_schema",
           "schema": "",
@@ -63,6 +66,8 @@ testJson =
           "retention_time": null
         },
         "compatibility_mode": "fixed",
+        "audience": "company-internal",
+        "cleanup_policy": "compact",
         "updated_at": "2016-11-09T19:32:00.000Z",
         "created_at": "2016-11-09T19:32:00.000Z",
         "authorization": {
@@ -100,6 +105,7 @@ all =
                    , partition_strategy = Just "hash"
                    , compatibility_mode = Just "fixed"
                    , partition_key_fields = Just [ "metadata.eid" ]
+                   , ordering_key_fields = Nothing
                    , default_statistic =
                         Just
                             { messages_per_minute = 2400
@@ -111,6 +117,8 @@ all =
                    , created_at = Just "2016-11-09T19:32:00.000Z"
                    , updated_at = Just "2016-11-09T19:32:00.000Z"
                    , authorization = Nothing
+                   , cleanup_policy = "delete"
+                   , audience = Nothing
                    }
                  , { category = "business"
                    , name = "eventlog.e6810a_generic_time_allocation"
@@ -124,6 +132,7 @@ all =
                    , partition_strategy = Just "hash"
                    , compatibility_mode = Just "fixed"
                    , partition_key_fields = Just [ "metadata.eid" ]
+                   , ordering_key_fields = Just ["data.order_index"]
                    , default_statistic = Nothing
                    , options =
                         Just
@@ -169,6 +178,8 @@ all =
                                   }
                                 ]
                             }
+                   , cleanup_policy = "compact"
+                   , audience = Just "company-internal"
                    }
                  ]
                 )

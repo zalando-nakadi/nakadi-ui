@@ -287,6 +287,11 @@ submitCreate model =
                 |> getValue FieldPartitionKeyFields
                 |> stringToJsonList
 
+        orderingKeyFields =
+            model.values
+                |> getValue FieldOrderingKeyFields
+                |> stringToJsonList
+
         partitionsNumber =
             model.values
                 |> getValue FieldPartitionsNumber
@@ -310,7 +315,10 @@ submitCreate model =
             , ( "category", asString FieldCategory )
             , ( "partition_strategy", asString FieldPartitionStrategy )
             , ( "partition_key_fields", partitionKeyFields )
+            , ( "ordering_key_fields", orderingKeyFields )
             , ( "compatibility_mode", asString FieldCompatibilityMode )
+            , ( "audience", asString FieldAudience )
+            , ( "cleanup_policy", asString FieldCleanupPolicy )
             , ( "schema"
               , Json.object
                     [ ( "type", Json.string "json_schema" )
@@ -372,6 +380,11 @@ submitUpdate model =
                 |> getValue FieldPartitionKeyFields
                 |> stringToJsonList
 
+        orderingKeyFields =
+            model.values
+                |> getValue FieldOrderingKeyFields
+                |> stringToJsonList
+
         asString field =
             model.values
                 |> getValue field
@@ -388,7 +401,10 @@ submitUpdate model =
             , ( "category", asString FieldCategory )
             , ( "partition_strategy", asString FieldPartitionStrategy )
             , ( "partition_key_fields", partitionKeyFields )
+            , ( "ordering_key_fields", orderingKeyFields )
             , ( "compatibility_mode", asString FieldCompatibilityMode )
+            , ( "audience", asString FieldAudience )
+            , ( "cleanup_policy", asString FieldCleanupPolicy )
             , ( "schema"
               , Json.object
                     [ ( "type", Json.string "json_schema" )

@@ -24,7 +24,7 @@ describe('validation module', function() {
         expect(result).toBeAny(Object, 'It should be object');
         expect(result.name).toBe('WRONG-example-company.example-team.example-event_type_v5', 'Should return ET name');
         expect(result.issues).toBeAny(Array, 'Should return Array of issues');
-        expect(result.issues.length).toBe(6, 'Should return 6 issues');
+        expect(result.issues.length).toBe(7, 'Should return 7 issues');
         expect(result.issues[0].id).toBe(validation.issueType.SECURITY_NOT_SET, 'Should return error code');
         expect(result.issues[1].id).toBe(validation.issueType.SCHEMA_IS_EMPTY, 'Should return error code');
     });

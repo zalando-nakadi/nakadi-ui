@@ -8,6 +8,8 @@ import Stores.EventType
         , compatibilityModes
         , allModes
         , partitionStrategies
+        , cleanupPolicies
+        , audiences
         )
 import Stores.Partition
 import Helpers.Store exposing (Status(Unknown), ErrorMessage)
@@ -28,11 +30,14 @@ type Field
     | FieldCategory
     | FieldPartitionStrategy
     | FieldPartitionKeyFields
+    | FieldOrderingKeyFields
     | FieldPartitionsNumber
     | FieldRetentionTime
     | FieldCompatibilityMode
     | FieldSchema
     | FieldAccess
+    | FieldAudience
+    | FieldCleanupPolicy
 
 
 type alias ValuesDict =
@@ -84,9 +89,12 @@ defaultValues =
     , ( FieldPartitionStrategy, partitionStrategies.random )
     , ( FieldPartitionsNumber, "1" )
     , ( FieldPartitionKeyFields, emptyString )
+    , ( FieldOrderingKeyFields, emptyString )
     , ( FieldRetentionTime, toString defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
+    , ( FieldAudience, audiences.component_internal )
+    , ( FieldCleanupPolicy, cleanupPolicies.delete )
     ]
         |> List.map (\( field, value ) -> ( toString field, value ))
 
@@ -113,9 +121,12 @@ loadValues eventType =
             |> setValue FieldCategory eventType.category
             |> maybeSetValue FieldPartitionStrategy eventType.partition_strategy
             |> maybeSetListValue FieldPartitionKeyFields eventType.partition_key_fields
+            |> maybeSetListValue FieldOrderingKeyFields eventType.ordering_key_fields
             |> maybeSetValue FieldCompatibilityMode eventType.compatibility_mode
             |> setValue FieldSchema eventType.schema.schema
             |> setValue FieldRetentionTime retentionTime
+            |> maybeSetValue FieldAudience eventType.audience
+            |> setValue FieldCleanupPolicy eventType.cleanup_policy
 
 
 defaultSchema : String

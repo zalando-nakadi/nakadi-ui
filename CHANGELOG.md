@@ -4,22 +4,33 @@ All notable changes to `Nakadi UI` will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.0.23] 2018-06-19
+## [Unreleased]
 ### Added
-- #212 Added the link to the user profile. (#222)
-- #208 Added the `Copy to clipboard` button for events and schemas. (#223)
-- #218 Show the Subscription partitions lag and assignment type. (#220)
+- Added support for the event type [audience](https://nakadi.io/manual.html#definition_EventType*audience) field.
+- Added support for the event type [cleanup_policy](https://nakadi.io/manual.html#definition_EventType*cleanup_policy) field.
+- Added support for the event type [ordering_key_fields](https://nakadi.io/manual.html#definition_EventType*ordering_key_fields) field.
+- Added Dockerfile and docker-compose
 
 ### Changed
-- #213 It is now possible to change `owning_application`. (#219)
+- Nakadi UI is open-sourced and moved to github.com
+
+
+## [0.0.23] 2018-06-19
+### Added
+- Added the link to the user profile.
+- Added the `Copy to clipboard` button for events and schemas.
+- Show the Subscription partitions lag and assignment type.
+
+### Changed
+- It is now possible to change `owning_application`.
 - The maximum partitions number was changed to 32.
-- #216 UI now shows the `loading` label for total events count calculation. (#217)
+- UI now shows the `loading` label for total events count calculation.
 
 ### Fixed
-- #210 Fix unintended "jump back" to the previous page. (#221)
-- Fixed a typo in a Event Type validation error message. (#215)
-- Fixed a typo in the Event Type Details page. (#207)
-- Fixed constant reloading when user is logout. (#205)
+- Fix unintended "jump back" to the previous page.
+- Fixed a typo in a Event Type validation error message.
+- Fixed a typo in the Event Type Details page.
+- Fixed constant reloading when user is logout.
 
 ## [0.0.22] 2017-11-27
 ### Added

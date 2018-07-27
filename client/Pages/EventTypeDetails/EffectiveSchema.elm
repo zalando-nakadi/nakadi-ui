@@ -131,6 +131,12 @@ insertMetadata schema =
                         "format": "RFC 3339 date-time",
                         "example": "1996-12-19T16:39:57-08:00"
                     },
+                    "partition_compaction_key": {
+                        "summary": "Value used for per-partition compaction of the event type.",
+                        "description": "If same value are published to the same partition, the later overwrites the former. Required when ‘cleanup_policy’ of event type is set to ‘compact’. Must be absent otherwise.",
+                        "type": "string",
+                        "example": "329ed3d2-8366-11e8-adc0-fa7ae01bbebc"
+                    },
                     "parent_eids": {
                         "type": "array",
                         "items": {
