@@ -239,7 +239,13 @@ viewForm model setup =
                 , selectInput formModel
                     FieldCleanupPolicy
                     "Cleanup policy"
-                    ""
+                    (if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.compact then
+                        "Log compacted event types MUST NOT contain personal identifiable"
+                            ++ " information in accordance to GDPR. If you plan to store user"
+                            ++ " data permanently, check the legal department of your organization"
+                     else
+                        ""
+                    )
                     Help.cleanupPolicy
                     False
                     cleanupPoliciesOptions
