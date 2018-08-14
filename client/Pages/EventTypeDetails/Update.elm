@@ -2,6 +2,7 @@ module Pages.EventTypeDetails.Update exposing (..)
 
 import Pages.EventTypeDetails.Messages exposing (Msg(..))
 import Pages.EventTypeDetails.Models exposing (Model, initialModel, Tabs(..))
+import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
 import Routing.Models exposing (Route(EventTypeDetailsRoute))
 import Helpers.Task exposing (dispatch)
 import Helpers.JsonEditor
@@ -15,13 +16,10 @@ import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import User.Commands exposing (logoutIfExpired)
-import Json.Encode
-import Json.Decode
 import Constants
 import Http
 import Config
-import RemoteData exposing (WebData)
-import HttpBuilder exposing (..)
+import RemoteData exposing (RemoteData(NotAsked))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
@@ -207,6 +205,9 @@ update message model =
                 SendEventResponse value ->
                     ( { model | sendEventResponse = value }, Cmd.none )
 
+                SendEventReset ->
+                    ( { model | sendEventResponse = NotAsked, editEvent = "" }, Cmd.none )
+
                 OpenDeletePopup ->
                     let
                         newDeletePopup =
@@ -317,23 +318,3 @@ callDelete name =
 loadSubStoreMsg : String -> Store.Msg entity
 loadSubStoreMsg name =
     Store.SetParams [ ( Constants.eventTypeName, name ) ]
-
-
-sendEvent : (WebData String -> msg) -> String -> String -> Cmd msg
-sendEvent tagger name event =
-    case (Json.Decode.decodeString Json.Decode.value event) of
-        Ok val ->
-            Http.request
-                { method = "POST"
-                , headers = []
-                , url = Config.urlNakadiApi ++ "event-types/" ++ (Http.encodeUri name) ++ "/events"
-                , body = Http.jsonBody val
-                , expect = Http.expectString
-                , timeout = Nothing
-                , withCredentials = False
-                }
-                |> RemoteData.sendRequest
-                |> Cmd.map tagger
-
-        Err err ->
-            Debug.log ("event JSON decode error:" ++ err) Cmd.none

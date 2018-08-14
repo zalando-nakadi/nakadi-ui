@@ -28,6 +28,7 @@ import Stores.EventTypeValidation exposing (EventTypeValidationIssue)
 import Pages.EventTypeDetails.Messages exposing (..)
 import Pages.EventTypeDetails.Models exposing (Tabs(..), Model)
 import Pages.EventTypeDetails.Help as Help
+import Pages.EventTypeDetails.PublishTab exposing (publishTab)
 import Pages.EventTypeDetails.EffectiveSchema exposing (toEffective)
 import Pages.EventTypeList.Models
 import Pages.Partition.Models
@@ -53,7 +54,6 @@ import Helpers.UI
         , newline
         , popup
         )
-import RemoteData
 
 
 view : AppModel -> Html Msg
@@ -244,7 +244,7 @@ detailsLayout typeName eventType model =
                                 eventType
                           )
                         , ( PublishTab
-                          , "Publish"
+                          , "Publish Events"
                           , publishTab pageState
                           )
                         ]
@@ -580,32 +580,6 @@ renderPublishers name appsInfoUrl usersInfoUrl item =
         , td [ class "dc-table__td" ] [ text (toString item.count) ]
         , td [ class "dc-table__td" ]
             []
-        ]
-
-
-publishTab : Model -> Html Msg
-publishTab pageState =
-    div [ class "dc-card" ]
-        [ h3 [ class "dc-h3" ] [ text "Publish event to this Event Type" ]
-        , div [ class "dc-card" ]
-            [ textarea [ onInput EditEvent, value pageState.editEvent, rows 10, class "dc-textarea" ] []
-            ]
-        , case pageState.sendEventResponse of
-            RemoteData.NotAsked ->
-                div [ class "dc-card" ] [ none ]
-
-            RemoteData.Loading ->
-                div [ class "dc-card" ] [ text "Loadding..." ]
-
-            RemoteData.Success resp ->
-                div [ class "dc-card" ] [ text ("Events succsessfuly published! " ++ resp) ]
-
-            RemoteData.Failure resp ->
-                div [ class "dc-card" ] [ text (toString resp) ]
-        , div [ class "dc-card" ]
-            [ button [ onClick SendEvent, class "dc-btn dc-btn--primary" ] [ text "Send" ]
-            , button [ class "dc-btn " ] [ text "Reset" ]
-            ]
         ]
 
 

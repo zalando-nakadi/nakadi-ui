@@ -43,3 +43,4 @@ type Msg
     | EditEvent String
     | SendEvent
     | SendEventResponse (WebData String)
+    | SendEventReset
