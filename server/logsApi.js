@@ -17,12 +17,13 @@ const ERROR = 502;
  * @param {Object} options
  * @param {String} options.scalyrUrl
  * @param {String} options.scalyrKey
+ * @param {String} options.scalyrBaseFilter
  *
  * @returns {Router}
  */
 module.exports = function logsApi(options) {
     const defaults = {
-        filter: '($serverHost=="nakadi") and ($logfile=="/var/log/application.log") and ',
+        filter: options.scalyrBaseFilter,
         scalyrUrl: '',
         scalyrKey: ''
     };

@@ -27,6 +27,7 @@ describe('Config', function() {
             AUTHORIZE_OPTIONS_scope: 'myscope',
             SCALYR_URL: "https://www.scalyr.com/api/",
             SCALYR_KEY: "somekey",
+            SCALYR_BASE_FILTER: "($serverHost==\"nakadi-staging\") and ($logfile==\"/var/log/application.log\") and",
             ANALYTICS_STRATEGY: "some-plugin",
             ANALYTICS_OPTIONS_url: "https://nakadi-staging.example.com",
             ANALYTICS_OPTIONS_name: "aruha.nakadi-ui.access-log",
@@ -84,6 +85,7 @@ describe('Config', function() {
             logsApi: {
                 scalyrUrl: "https://www.scalyr.com/api/",
                 scalyrKey: "somekey",
+                scalyrBaseFilter: "($serverHost==\"nakadi-staging\") and ($logfile==\"/var/log/application.log\") and",
             },
             cookie: {
                 cookieName: 'session',
