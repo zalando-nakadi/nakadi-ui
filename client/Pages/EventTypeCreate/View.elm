@@ -29,6 +29,16 @@ import Helpers.AccessEditor as AccessEditor
 import Config
 
 
+type Requirement
+    = Required
+    | Optional
+
+
+type Locking
+    = Disabled
+    | Enabled
+
+
 view : AppModel -> Html Msg
 view model =
     let
@@ -73,7 +83,7 @@ viewFormCreate model =
         , categoriesOptions = allCategories
         , compatibilityModeOptions = allModes
         , cleanupPoliciesOptions = allCleanupPolicies
-        , blockPartitionStrategy = False
+        , partitionStrategyEditing = Enabled
         }
 
 
@@ -93,9 +103,14 @@ viewFormUpdate model originalEventType =
             else
                 [ compatibilityModes.compatible ]
 
-        blockPartitionStrategy =
-            (originalEventType.partition_strategy |> Maybe.withDefault emptyString)
-                /= partitionStrategies.random
+        partitionStrategyEditing =
+            if
+                (originalEventType.partition_strategy |> Maybe.withDefault emptyString)
+                    == partitionStrategies.random
+            then
+                Enabled
+            else
+                Disabled
 
         categoriesOptions =
             if originalEventType.category == categories.undefined then
@@ -115,7 +130,7 @@ viewFormUpdate model originalEventType =
             , categoriesOptions = categoriesOptions
             , compatibilityModeOptions = compatibilityModeOptions
             , cleanupPoliciesOptions = cleanupPoliciesOptions
-            , blockPartitionStrategy = blockPartitionStrategy
+            , partitionStrategyEditing = partitionStrategyEditing
             }
 
 
@@ -128,7 +143,7 @@ viewFormClone model originalEventType =
         , categoriesOptions = allCategories
         , compatibilityModeOptions = allModes
         , cleanupPoliciesOptions = allCleanupPolicies
-        , blockPartitionStrategy = False
+        , partitionStrategyEditing = Enabled
         }
 
 
@@ -139,14 +154,14 @@ type alias FormSetup =
     , categoriesOptions : List String
     , compatibilityModeOptions : List String
     , cleanupPoliciesOptions : List String
-    , blockPartitionStrategy : Bool
+    , partitionStrategyEditing : Locking
     }
 
 
 viewForm : AppModel -> FormSetup -> Html Msg
 viewForm model setup =
     let
-        { updateMode, formTitle, successMessage, categoriesOptions, compatibilityModeOptions, cleanupPoliciesOptions, blockPartitionStrategy } =
+        { updateMode, formTitle, successMessage, categoriesOptions, compatibilityModeOptions, cleanupPoliciesOptions, partitionStrategyEditing } =
             setup
 
         formModel =
@@ -167,22 +182,27 @@ viewForm model setup =
                     "Example: bazar.price-updater.price_changed"
                     "Should be several words (with '_', '-') separated by dot."
                     Help.eventType
-                    True
-                    updateMode
+                    Required
+                    (if updateMode then
+                        Disabled
+                     else
+                        Enabled
+                    )
                 , textInput formModel
                     FieldOwningApplication
                     "Owning Application"
                     "Example: stups_price-updater"
                     "App name registered in YourTurn with 'stups_' prefix"
                     Help.owningApplication
-                    True
-                    False
+                    Required
+                    Enabled
                 , selectInput formModel
                     FieldCategory
                     "Category"
                     ""
                     Help.category
-                    False
+                    Optional
+                    Enabled
                     categoriesOptions
                 , div [ class "dc-row form-create__input-row" ]
                     [ selectInput formModel
@@ -190,7 +210,8 @@ viewForm model setup =
                         "Partition Strategy"
                         ""
                         Help.partitionStrategy
-                        blockPartitionStrategy
+                        Optional
+                        partitionStrategyEditing
                         [ partitionStrategies.random
                         , partitionStrategies.hash
                         , partitionStrategies.user_defined
@@ -204,8 +225,8 @@ viewForm model setup =
                                 "Example: order.user_id, order.item_id"
                                 "Comma-separated list of keys."
                                 Help.partitionKeyFields
-                                False
-                                blockPartitionStrategy
+                                Required
+                                partitionStrategyEditing
                            else
                             none
                           )
@@ -219,7 +240,8 @@ viewForm model setup =
                         "Number of Partitions"
                         ""
                         Help.defaultStatistic
-                        False
+                        Optional
+                        Enabled
                         (List.range 1 Config.maxPartitionNumber |> List.map toString)
                 , textInput formModel
                     FieldOrderingKeyFields
@@ -227,15 +249,16 @@ viewForm model setup =
                     "Example: order.day, order.index"
                     "Comma-separated list of keys."
                     Help.orderingKeyFields
-                    False
-                    False
+                    Optional
+                    Enabled
                 , selectInput formModel
                     FieldAudience
                     "Audience"
                     ""
                     Help.audience
-                    False
-                    allAudiences
+                    Required
+                    Enabled
+                    ("" :: allAudiences)
                 , selectInput formModel
                     FieldCleanupPolicy
                     "Cleanup policy"
@@ -247,7 +270,8 @@ viewForm model setup =
                         ""
                     )
                     Help.cleanupPolicy
-                    False
+                    Optional
+                    Enabled
                     cleanupPoliciesOptions
                 , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.delete then
                     selectInput formModel
@@ -255,7 +279,8 @@ viewForm model setup =
                         "Retention Time (Days)"
                         ""
                         Help.options
-                        False
+                        Optional
+                        Enabled
                         [ "2", "3", "4" ]
                   else
                     none
@@ -264,7 +289,8 @@ viewForm model setup =
                     "Schema Compatibility Mode"
                     ""
                     Help.compatibilityMode
-                    False
+                    Optional
+                    Enabled
                     compatibilityModeOptions
                 , schemaEditor formModel
                 , hr [ class "dc-divider" ] []
@@ -321,7 +347,7 @@ inputFrame :
     -> String
     -> String
     -> List (Html Msg)
-    -> Bool
+    -> Requirement
     -> Model
     -> Html Msg
     -> Html Msg
@@ -332,10 +358,12 @@ inputFrame field inputLabel hint help isRequired formModel input =
                 ++ (field |> toString |> String.toLower)
 
         requiredMark =
-            if isRequired then
-                span [ class "dc-label__sub" ] [ text "required" ]
-            else
-                none
+            case isRequired of
+                Required ->
+                    span [ class "dc-label__sub" ] [ text "required" ]
+
+                Optional ->
+                    none
     in
         div
             [ class fieldClass ]
@@ -357,8 +385,8 @@ textInput :
     -> String
     -> String
     -> List (Html Msg)
-    -> Bool
-    -> Bool
+    -> Requirement
+    -> Locking
     -> Html Msg
 textInput formModel field inputLabel inputPlaceholder hint help isRequired isDisabled =
     inputFrame field inputLabel hint help isRequired formModel <|
@@ -370,7 +398,7 @@ textInput formModel field inputLabel inputPlaceholder hint help isRequired isDis
             , id (inputId field)
             , placeholder inputPlaceholder
             , tabindex 1
-            , disabled isDisabled
+            , disabled (isDisabled == Disabled)
             ]
             []
 
@@ -381,10 +409,11 @@ selectInput :
     -> String
     -> String
     -> List (Html Msg)
-    -> Bool
+    -> Requirement
+    -> Locking
     -> List String
     -> Html Msg
-selectInput formModel field inputLabel hint help isDisabled options =
+selectInput formModel field inputLabel hint help isRequired isDisabled options =
     let
         selectedValue =
             (getValue field formModel.values)
@@ -393,9 +422,9 @@ selectInput formModel field inputLabel hint help isDisabled options =
             if (List.length options) <= 1 then
                 True
             else
-                isDisabled
+                (isDisabled == Disabled)
     in
-        inputFrame field inputLabel hint help False formModel <|
+        inputFrame field inputLabel hint help isRequired formModel <|
             select
                 [ onSelect (OnInput field)
                 , validationClass field "dc-select" formModel
@@ -422,7 +451,7 @@ accessEditor appsInfoUrl usersInfoUrl formModel =
 
 schemaEditor : Model -> Html Msg
 schemaEditor formModel =
-    inputFrame FieldSchema "Schema" "" Help.schema True formModel <|
+    inputFrame FieldSchema "Schema" "" Help.schema Required formModel <|
         div []
             [ div [ class "dc-btn-group" ]
                 [ button

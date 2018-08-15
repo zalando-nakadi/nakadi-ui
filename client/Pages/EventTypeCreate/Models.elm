@@ -93,7 +93,7 @@ defaultValues =
     , ( FieldRetentionTime, toString defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
-    , ( FieldAudience, audiences.component_internal )
+    , ( FieldAudience, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
     ]
         |> List.map (\( field, value ) -> ( toString field, value ))
