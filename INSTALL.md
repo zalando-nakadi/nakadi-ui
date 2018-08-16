@@ -95,6 +95,7 @@ SUPPORT_URL=https://hipchat.example.com/chat/room/12345
 # Required
 SCALYR_URL="https://www.scalyr.com/api/"
 SCALYR_KEY="YOUR-SCALYR-API-KEY-3c9f8h3e8b3d07e-"
+SCALYR_BASE_FILTER=($serverHost=="nakadi") and ($logfile=="/var/log/application.log") and
 
 # Feature flags.
 # Optional, default "No"

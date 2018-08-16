@@ -52,6 +52,7 @@ exports = module.exports = function createConfiguration(env) {
         logsApi: {
             scalyrUrl: required('SCALYR_URL', env),
             scalyrKey: required('SCALYR_KEY', env),
+            scalyrBaseFilter: optional('SCALYR_BASE_FILTER', env, '($serverHost=="nakadi") and ($logfile=="/var/log/application.log") and ')
         },
         cookie: {
             cookieName: 'session', // cookie name dictates the key name added to the request object

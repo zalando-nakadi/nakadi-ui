@@ -14,7 +14,7 @@ describe('Create Subscription form', function() {
         .waitForVisible('h4=Welcome to Nakadi, a distributed, open-source event messaging service!', 1000)
         .click('button=Create')
         .click('a=Subscription')
-        .waitForVisible('h4=Create Subscription', 1000)
+        .waitForVisible('h4=Create Subscription', 10000)
         .click('#subscriptionCreateFormFieldConsumerGroup')
         .isEnabled('button=Create Subscription').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be disabled by default')
