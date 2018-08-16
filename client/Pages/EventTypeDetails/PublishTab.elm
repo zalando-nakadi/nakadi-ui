@@ -7,8 +7,9 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Helpers.UI exposing (..)
-import Helpers.Panel exposing (renderError)
+import Helpers.Panel exposing (renderError, warningMessage)
 import Helpers.Store exposing (errorToViewRecord)
+import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
 import RemoteData exposing (WebData, isLoading)
 import Http
 import Json.Decode
@@ -111,7 +112,15 @@ showRemoteDataStatus state =
             div [] [ text "Publishing..." ]
 
         RemoteData.Success resp ->
-            div [ class "dc--text-success" ] [ text ("Event(s) succsessfuly published! " ++ resp) ]
+            if String.isEmpty resp then
+                div [ class "dc--text-success" ] [ text ("Event(s) succsessfuly published!") ]
+            else
+                warningMessage
+                    "Unexpected server response"
+                    "Probably not all events are published successfuly"
+                    (Just
+                        (pre [ class "dc-pre" ] [ text (prettyPrintJson resp) ])
+                    )
 
         RemoteData.Failure resp ->
             resp |> errorToViewRecord |> renderError

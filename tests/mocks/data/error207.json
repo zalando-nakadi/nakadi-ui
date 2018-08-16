@@ -1,0 +1,9 @@
+[{
+  "eid":"321-2345-43534634564",
+  "publishing_status": "submitted"
+},{
+ "eid":"123-2345-43534634564",
+ "publishing_status": "failed",
+ "step":"validating",
+ "detail": "kill all humans"
+}]
