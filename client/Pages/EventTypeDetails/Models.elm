@@ -11,6 +11,8 @@ import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import Helpers.Store exposing (Status(Unknown), ErrorMessage)
+import Http
+import RemoteData exposing (WebData, RemoteData(NotAsked))
 
 
 initialModel : Model
@@ -27,6 +29,8 @@ initialModel =
     , eventTypeSchemasStore = Stores.EventTypeSchema.initialModel
     , totalsStore = Stores.CursorDistance.initialModel
     , validationIssuesStore = Stores.EventTypeValidation.initialModel
+    , editEvent = emptyString
+    , sendEventResponse = NotAsked
     , deletePopup =
         { isOpen = False
         , deleteCheckbox = False
@@ -42,6 +46,7 @@ type Tabs
     | PublisherTab
     | ConsumerTab
     | AuthTab
+    | PublishTab
 
 
 type alias Model =
@@ -57,6 +62,8 @@ type alias Model =
     , eventTypeSchemasStore : Stores.EventTypeSchema.Model
     , totalsStore : Stores.CursorDistance.Model
     , validationIssuesStore : Stores.EventTypeValidation.Model
+    , editEvent : String
+    , sendEventResponse : WebData String
     , deletePopup :
         { isOpen : Bool
         , deleteCheckbox : Bool
@@ -131,6 +138,9 @@ stringToTabs str =
 
         "AuthTab" ->
             Just AuthTab
+
+        "PublishTab" ->
+            Just PublishTab
 
         _ ->
             Nothing

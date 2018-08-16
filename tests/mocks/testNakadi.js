@@ -11,6 +11,7 @@ const cursors = require('./data/cursors.json');
 const error404 = require('./data/error404.json');
 const error412 = require('./data/error412.json');
 const error400 = require('./data/error400.json');
+const error207 = require('./data/error207.json');
 
 const app = express();
 app.use(bodyParser.json()); // for parsing application/json
@@ -99,7 +100,7 @@ app.get('/event-types/:name/events', (req, res) => {
 });
 
 app.post('/event-types/:name/events', (req, res) => {
-    res.json({})
+    res.status(207).json(error207)
 });
 
 app.get('/event-types/:name/schemas', (req, res) => {

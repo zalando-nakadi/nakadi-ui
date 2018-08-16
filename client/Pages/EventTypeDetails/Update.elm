@@ -2,6 +2,7 @@ module Pages.EventTypeDetails.Update exposing (..)
 
 import Pages.EventTypeDetails.Messages exposing (Msg(..))
 import Pages.EventTypeDetails.Models exposing (Model, initialModel, Tabs(..))
+import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
 import Routing.Models exposing (Route(EventTypeDetailsRoute))
 import Helpers.Task exposing (dispatch)
 import Helpers.JsonEditor
@@ -18,6 +19,7 @@ import User.Commands exposing (logoutIfExpired)
 import Constants
 import Http
 import Config
+import RemoteData exposing (RemoteData(NotAsked))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
@@ -78,6 +80,9 @@ update message model =
 
                         ConsumerTab ->
                             dispatch LoadConsumers
+
+                        PublishTab ->
+                            Cmd.none
 
                         AuthTab ->
                             Cmd.none
@@ -190,6 +195,18 @@ update message model =
                             Stores.EventTypeValidation.update subMsg model.validationIssuesStore
                     in
                         ( { model | validationIssuesStore = newSubModel }, Cmd.map ValidationStoreMsg newSubMsg )
+
+                EditEvent value ->
+                    ( { model | editEvent = value }, Cmd.none )
+
+                SendEvent ->
+                    ( model, sendEvent SendEventResponse model.name model.editEvent )
+
+                SendEventResponse value ->
+                    ( { model | sendEventResponse = value }, Cmd.none )
+
+                SendEventReset ->
+                    ( { model | sendEventResponse = NotAsked, editEvent = "" }, Cmd.none )
 
                 OpenDeletePopup ->
                     let

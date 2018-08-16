@@ -10,7 +10,7 @@ import Stores.Partition
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import Http
-
+import RemoteData exposing (WebData)
 
 type Msg
     = OnRouteChange Route
@@ -40,3 +40,7 @@ type Msg
     | OutAddToFavorite String
     | OutRemoveFromFavorite String
     | ValidationStoreMsg Stores.EventTypeValidation.Msg
+    | EditEvent String
+    | SendEvent
+    | SendEventResponse (WebData String)
+    | SendEventReset

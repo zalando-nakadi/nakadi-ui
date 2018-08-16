@@ -29,6 +29,7 @@ import Stores.EventTypeValidation exposing (EventTypeValidationIssue)
 import Pages.EventTypeDetails.Messages exposing (..)
 import Pages.EventTypeDetails.Models exposing (Tabs(..), Model)
 import Pages.EventTypeDetails.Help as Help
+import Pages.EventTypeDetails.PublishTab exposing (publishTab)
 import Pages.EventTypeDetails.EffectiveSchema exposing (toEffective)
 import Pages.EventTypeList.Models
 import Pages.Partition.Models
@@ -230,7 +231,7 @@ detailsLayout typeName eventType model =
                           )
                         , ( PublisherTab
                           , "Publishers"
-                          , publishTab
+                          , publisherTab
                                 eventType
                                 pageState.publishersStore
                                 appsInfoUrl
@@ -251,6 +252,10 @@ detailsLayout typeName eventType model =
                                 appsInfoUrl
                                 usersInfoUrl
                                 eventType
+                          )
+                        , ( PublishTab
+                          , "Publish Events"
+                          , publishTab pageState
                           )
                         ]
                     ]
@@ -551,8 +556,8 @@ renderPartition totalsStore name partition =
             ]
 
 
-publishTab : EventType -> Stores.Publisher.Model -> String -> String -> Html Msg
-publishTab eventType publishersStore appsInfoUrl usersInfoUrl =
+publisherTab : EventType -> Stores.Publisher.Model -> String -> String -> Html Msg
+publisherTab eventType publishersStore appsInfoUrl usersInfoUrl =
     let
         publishersList =
             Store.items publishersStore

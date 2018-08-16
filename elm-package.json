@@ -21,6 +21,7 @@
         "elm-lang/navigation": "2.0.1 <= v < 3.0.0",
         "elm-lang/websocket": "1.0.2 <= v < 2.0.0",
         "evancz/url-parser": "2.0.1 <= v < 3.0.0",
+        "krisajenkins/remotedata": "4.5.0 <= v < 5.0.0",
         "ohanhi/keyboard-extra": "1.2.0 <= v < 2.0.0",
         "rtfeldman/node-test-runner": "3.0.0 <= v < 4.0.0",
         "thaterikperson/elm-strftime": "1.0.1 <= v < 2.0.0"
