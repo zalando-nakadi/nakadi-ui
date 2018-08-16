@@ -20,6 +20,10 @@ describe('Create Event type form', function() {
         })
         .input('#eventTypeCreateFormFieldName', eventTypeName)
         .isEnabled('button=Create Event Type').then(function(enabled) {
+            expect(enabled).toBeFalsy('Submit btn should be still disabled if name is set but no Audience selected')
+        })
+        .selectByValue("#eventTypeCreateFormFieldAudience", 'component-internal')
+        .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeTruthy('Submit btn should be enabled if name is set')
         })
         .click('button=Create Event Type')

@@ -191,6 +191,7 @@ validate model eventTypeStore =
                 |> isNotEmpty FieldName model
                 |> isNotEmpty FieldOwningApplication model
                 |> isNotEmpty FieldSchema model
+                |> isNotEmpty FieldAudience model
 
         errors =
             case model.operation of
