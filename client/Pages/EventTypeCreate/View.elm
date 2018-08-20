@@ -5,7 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
-import Helpers.UI exposing (helpIcon, PopupPosition(..), onSelect, none)
+import Helpers.UI exposing (helpIcon, PopupPosition(..), onSelect, none, externalLink)
 import Pages.EventTypeDetails.Help as Help
 import Models exposing (AppModel)
 import Helpers.Panel
@@ -162,6 +162,9 @@ viewForm model setup =
 
         usersInfoUrl =
             model.userStore.user.settings.usersInfoUrl
+
+        supportUrl =
+            model.userStore.user.settings.supportUrl
     in
         div [ class "dc-column form-create__form-container" ]
             [ div []
@@ -261,17 +264,21 @@ viewForm model setup =
                     FieldCleanupPolicy
                     OnInput
                     "Cleanup policy"
-                    (if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.compact then
-                        "Log compacted event types MUST NOT contain personal identifiable"
-                            ++ " information in accordance to GDPR. If you plan to store user"
-                            ++ " data permanently, check the legal department of your organization"
-                     else
-                        ""
-                    )
+                    ""
                     Help.cleanupPolicy
                     Optional
                     Enabled
                     cleanupPoliciesOptions
+                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.compact then
+                    p [ class "dc-p" ]
+                        [ text "Log compacted event types MUST NOT contain personal identifiable"
+                        , text " information in accordance to GDPR. If you plan to store user"
+                        , text " data permanently in Log compacted event types, then please contact "
+                        , (externalLink "support" supportUrl)
+                        , text " to get a custom GDPR compliant solution built for your use case."
+                        ]
+                  else
+                    none
                 , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.delete then
                     selectInput formModel
                         FieldRetentionTime
