@@ -22,6 +22,8 @@ import MultiSearch.Update
 import MultiSearch.Models exposing (SearchItem(SearchItemEventType), Config)
 import List.Extra
 import Helpers.FileReader as FileReader
+import Helpers.AccessEditor as AccessEditor
+import Stores.EventTypeAuthorization
 
 
 searchConfig : Stores.EventType.Model -> Config
@@ -142,6 +144,13 @@ update message model eventTypeStore subscriptionStore =
 
                 Err error ->
                     ( { model | fileLoaderError = Just (FileReader.prettyPrint error) }, Cmd.none )
+
+        AccessEditorMsg subMsg ->
+            let
+                ( newSubModel, newSubMsg ) =
+                    AccessEditor.update subMsg model.accessEditor
+            in
+                ( { model | accessEditor = newSubModel }, Cmd.map AccessEditorMsg newSubMsg )
 
         OnRouteChange maybeId ->
             let
@@ -282,10 +291,15 @@ submitCreate model =
                 |> List.map Stores.Cursor.subscriptionCursorEncoder
                 |> Json.list
 
+        auth =
+            AccessEditor.unflatten model.accessEditor.authorization
+                |> Stores.EventTypeAuthorization.encoder
+
         fields =
             [ ( "owning_application", asString FieldOwningApplication )
             , ( "read_from", asString FieldReadFrom )
             , ( "event_types", eventTypes )
+            , ( "authorization", auth )
             ]
 
         enrichment =

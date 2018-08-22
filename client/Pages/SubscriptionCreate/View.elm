@@ -17,6 +17,7 @@ import MultiSearch.View
 import Pages.SubscriptionCreate.Update exposing (searchConfig)
 import Json.Decode
 import Helpers.FileReader as FileReader
+import Helpers.AccessEditor as AccessEditor
 
 
 view : AppModel -> Html Msg
@@ -79,59 +80,79 @@ viewForm model setup =
 
         formModel =
             model.subscriptionCreatePage
-    in
-        div []
-            [ h4 [ class "dc-h4 dc--text-center" ] [ text formTitle ]
-            , textInput formModel
-                FieldConsumerGroup
-                "Consumer Group"
-                "Example: staging-1"
-                ""
-                Help.consumerGroup
-                False
-                False
-            , textInput formModel
-                FieldOwningApplication
-                "Owning Application"
-                "Example: stups_price-updater"
-                "App name registered in YourTurn with 'stups_' prefix"
-                Help.owningApplication
-                True
-                False
-            , selectInput formModel
-                FieldReadFrom
-                "Read from"
-                ""
-                Help.readFrom
-                False
-                allReadFrom
-            , if (getValue FieldReadFrom formModel.values) == readFrom.cursors then
-                div []
-                    [ areaInput formModel
-                        FieldCursors
-                        "Initial cursors"
-                        "Example: [{\"event_type\":\"shop.updater.changed\", \"partition\":\"0\", \"offset\":\"00000000000123456\"}]"
-                        "Example: [{\"event_type\":\"shop.updater.changed\", \"partition\":\"0\", \"offset\":\"00000000000123456\"},{...}]"
-                        Help.cursors
-                        True
-                        False
-                    , input [ type_ "file", onFileChange FileSelected ] []
-                    , case formModel.fileLoaderError of
-                        Nothing ->
-                            none
 
-                        Just err ->
-                            span [ class "dc--text-error" ] [ text err ]
-                    ]
-              else
-                none
-            , eventTypesEditor model
-            , hr [ class "dc-divider" ] []
-            , div [ class "dc-toast__content dc-toast__content--success" ]
-                [ text successMessage ]
-                |> Helpers.Panel.loadingStatus formModel
-            , buttonPanel formModel
+        appsInfoUrl =
+            model.userStore.user.settings.appsInfoUrl
+
+        usersInfoUrl =
+            model.userStore.user.settings.usersInfoUrl
+    in
+        div [ class "dc-column form-create__form-container" ]
+            [ div []
+                [ h4 [ class "dc-h4 dc--text-center" ] [ text formTitle ]
+                , textInput formModel
+                    FieldConsumerGroup
+                    "Consumer Group"
+                    "Example: staging-1"
+                    ""
+                    Help.consumerGroup
+                    False
+                    False
+                , textInput formModel
+                    FieldOwningApplication
+                    "Owning Application"
+                    "Example: stups_price-updater"
+                    "App name registered in YourTurn with 'stups_' prefix"
+                    Help.owningApplication
+                    True
+                    False
+                , selectInput formModel
+                    FieldReadFrom
+                    "Read from"
+                    ""
+                    Help.readFrom
+                    False
+                    allReadFrom
+                , if (getValue FieldReadFrom formModel.values) == readFrom.cursors then
+                    div []
+                        [ areaInput formModel
+                            FieldCursors
+                            "Initial cursors"
+                            "Example: [{\"event_type\":\"shop.updater.changed\", \"partition\":\"0\", \"offset\":\"00000000000123456\"}]"
+                            "Example: [{\"event_type\":\"shop.updater.changed\", \"partition\":\"0\", \"offset\":\"00000000000123456\"},{...}]"
+                            Help.cursors
+                            True
+                            False
+                        , input [ type_ "file", onFileChange FileSelected ] []
+                        , case formModel.fileLoaderError of
+                            Nothing ->
+                                none
+
+                            Just err ->
+                                span [ class "dc--text-error" ] [ text err ]
+                        ]
+                  else
+                    none
+                , eventTypesEditor model
+                , accessEditor appsInfoUrl usersInfoUrl formModel
+                , hr [ class "dc-divider" ] []
+                , div [ class "dc-toast__content dc-toast__content--success" ]
+                    [ text successMessage ]
+                    |> Helpers.Panel.loadingStatus formModel
+                , buttonPanel formModel
+                ]
             ]
+
+
+accessEditor : String -> String -> Model -> Html Msg
+accessEditor appsInfoUrl usersInfoUrl formModel =
+    AccessEditor.view
+        { appsInfoUrl = appsInfoUrl
+        , usersInfoUrl = usersInfoUrl
+        , showWrite = False
+        }
+        AccessEditorMsg
+        formModel.accessEditor
 
 
 onFileChange : (List FileReader.NativeFile -> Msg) -> Attribute Msg

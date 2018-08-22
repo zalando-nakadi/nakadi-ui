@@ -112,6 +112,9 @@ update message model =
                         Err error ->
                             ( { model | deletePopup = Store.onFetchErr model.deletePopup error }, logoutIfExpired error )
 
+                TabChange tab ->
+                    ( { model | tab = tab }, Cmd.none )
+
                 OutOnSubscriptionDeleted ->
                     ( model, Cmd.none )
 

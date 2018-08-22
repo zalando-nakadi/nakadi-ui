@@ -5,6 +5,7 @@ import Stores.SubscriptionStats exposing (SubscriptionStats)
 import Stores.Cursor exposing (SubscriptionCursor)
 import Http
 import Char exposing (KeyCode)
+import Pages.SubscriptionDetails.Models exposing (Tabs)
 
 type Msg
     = OnRouteChange Route
@@ -16,6 +17,7 @@ type Msg
     | ConfirmDelete
     | Delete
     | DeleteDone (Result Http.Error ())
+    | TabChange Tabs
     | OutOnSubscriptionDeleted
     | LoadCursors
     | CursorsLoaded (Result Http.Error (List SubscriptionCursor))

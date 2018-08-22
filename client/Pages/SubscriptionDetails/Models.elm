@@ -13,6 +13,7 @@ initialModel =
     { id = emptyString
     , statsStore = Stores.SubscriptionStats.initialModel
     , cursorsStore = Stores.SubscriptionCursors.initialModel
+    , tab = StatsTab
     , editOffsetInput =
         { editPartition = Nothing
         , editPartitionValue = emptyString
@@ -32,6 +33,7 @@ type alias Model =
     { id : String
     , statsStore : Stores.SubscriptionStats.Model
     , cursorsStore : Stores.SubscriptionCursors.Model
+    , tab : Tabs
     , editOffsetInput :
         { editPartition : Maybe String
         , editPartitionValue : String
@@ -45,6 +47,11 @@ type alias Model =
         , error : Maybe ErrorMessage
         }
     }
+
+
+type Tabs
+    = StatsTab
+    | AuthTab
 
 
 type alias UrlParams =

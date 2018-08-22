@@ -9,6 +9,7 @@ import Constants
 import User.Commands exposing (logoutIfExpired)
 import Http
 import Helpers.Task exposing (dispatch)
+import Stores.EventTypeAuthorization exposing (Authorization)
 
 
 type alias Subscription =
@@ -19,6 +20,7 @@ type alias Subscription =
     , created_at : String
     , -- enum "begin", "end"
       read_from : String
+    , authorization : Maybe Authorization
     }
 
 
@@ -57,7 +59,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update message store =
     case message of
         FetchData ->
-            ( Store.onFetchStart initialModel, fetchNext startUrl)
+            ( Store.onFetchStart initialModel, fetchNext startUrl )
 
         FetchDone (Ok page) ->
             let
@@ -124,3 +126,4 @@ memberDecoder =
         |> optional "consumer_group" string "default"
         |> required "created_at" string
         |> optional "read_from" string "end"
+        |> optional "authorization" (nullable Stores.EventTypeAuthorization.collectionDecoder) Nothing

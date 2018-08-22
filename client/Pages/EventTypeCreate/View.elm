@@ -174,7 +174,7 @@ viewForm model setup =
             model.userStore.user.settings.usersInfoUrl
     in
         div [ class "dc-column form-create__form-container" ]
-            [ div [ class "" ]
+            [ div []
                 [ h4 [ class "dc-h4 dc--text-center" ] [ text formTitle ]
                 , textInput formModel
                     FieldName
@@ -446,7 +446,13 @@ selectInput formModel field inputLabel hint help isRequired isDisabled options =
 
 accessEditor : String -> String -> Model -> Html Msg
 accessEditor appsInfoUrl usersInfoUrl formModel =
-    AccessEditor.view appsInfoUrl usersInfoUrl AccessEditorMsg formModel.accessEditor
+    AccessEditor.view
+        { appsInfoUrl = appsInfoUrl
+        , usersInfoUrl = usersInfoUrl
+        , showWrite = True
+        }
+        AccessEditorMsg
+        formModel.accessEditor
 
 
 schemaEditor : Model -> Html Msg

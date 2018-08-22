@@ -3,7 +3,7 @@ module Helpers.AccessEditor exposing (..)
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (..)
-import Helpers.UI as UI exposing (mono, man, newline, link, bold)
+import Helpers.UI as UI exposing (mono, man, newline, link, bold, none)
 import Stores.EventTypeAuthorization exposing (..)
 import Constants exposing (emptyString)
 
@@ -35,6 +35,13 @@ type alias Model =
     }
 
 
+type alias Config =
+    { appsInfoUrl : String
+    , usersInfoUrl : String
+    , showWrite : Bool
+    }
+
+
 initialModel : Model
 initialModel =
     { key = "user"
@@ -42,7 +49,13 @@ initialModel =
     , read = False
     , write = False
     , admin = False
-    , authorization = []
+    , authorization =
+        [ { key = All
+          , data_type = "*"
+          , value = "*"
+          , permission = emptyPermission
+          }
+        ]
     }
 
 
@@ -218,8 +231,8 @@ changePermission key value accessType on authorization =
 ------------------------------ VIEW
 
 
-view : String -> String -> (Msg -> a) -> Model -> Html a
-view appsInfoUrl usersInfoUrl tagger model =
+view : Config -> (Msg -> a) -> Model -> Html a
+view config tagger model =
     Html.map tagger <|
         div [ class "access-editor" ]
             [ label [ class "dc-label" ]
@@ -229,14 +242,14 @@ view appsInfoUrl usersInfoUrl tagger model =
                 ]
             , hr [ class "dc-divider" ] []
             , div []
-                [ addRowControls model
-                , accessTable (row checkboxWrite appsInfoUrl usersInfoUrl) model.authorization
+                [ addRowControls config model
+                , accessTable config (row checkboxWrite) model.authorization
                 ]
             ]
 
 
-viewReadOnly : String -> String -> (Msg -> a) -> Authorization -> Html a
-viewReadOnly appsInfoUrl usersInfoUrl tagger auth =
+viewReadOnly : Config -> (Msg -> a) -> Authorization -> Html a
+viewReadOnly config tagger auth =
     Html.map tagger <|
         div [ class "access-editor" ]
             [ label [ class "dc-label" ]
@@ -245,12 +258,12 @@ viewReadOnly appsInfoUrl usersInfoUrl tagger auth =
                 , span [ class "dc-label__sub" ] [ text "required" ]
                 ]
             , hr [ class "dc-divider" ] []
-            , accessTable (row checkboxReadOnly appsInfoUrl usersInfoUrl) <| flatten auth
+            , accessTable config (row checkboxReadOnly) <| flatten auth
             ]
 
 
-addRowControls : Model -> Html Msg
-addRowControls model =
+addRowControls : Config -> Model -> Html Msg
+addRowControls config model =
     let
         recordId =
             { key = dataTypeToKey model.key, value = model.value }
@@ -337,7 +350,10 @@ addRowControls model =
                     ]
                     []
                 , permissionCheckbox Read
-                , permissionCheckbox Write
+                , if config.showWrite then
+                    permissionCheckbox Write
+                  else
+                    none
                 , permissionCheckbox Admin
                 , button
                     [ onClick Add
@@ -350,8 +366,8 @@ addRowControls model =
             ]
 
 
-accessTable : (AuthorizationAttribute -> Html Msg) -> List AuthorizationAttribute -> Html Msg
-accessTable renderer records =
+accessTable : Config -> (Config -> AuthorizationAttribute -> Html Msg) -> List AuthorizationAttribute -> Html Msg
+accessTable config renderer records =
     let
         only key record =
             record.key == key
@@ -361,7 +377,7 @@ accessTable renderer records =
                 rows =
                     records
                         |> List.filter (only key)
-                        |> List.map renderer
+                        |> List.map (renderer config)
             in
                 if rows |> List.isEmpty then
                     []
@@ -369,8 +385,14 @@ accessTable renderer records =
                     rows
                 else
                     (typeRow title) :: rows
+
+        header =
+            if config.showWrite then
+                [ "Name", "Read", "Write", "Admin" ]
+            else
+                [ "Name", "Read", "Admin" ]
     in
-        UI.grid [ "Name", "Read", "Write", "Admin" ]
+        UI.grid header
             (List.concat
                 [ renderSection All emptyString
                 , renderSection User "Users:"
@@ -389,8 +411,8 @@ typeRow name =
         ]
 
 
-row : (PermissionType -> AuthorizationAttribute -> Html Msg) -> String -> String -> AuthorizationAttribute -> Html Msg
-row checkboxView appsInfoUrl usersInfoUrl record =
+row : (PermissionType -> AuthorizationAttribute -> Html Msg) -> Config -> AuthorizationAttribute -> Html Msg
+row checkboxView config record =
     let
         name =
             case record.key of
@@ -401,15 +423,18 @@ row checkboxView appsInfoUrl usersInfoUrl record =
                     span [ class "access-editor_name" ] [ text ("Key:" ++ record.data_type ++ " Value:" ++ record.value) ]
 
                 Service ->
-                    span [ class "access-editor_name" ] [ UI.linkToApp appsInfoUrl record.value ]
+                    span [ class "access-editor_name" ] [ UI.linkToApp config.appsInfoUrl record.value ]
 
                 User ->
-                    span [ class "access-editor_name" ] [ UI.linkToApp usersInfoUrl record.value ]
+                    span [ class "access-editor_name" ] [ UI.linkToApp config.usersInfoUrl record.value ]
     in
         tr [ class "dc-table__tr" ]
             [ td [ class "dc-table__td access-editor_name-cell" ] [ name ]
             , checkboxView Read record
-            , checkboxView Write record
+            , if config.showWrite then
+                checkboxView Write record
+              else
+                none
             , checkboxView Admin record
             ]
 

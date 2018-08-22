@@ -6,6 +6,7 @@ import Dom
 import MultiSearch.Messages
 import Helpers.FileReader as FileReader
 import Stores.SubscriptionCursors
+import Helpers.AccessEditor as AccessEditor
 
 type Msg
     = OnInput Field String
@@ -22,3 +23,4 @@ type Msg
     | SubmitResponse (Result Http.Error String)
     | OutSubscriptionCreated String
     | CursorsStoreMsg Stores.SubscriptionCursors.Msg
+    | AccessEditorMsg AccessEditor.Msg

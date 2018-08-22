@@ -702,7 +702,13 @@ authTab appsInfoUrl usersInfoUrl eventType =
         Just authorization ->
             div [ class "dc-card auth-tab" ]
                 [ div [ class "auth-tab__content" ]
-                    [ AccessEditor.viewReadOnly appsInfoUrl usersInfoUrl (always Reload) authorization
+                    [ AccessEditor.viewReadOnly
+                        { appsInfoUrl = appsInfoUrl
+                        , usersInfoUrl = usersInfoUrl
+                        , showWrite = True
+                        }
+                        (always Reload)
+                        authorization
                     ]
                 ]
 

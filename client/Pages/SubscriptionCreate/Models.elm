@@ -6,7 +6,7 @@ import Stores.Subscription
 import Constants exposing (emptyString)
 import Dict
 import MultiSearch.Models
-
+import Helpers.AccessEditor as AccessEditor
 
 type Field
     = FieldConsumerGroup
@@ -14,7 +14,7 @@ type Field
     | FieldReadFrom
     | FieldEventTypes
     | FieldCursors
-
+    | FieldAccess
 
 type alias ValuesDict =
     Dict.Dict String String
@@ -33,6 +33,7 @@ type alias Model =
     , fileLoaderError : Maybe String
     , cursorsStore : Stores.SubscriptionCursors.Model
     , cloneId : Maybe String
+    , accessEditor : AccessEditor.Model
     }
 
 
@@ -46,6 +47,7 @@ initialModel =
     , fileLoaderError = Nothing
     , cursorsStore = Stores.SubscriptionCursors.initialModel
     , cloneId = Nothing
+    , accessEditor = AccessEditor.initialModel
     }
 
 
