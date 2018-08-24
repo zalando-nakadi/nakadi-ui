@@ -7,6 +7,14 @@ import Constants exposing (emptyString)
 import Dict
 import MultiSearch.Models
 import Helpers.AccessEditor as AccessEditor
+import Helpers.Forms exposing (..)
+
+
+type Operation
+    = Create
+    | Update String
+    | Clone String
+
 
 type Field
     = FieldConsumerGroup
@@ -16,37 +24,30 @@ type Field
     | FieldCursors
     | FieldAccess
 
-type alias ValuesDict =
-    Dict.Dict String String
-
-
-type alias ErrorsDict =
-    Dict.Dict String String
-
 
 type alias Model =
-    { values : ValuesDict
-    , validationErrors : ErrorsDict
-    , addEventTypeWidget : MultiSearch.Models.Model
-    , status : Status
-    , error : Maybe ErrorMessage
-    , fileLoaderError : Maybe String
-    , cursorsStore : Stores.SubscriptionCursors.Model
-    , cloneId : Maybe String
-    , accessEditor : AccessEditor.Model
-    }
+    FormModel
+        { addEventTypeWidget : MultiSearch.Models.Model
+        , status : Status
+        , error : Maybe ErrorMessage
+        , fileLoaderError : Maybe String
+        , cursorsStore : Stores.SubscriptionCursors.Model
+        , operation : Operation
+        , accessEditor : AccessEditor.Model
+        }
 
 
 initialModel : Model
 initialModel =
     { values = defaultValues
     , validationErrors = Dict.empty
+    , formId = "subscriptionCreateForm"
     , addEventTypeWidget = MultiSearch.Models.initialModel
     , status = Unknown
     , error = Nothing
     , fileLoaderError = Nothing
     , cursorsStore = Stores.SubscriptionCursors.initialModel
-    , cloneId = Nothing
+    , operation = Create
     , accessEditor = AccessEditor.initialModel
     }
 
@@ -86,49 +87,18 @@ defaultValues =
         |> toValuesDict
 
 
-copyValues : String -> Stores.Subscription.Subscription -> ValuesDict
-copyValues cursors subscription =
-    [ ( FieldConsumerGroup, "clone_of_" ++ subscription.consumer_group )
+copyValues : Stores.Subscription.Subscription -> ValuesDict
+copyValues subscription =
+    [ ( FieldConsumerGroup, subscription.consumer_group )
     , ( FieldOwningApplication, subscription.owning_application )
-    , ( FieldReadFrom, readFrom.cursors )
+    , ( FieldReadFrom, subscription.read_from )
     , ( FieldEventTypes, subscription.event_types |> String.join "\n" )
-    , ( FieldCursors, cursors )
     ]
         |> toValuesDict
 
 
-toValuesDict : List ( Field, String ) -> ValuesDict
-toValuesDict list =
-    list
-        |> List.map (\( field, value ) -> ( toString field, value ))
-        |> Dict.fromList
-
-
-getValue : Field -> ValuesDict -> String
-getValue field values =
-    Dict.get (toString field) values |> Maybe.withDefault emptyString
-
-
-setValue : Field -> String -> ValuesDict -> ValuesDict
-setValue field value values =
-    Dict.insert (toString field) value values
-
-
-maybeSetValue : Field -> Maybe String -> ValuesDict -> ValuesDict
-maybeSetValue field maybeValue values =
-    case maybeValue of
-        Just value ->
-            setValue field value values
-
-        Nothing ->
-            values
-
-
-maybeSetListValue : Field -> Maybe (List String) -> ValuesDict -> ValuesDict
-maybeSetListValue field maybeValue values =
-    case maybeValue of
-        Just value ->
-            setValue field (String.join ", " value) values
-
-        Nothing ->
-            values
+cloneValues : Stores.Subscription.Subscription -> ValuesDict
+cloneValues subscription =
+    copyValues subscription
+        |> setValue FieldConsumerGroup ("clone_of_" ++ subscription.consumer_group)
+        |> setValue FieldReadFrom readFrom.cursors

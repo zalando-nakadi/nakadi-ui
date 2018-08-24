@@ -5,11 +5,10 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
-import Helpers.UI exposing (helpIcon, PopupPosition(..), onSelect)
+import Helpers.UI exposing (helpIcon, PopupPosition(..), onSelect, none)
 import Pages.EventTypeDetails.Help as Help
 import Models exposing (AppModel)
 import Helpers.Panel
-import Dict
 import Helpers.Store exposing (Status(Loading))
 import Constants exposing (emptyString)
 import Helpers.Store as Store
@@ -27,16 +26,7 @@ import Stores.EventType
         )
 import Helpers.AccessEditor as AccessEditor
 import Config
-
-
-type Requirement
-    = Required
-    | Optional
-
-
-type Locking
-    = Disabled
-    | Enabled
+import Helpers.Forms exposing (..)
 
 
 view : AppModel -> Html Msg
@@ -178,6 +168,7 @@ viewForm model setup =
                 [ h4 [ class "dc-h4 dc--text-center" ] [ text formTitle ]
                 , textInput formModel
                     FieldName
+                    OnInput
                     "Event Type Name"
                     "Example: bazar.price-updater.price_changed"
                     "Should be several words (with '_', '-') separated by dot."
@@ -190,6 +181,7 @@ viewForm model setup =
                     )
                 , textInput formModel
                     FieldOwningApplication
+                    OnInput
                     "Owning Application"
                     "Example: stups_price-updater"
                     "App name registered in YourTurn with 'stups_' prefix"
@@ -198,6 +190,7 @@ viewForm model setup =
                     Enabled
                 , selectInput formModel
                     FieldCategory
+                    OnInput
                     "Category"
                     ""
                     Help.category
@@ -207,6 +200,7 @@ viewForm model setup =
                 , div [ class "dc-row form-create__input-row" ]
                     [ selectInput formModel
                         FieldPartitionStrategy
+                        OnInput
                         "Partition Strategy"
                         ""
                         Help.partitionStrategy
@@ -221,6 +215,7 @@ viewForm model setup =
                         [ (if (getValue FieldPartitionStrategy formModel.values) == partitionStrategies.hash then
                             textInput formModel
                                 FieldPartitionKeyFields
+                                OnInput
                                 "Partition Key Fields"
                                 "Example: order.user_id, order.item_id"
                                 "Comma-separated list of keys."
@@ -237,6 +232,7 @@ viewForm model setup =
                   else
                     selectInput formModel
                         FieldPartitionsNumber
+                        OnInput
                         "Number of Partitions"
                         ""
                         Help.defaultStatistic
@@ -245,6 +241,7 @@ viewForm model setup =
                         (List.range 1 Config.maxPartitionNumber |> List.map toString)
                 , textInput formModel
                     FieldOrderingKeyFields
+                    OnInput
                     "Ordering Key Fields"
                     "Example: order.day, order.index"
                     "Comma-separated list of keys."
@@ -253,6 +250,7 @@ viewForm model setup =
                     Enabled
                 , selectInput formModel
                     FieldAudience
+                    OnInput
                     "Audience"
                     ""
                     Help.audience
@@ -261,6 +259,7 @@ viewForm model setup =
                     ("" :: allAudiences)
                 , selectInput formModel
                     FieldCleanupPolicy
+                    OnInput
                     "Cleanup policy"
                     (if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.compact then
                         "Log compacted event types MUST NOT contain personal identifiable"
@@ -276,6 +275,7 @@ viewForm model setup =
                 , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.delete then
                     selectInput formModel
                         FieldRetentionTime
+                        OnInput
                         "Retention Time (Days)"
                         ""
                         Help.options
@@ -286,6 +286,7 @@ viewForm model setup =
                     none
                 , selectInput formModel
                     FieldCompatibilityMode
+                    OnInput
                     "Schema Compatibility Mode"
                     ""
                     Help.compatibilityMode
@@ -302,146 +303,8 @@ viewForm model setup =
                 [ class "dc-toast__content dc-toast__content--success" ]
                 [ text successMessage ]
                 |> Helpers.Panel.loadingStatus formModel
-            , buttonPanel formModel updateMode
+            , buttonPanel formTitle Submit Reset FieldName formModel
             ]
-
-
-baseId : String
-baseId =
-    "eventTypeCreateForm"
-
-
-inputId : Field -> String
-inputId field =
-    baseId ++ (toString field)
-
-
-getError : Field -> Model -> Maybe String
-getError field formModel =
-    formModel.validationErrors
-        |> Dict.get (toString field)
-
-
-validationMessage : Field -> Model -> Html Msg
-validationMessage field formModel =
-    case getError field formModel of
-        Just error ->
-            div [ class "dc--text-error" ] [ text " ", text error ]
-
-        Nothing ->
-            none
-
-
-validationClass : Field -> String -> Model -> Attribute Msg
-validationClass field base formModel =
-    case getError field formModel of
-        Just error ->
-            class (base ++ " dc-input--is-error dc-textarea--is-error dc-select--is-error")
-
-        Nothing ->
-            class base
-
-
-inputFrame :
-    Field
-    -> String
-    -> String
-    -> List (Html Msg)
-    -> Requirement
-    -> Model
-    -> Html Msg
-    -> Html Msg
-inputFrame field inputLabel hint help isRequired formModel input =
-    let
-        fieldClass =
-            "form-create__input-block form-create__field-"
-                ++ (field |> toString |> String.toLower)
-
-        requiredMark =
-            case isRequired of
-                Required ->
-                    span [ class "dc-label__sub" ] [ text "required" ]
-
-                Optional ->
-                    none
-    in
-        div
-            [ class fieldClass ]
-            [ label [ class "dc-label" ]
-                [ text inputLabel
-                , helpIcon inputLabel help BottomRight
-                , requiredMark
-                ]
-            , input
-            , validationMessage field formModel
-            , p [ class "dc--text-less-important" ] [ text hint ]
-            ]
-
-
-textInput :
-    Model
-    -> Field
-    -> String
-    -> String
-    -> String
-    -> List (Html Msg)
-    -> Requirement
-    -> Locking
-    -> Html Msg
-textInput formModel field inputLabel inputPlaceholder hint help isRequired isDisabled =
-    inputFrame field inputLabel hint help isRequired formModel <|
-        input
-            [ onInput (OnInput field)
-            , value (getValue field formModel.values)
-            , type_ "text"
-            , validationClass field "dc-input" formModel
-            , id (inputId field)
-            , placeholder inputPlaceholder
-            , tabindex 1
-            , disabled (isDisabled == Disabled)
-            ]
-            []
-
-
-selectInput :
-    Model
-    -> Field
-    -> String
-    -> String
-    -> List (Html Msg)
-    -> Requirement
-    -> Locking
-    -> List String
-    -> Html Msg
-selectInput formModel field inputLabel hint help isRequired isDisabled options =
-    let
-        selectedValue =
-            (getValue field formModel.values)
-
-        isDisabledOrOne =
-            if (List.length options) <= 1 then
-                True
-            else
-                (isDisabled == Disabled)
-    in
-        inputFrame field inputLabel hint help isRequired formModel <|
-            select
-                [ onSelect (OnInput field)
-                , validationClass field "dc-select" formModel
-                , id (inputId field)
-                , tabindex 1
-                , disabled isDisabledOrOne
-                ]
-                (options
-                    |> List.map
-                        (\optionName ->
-                            option
-                                [ selected (selectedValue == optionName)
-                                , value optionName
-                                ]
-                                [ text optionName ]
-                        )
-                )
 
 
 accessEditor : String -> String -> Model -> Html Msg
@@ -474,39 +337,9 @@ schemaEditor formModel =
             , textarea
                 [ onInput (OnInput FieldSchema)
                 , value (getValue FieldSchema formModel.values)
-                , id (inputId FieldSchema)
+                , id (inputId formModel.formId FieldSchema)
                 , validationClass FieldSchema "dc-textarea" formModel
                 , tabindex 2
                 ]
                 []
             ]
-
-
-buttonPanel : Model -> Bool -> Html Msg
-buttonPanel model updateMode =
-    let
-        ( submitLabel, action ) =
-            if updateMode then
-                ( "Update Event Type", SubmitUpdate )
-            else
-                ( "Create Event Type", SubmitCreate )
-
-        submitBtn =
-            if
-                not (String.isEmpty (getValue FieldName model.values))
-                    && Dict.isEmpty model.validationErrors
-                    && (model.status /= Loading)
-            then
-                button [ onClick action, class "dc-btn dc-btn--primary", tabindex 3 ] [ text submitLabel ]
-            else
-                button [ disabled True, class "dc-btn dc-btn--disabled" ] [ text submitLabel ]
-    in
-        div []
-            [ submitBtn
-            , button [ onClick Reset, class "dc-btn panel--right-float", tabindex 4 ] [ text "Reset" ]
-            ]
-
-
-none : Html Msg
-none =
-    text emptyString

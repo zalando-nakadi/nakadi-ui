@@ -14,6 +14,7 @@ import Stores.EventType
 import Stores.Partition
 import Helpers.Store exposing (Status(Unknown), ErrorMessage)
 import Helpers.AccessEditor as AccessEditor
+import Helpers.Forms exposing (..)
 import Constants exposing (emptyString)
 import Dict
 
@@ -40,30 +41,21 @@ type Field
     | FieldCleanupPolicy
 
 
-type alias ValuesDict =
-    Dict.Dict String String
-
-
-type alias ErrorsDict =
-    Dict.Dict String String
-
-
 type alias Model =
-    { operation : Operation
-    , values : ValuesDict
-    , validationErrors : ErrorsDict
-    , status : Status
-    , error : Maybe ErrorMessage
-    , accessEditor : AccessEditor.Model
-    , partitionsStore : Stores.Partition.Model
-    }
+    FormModel
+        { operation : Operation
+        , error : Maybe ErrorMessage
+        , accessEditor : AccessEditor.Model
+        , partitionsStore : Stores.Partition.Model
+        }
 
 
 initialModel : Model
 initialModel =
     { operation = Create
-    , values = Dict.fromList defaultValues
+    , values = defaultValues
     , validationErrors = Dict.empty
+    , formId = "eventTypeCreateForm"
     , status = Unknown
     , error = Nothing
     , accessEditor = AccessEditor.initialModel
@@ -81,7 +73,7 @@ defaultApplication =
     "stups_nakadi-ui-elm"
 
 
-defaultValues : List ( String, String )
+defaultValues : ValuesDict
 defaultValues =
     [ ( FieldName, emptyString )
     , ( FieldOwningApplication, defaultApplication )
@@ -96,7 +88,7 @@ defaultValues =
     , ( FieldAudience, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
     ]
-        |> List.map (\( field, value ) -> ( toString field, value ))
+        |> toValuesDict
 
 
 loadValues : EventType -> ValuesDict
@@ -115,7 +107,6 @@ loadValues eventType =
                 |> toString
     in
         defaultValues
-            |> Dict.fromList
             |> setValue FieldName eventType.name
             |> maybeSetValue FieldOwningApplication eventType.owning_application
             |> setValue FieldCategory eventType.category
@@ -164,33 +155,3 @@ defaultSchema =
     }
 }
 """
-
-
-getValue : Field -> ValuesDict -> String
-getValue field values =
-    Dict.get (toString field) values |> Maybe.withDefault emptyString
-
-
-setValue : Field -> String -> ValuesDict -> ValuesDict
-setValue field value values =
-    Dict.insert (toString field) value values
-
-
-maybeSetValue : Field -> Maybe String -> ValuesDict -> ValuesDict
-maybeSetValue field maybeValue values =
-    case maybeValue of
-        Just value ->
-            setValue field value values
-
-        Nothing ->
-            values
-
-
-maybeSetListValue : Field -> Maybe (List String) -> ValuesDict -> ValuesDict
-maybeSetListValue field maybeValue values =
-    case maybeValue of
-        Just value ->
-            setValue field (String.join ", " value) values
-
-        Nothing ->
-            values

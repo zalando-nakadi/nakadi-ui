@@ -18,6 +18,7 @@ import Stores.EventType exposing (categories, partitionStrategies)
 import Stores.Partition
 import Dom
 import Task
+import Helpers.Forms exposing (..)
 
 
 update : Msg -> Model -> Stores.EventType.Model -> ( Model, Cmd Msg )
@@ -57,11 +58,16 @@ update message model eventTypeStore =
         Validate ->
             ( validate model eventTypeStore, Cmd.none )
 
-        SubmitCreate ->
-            ( Store.onFetchStart model, submitCreate model )
+        Submit ->
+            case model.operation of
+                Create ->
+                    ( Store.onFetchStart model, submitCreate model )
 
-        SubmitUpdate ->
-            ( Store.onFetchStart model, submitUpdate model )
+                Clone name ->
+                    ( Store.onFetchStart model, submitCreate model )
+
+                Update name ->
+                    ( Store.onFetchStart model, submitUpdate model )
 
         Reset ->
             let

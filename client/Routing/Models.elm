@@ -25,6 +25,7 @@ type Route
     | SubscriptionListRoute SubscriptionList.UrlQuery
     | SubscriptionDetailsRoute SubscriptionDetails.UrlParams
     | SubscriptionCreateRoute
+    | SubscriptionUpdateRoute SubscriptionDetails.UrlParams
     | SubscriptionCloneRoute SubscriptionDetails.UrlParams
     | NotFoundRoute
 
@@ -77,6 +78,10 @@ routingConfig =
       , \( params, query ) ->
             SubscriptionDetailsRoute (SubscriptionDetails.dictToParams params)
       )
+    , ( "subscriptions/:id/update"
+      , \( params, query ) ->
+            SubscriptionUpdateRoute (SubscriptionDetails.dictToParams params)
+      )
     , ( "createsubscription"
       , \( params, query ) ->
             SubscriptionCreateRoute
@@ -124,6 +129,9 @@ routeToUrl route =
         SubscriptionCreateRoute ->
             "#createsubscription"
 
+        SubscriptionUpdateRoute params ->
+            "#subscriptions/" ++ (Http.encodeUri params.id) ++ "/update"
+
         SubscriptionCloneRoute params ->
             "#subscriptions/" ++ (Http.encodeUri params.id) ++ "/clone"
 
@@ -169,6 +177,9 @@ routeToTitle route =
 
             SubscriptionCreateRoute ->
                 " - Create Subscription"
+
+            SubscriptionUpdateRoute params ->
+                " - Update Subscription - " ++ params.id
 
             SubscriptionCloneRoute params ->
                 " - Clone Subscription - " ++ params.id

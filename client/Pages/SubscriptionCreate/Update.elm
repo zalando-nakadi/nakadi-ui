@@ -23,7 +23,8 @@ import MultiSearch.Models exposing (SearchItem(SearchItemEventType), Config)
 import List.Extra
 import Helpers.FileReader as FileReader
 import Helpers.AccessEditor as AccessEditor
-import Stores.EventTypeAuthorization
+import Stores.EventTypeAuthorization exposing (Authorization, emptyEventTypeAuthorization)
+import Helpers.Forms exposing (..)
 
 
 searchConfig : Stores.EventType.Model -> Config
@@ -51,23 +52,54 @@ update message model eventTypeStore subscriptionStore =
         Validate ->
             ( validate model eventTypeStore, Cmd.none )
 
-        SubmitCreate ->
-            ( Store.onFetchStart model, submitCreate model )
+        Submit ->
+            case model.operation of
+                Create ->
+                    ( Store.onFetchStart model, model |> formToRequestBody |> post )
+
+                Clone id ->
+                    ( Store.onFetchStart model, model |> formToRequestBody |> post )
+
+                Update id ->
+                    ( Store.onFetchStart model, model |> formToRequestBody |> put id )
 
         Reset ->
             let
-                newModel =
-                    case model.cloneId of
-                        Nothing ->
-                            initialModel
+                focus =
+                    (Dom.focus "subscriptionCreateFormFieldConsumerGroup"
+                        |> Task.attempt FocusResult
+                    )
 
-                        Just id ->
-                            cloneSubscription subscriptionStore id model
+                authorization maybeId =
+                    authorizationFromSubscription maybeId subscriptionStore
+
+                setAuthEditorCmd maybeId =
+                    dispatch (AccessEditorMsg (AccessEditor.Set (authorization maybeId)))
+
+                loadCursorsCmd id =
+                    dispatch (CursorsStoreMsg (((Store.SetParams [ ( Constants.id, id ) ]))))
+
+                ( newModel, cmds ) =
+                    case model.operation of
+                        Create ->
+                            ( initialModel
+                            , [ focus, setAuthEditorCmd Nothing ]
+                            )
+
+                        Update id ->
+                            ( updateSubscription subscriptionStore id model
+                            , [ setAuthEditorCmd (Just id) ]
+                            )
+
+                        Clone id ->
+                            ( cloneSubscription subscriptionStore id model
+                            , [ focus
+                              , setAuthEditorCmd (Just id)
+                              , loadCursorsCmd id
+                              ]
+                            )
             in
-                ( newModel
-                , Dom.focus "subscriptionCreateFormFieldConsumerGroup"
-                    |> Task.attempt FocusResult
-                )
+                ( newModel, Cmd.batch cmds )
 
         FocusResult result ->
             ( model, Cmd.none )
@@ -152,17 +184,8 @@ update message model eventTypeStore subscriptionStore =
             in
                 ( { model | accessEditor = newSubModel }, Cmd.map AccessEditorMsg newSubMsg )
 
-        OnRouteChange maybeId ->
-            let
-                cmd =
-                    case maybeId of
-                        Nothing ->
-                            dispatch Reset
-
-                        Just id ->
-                            dispatch (CursorsStoreMsg (((Store.SetParams [ ( Constants.id, id ) ]))))
-            in
-                ( { model | cloneId = maybeId }, cmd )
+        OnRouteChange operation ->
+            ( { model | operation = operation }, dispatch Reset )
 
         OutSubscriptionCreated name ->
             ( model, Cmd.none )
@@ -172,12 +195,22 @@ update message model eventTypeStore subscriptionStore =
                 ( subModel, msCmd ) =
                     Stores.SubscriptionCursors.update subMsg model.cursorsStore
 
-                cmd =
-                    dispatch Reset
-                        |> Store.cmdIfDone subMsg
+                cursors =
+                    subModel
+                        |> Store.items
+                        |> List.map Stores.Cursor.subscriptionCursorEncoder
+                        |> Json.list
+                        |> Json.encode 1
+
+                values =
+                    if subModel.status == Store.Loaded then
+                        model.values
+                            |> setValue FieldCursors cursors
+                    else
+                        model.values
             in
-                ( { model | cursorsStore = subModel }
-                , Cmd.batch [ Cmd.map CursorsStoreMsg msCmd, cmd ]
+                ( { model | cursorsStore = subModel, values = values }
+                , Cmd.map CursorsStoreMsg msCmd
                 )
 
 
@@ -267,8 +300,8 @@ checkCursors model dict =
             dict
 
 
-submitCreate : Model -> Cmd Msg
-submitCreate model =
+formToRequestBody : Model -> Json.Value
+formToRequestBody model =
     let
         eventTypes =
             model.values
@@ -319,11 +352,8 @@ submitCreate model =
                 []
             else
                 [ ( "consumer_group", Json.string consumerGroupValue ) ]
-
-        body =
-            Json.object (List.concat [ consumerGroup, fields, enrichment ])
     in
-        post body
+        Json.object (List.concat [ consumerGroup, fields, enrichment ])
 
 
 post : Json.Value -> Cmd Msg
@@ -334,6 +364,20 @@ post body =
         , url = Config.urlNakadiApi ++ "subscriptions"
         , body = Http.jsonBody body
         , expect = Http.expectJson (Json.Decode.field "id" Json.Decode.string)
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> Http.send SubmitResponse
+
+
+put : String -> Json.Value -> Cmd Msg
+put id body =
+    Http.request
+        { method = "PUT"
+        , headers = []
+        , url = Config.urlNakadiApi ++ "subscriptions/" ++ id
+        , body = Http.jsonBody body
+        , expect = Http.expectStringResponse (\response -> Ok id)
         , timeout = Nothing
         , withCredentials = False
         }
@@ -373,25 +417,43 @@ searchEvenType eventTypeStore filter =
             results
 
 
+updateSubscription : Stores.Subscription.Model -> String -> Model -> Model
+updateSubscription subscriptionStore id model =
+    let
+        maybeSubscription =
+            Store.get id subscriptionStore
+
+        values =
+            case maybeSubscription of
+                Just subscription ->
+                    copyValues subscription
+
+                Nothing ->
+                    initialModel.values
+    in
+        { initialModel | values = values, cursorsStore = model.cursorsStore, operation = model.operation }
+
+
 cloneSubscription : Stores.Subscription.Model -> String -> Model -> Model
 cloneSubscription subscriptionStore id model =
     let
         maybeSubscription =
             Store.get id subscriptionStore
 
-        cursors =
-            model.cursorsStore
-                |> Store.items
-                |> List.map Stores.Cursor.subscriptionCursorEncoder
-                |> Json.list
-                |> Json.encode 1
-
         values =
             case maybeSubscription of
                 Just subscription ->
-                    copyValues cursors subscription
+                    cloneValues subscription
 
                 Nothing ->
                     initialModel.values
     in
-        { initialModel | values = values, cursorsStore = model.cursorsStore, cloneId = model.cloneId }
+        { initialModel | values = values, cursorsStore = model.cursorsStore, operation = model.operation }
+
+
+authorizationFromSubscription : Maybe String -> Stores.Subscription.Model -> Authorization
+authorizationFromSubscription maybeId subscriptionsStore =
+    maybeId
+        |> Maybe.andThen (\id -> Store.get id subscriptionsStore)
+        |> Maybe.andThen .authorization
+        |> Maybe.withDefault emptyEventTypeAuthorization

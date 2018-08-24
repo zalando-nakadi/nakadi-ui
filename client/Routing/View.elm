@@ -58,6 +58,10 @@ view model =
             Html.map SubscriptionCreateMsg <|
                 Pages.SubscriptionCreate.View.view model
 
+        SubscriptionUpdateRoute param ->
+            Html.map SubscriptionCreateMsg <|
+                Pages.SubscriptionCreate.View.view model
+
         SubscriptionCloneRoute param ->
             Html.map SubscriptionCreateMsg <|
                 Pages.SubscriptionCreate.View.view model

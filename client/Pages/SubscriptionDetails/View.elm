@@ -102,6 +102,14 @@ detailsLayout id subscription model =
                         ]
                     , span [ class "toolbar" ]
                         [ a
+                            [ title "Update Subscription"
+                            , class "icon-link dc-icon dc-icon--interactive"
+                            , href <|
+                                routeToUrl <|
+                                    SubscriptionUpdateRoute { id = subscription.id }
+                            ]
+                            [ i [ class "far fa-edit" ] [] ]
+                        , a
                             [ title "Clone Subscription"
                             , class "icon-link dc-icon dc-icon--interactive"
                             , href <|
