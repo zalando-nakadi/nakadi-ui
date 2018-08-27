@@ -67,7 +67,7 @@
     "style-loader": "^0.18.2",
     "supertest": "^3.0.0",
     "url-loader": "^0.5.9",
-    "webdriverio": "^4.8.0",
+    "webdriverio": "^4.13.2",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.0"

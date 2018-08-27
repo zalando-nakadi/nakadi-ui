@@ -116,7 +116,8 @@ app.post('/subscriptions', (req, res) => {
         'consumer_group': 'test-group',
         'owning_application': 'stups_nakadi-ui-elm',
         'read_from': 'end',
-        'event_types': ['aruha.test-event.ver_5']
+        'event_types': ['aruha.test-event.ver_5'],
+        'authorization': {'readers': [], 'writers': [], 'admins': []}
     };
 
     const response = {
