@@ -12,7 +12,7 @@ import Regex
 import Json.Decode
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
 import Helpers.AccessEditor as AccessEditor
-import Stores.EventTypeAuthorization exposing (Authorization, emptyEventTypeAuthorization)
+import Stores.Authorization exposing (Authorization, emptyAuthorization)
 import Constants exposing (emptyString)
 import Stores.EventType exposing (categories, partitionStrategies)
 import Stores.Partition
@@ -181,7 +181,7 @@ authorizationFromEventType maybeName eventTypeStore =
     maybeName
         |> Maybe.andThen (\name -> Store.get name eventTypeStore)
         |> Maybe.andThen .authorization
-        |> Maybe.withDefault emptyEventTypeAuthorization
+        |> Maybe.withDefault emptyAuthorization
 
 
 validate : Model -> Stores.EventType.Model -> Model
@@ -314,7 +314,7 @@ submitCreate model =
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
-                |> Stores.EventTypeAuthorization.encoder
+                |> Stores.Authorization.encoder
 
         fields =
             [ ( "name", asString FieldName )
@@ -400,7 +400,7 @@ submitUpdate model =
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
-                |> Stores.EventTypeAuthorization.encoder
+                |> Stores.Authorization.encoder
 
         fields =
             [ ( "name", asString FieldName )

@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (..)
 import Helpers.UI as UI exposing (mono, man, newline, link, bold, none)
-import Stores.EventTypeAuthorization exposing (..)
+import Stores.Authorization exposing (..)
 import Constants exposing (emptyString)
 
 

@@ -9,7 +9,7 @@ import Constants
 import User.Commands exposing (logoutIfExpired)
 import Http
 import Helpers.Task exposing (dispatch)
-import Stores.EventTypeAuthorization exposing (Authorization)
+import Stores.Authorization exposing (Authorization)
 
 
 type alias Subscription =
@@ -126,4 +126,4 @@ memberDecoder =
         |> optional "consumer_group" string "default"
         |> required "created_at" string
         |> optional "read_from" string "end"
-        |> optional "authorization" (nullable Stores.EventTypeAuthorization.collectionDecoder) Nothing
+        |> optional "authorization" (nullable Stores.Authorization.collectionDecoder) Nothing

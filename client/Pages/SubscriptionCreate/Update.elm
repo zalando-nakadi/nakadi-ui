@@ -23,7 +23,7 @@ import MultiSearch.Models exposing (SearchItem(SearchItemEventType), Config)
 import List.Extra
 import Helpers.FileReader as FileReader
 import Helpers.AccessEditor as AccessEditor
-import Stores.EventTypeAuthorization exposing (Authorization, emptyEventTypeAuthorization)
+import Stores.Authorization exposing (Authorization, emptyAuthorization)
 import Helpers.Forms exposing (..)
 
 
@@ -326,7 +326,7 @@ formToRequestBody model =
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
-                |> Stores.EventTypeAuthorization.encoder
+                |> Stores.Authorization.encoder
 
         fields =
             [ ( "owning_application", asString FieldOwningApplication )
@@ -456,4 +456,4 @@ authorizationFromSubscription maybeId subscriptionsStore =
     maybeId
         |> Maybe.andThen (\id -> Store.get id subscriptionsStore)
         |> Maybe.andThen .authorization
-        |> Maybe.withDefault emptyEventTypeAuthorization
+        |> Maybe.withDefault emptyAuthorization

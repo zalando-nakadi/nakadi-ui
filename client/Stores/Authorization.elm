@@ -1,4 +1,4 @@
-module Stores.EventTypeAuthorization exposing (..)
+module Stores.Authorization exposing (..)
 
 import Json.Decode exposing (string, Decoder, field, list, succeed)
 import Json.Decode.Pipeline exposing (decode, required, optional, resolve)
@@ -72,8 +72,8 @@ type alias Authorization =
     }
 
 
-emptyEventTypeAuthorization : Authorization
-emptyEventTypeAuthorization =
+emptyAuthorization : Authorization
+emptyAuthorization =
     { readers = []
     , writers = []
     , admins = []
