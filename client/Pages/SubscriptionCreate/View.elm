@@ -201,6 +201,7 @@ accessEditor appsInfoUrl usersInfoUrl formModel =
         { appsInfoUrl = appsInfoUrl
         , usersInfoUrl = usersInfoUrl
         , showWrite = False
+        , help = Help.authorization
         }
         AccessEditorMsg
         formModel.accessEditor

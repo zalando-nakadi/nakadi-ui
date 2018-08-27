@@ -707,6 +707,7 @@ authTab appsInfoUrl usersInfoUrl eventType =
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
                         , showWrite = True
+                        , help = Help.authorization
                         }
                         (always Reload)
                         authorization

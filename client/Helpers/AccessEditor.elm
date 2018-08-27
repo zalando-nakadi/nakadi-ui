@@ -39,6 +39,7 @@ type alias Config =
     { appsInfoUrl : String
     , usersInfoUrl : String
     , showWrite : Bool
+    , help: List (Html Msg)
     }
 
 
@@ -237,7 +238,7 @@ view config tagger model =
         div [ class "access-editor" ]
             [ label [ class "dc-label" ]
                 [ text "Access control"
-                , UI.helpIcon "Access control" help UI.BottomRight
+                , UI.helpIcon "Access control" config.help UI.BottomRight
                 , span [ class "dc-label__sub" ] [ text "required" ]
                 ]
             , hr [ class "dc-divider" ] []
@@ -254,7 +255,7 @@ viewReadOnly config tagger auth =
         div [ class "access-editor" ]
             [ label [ class "dc-label" ]
                 [ text "Access control"
-                , UI.helpIcon "Access control" help UI.BottomRight
+                , UI.helpIcon "Access control" config.help UI.BottomRight
                 , span [ class "dc-label__sub" ] [ text "required" ]
                 ]
             , hr [ class "dc-divider" ] []
@@ -497,42 +498,3 @@ hasPermission permissionType record =
             record.permission.admin
 
 
-help : List (Html Msg)
-help =
-    [ text " Authorization section for an event type. This section defines three access control lists:"
-    , newline
-    , mono "writers"
-    , text " - for producing events "
-    , newline
-    , text "An array of subject attributes that are required for writing events to the event type. Any one of the "
-    , text "attributes defined in this array is sufficient to be authorized."
-    , newline
-    , newline
-    , mono "readers"
-    , text " - for consuming events"
-    , newline
-    , text "An array of subject attributes that are required for reading events from the event type. Any one of the "
-    , text "attributes defined in this array is sufficient to be authorized. The wildcard item takes precedence over "
-    , text "all others, i.e., if it is present, all users are authorized."
-    , newline
-    , newline
-    , mono "admins"
-    , text " - for administering an event type"
-    , newline
-    , text "An array of subject attributes that are required for updating the event type. Any one of the attributes "
-    , text "defined in this array is sufficient to be authorized. The wildcard item takes precedence over all others, "
-    , text "i.e. if it is present, all users are authorized."
-    , newline
-    , newline
-    , text "An attribute for authorization. This object includes a data type, which represents the type of the attribute "
-    , text "attribute (which data types are allowed depends on which authorization plugin is deployed, and how it is "
-    , text "configured), and a value. A wildcard can be represented with data type '*', and value '*'. It means that all "
-    , text "authenticated users are allowed to perform an operation."
-    , newline
-    , newline
-    , bold "Key: "
-    , mono "authorization"
-    , bold "optional"
-    , newline
-    , man "#using_authorization"
-    ]

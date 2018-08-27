@@ -450,6 +450,7 @@ authTab appsInfoUrl usersInfoUrl subscription =
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
                         , showWrite = False
+                        , help = Help.authorization
                         }
                         (always Refresh)
                         authorization
@@ -461,7 +462,7 @@ noAuthMessage : Subscription -> Html Msg
 noAuthMessage subscription =
     let
         updateLink =
-            link (SubscriptionUpdateRoute { id = subscription.id } ) "update subscription"
+            link (SubscriptionUpdateRoute { id = subscription.id }) "update subscription"
     in
         if subscription.authorization == Nothing then
             warningMessage

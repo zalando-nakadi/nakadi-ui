@@ -187,3 +187,34 @@ subscriptionStats =
     , newline
     , spec "#/subscriptions/subscription_id/stats_get"
     ]
+
+
+authorization : List (Html msg)
+authorization =
+    [ text "Authorization section of a Subscription."
+    , text " This section defines two access control lists: one for consuming events and committing cursors (‘readers’),"
+    , text " and one for administering a subscription (‘admins’). Regardless of the values of the authorization"
+    , text " properties, administrator accounts will always be authorized."
+    , newline
+    , newline
+    , mono "readers"
+    , text " - for consuming events"
+    , newline
+    , text "An array of subject attributes that are required for reading events and committing cursors to this subscription."
+    , newline
+    , newline
+    , mono "admins"
+    , text " - for administering a subscription"
+    , newline
+    , text "An array of subject attributes that are required for delete/update the subscription."
+    , newline
+    , newline
+    , man "#definition_SubscriptionAuthorization"
+    , newline
+    , newline
+    , bold "Key: "
+    , mono "authorization"
+    , bold "optional"
+    , newline
+    , man "#using_authorization"
+    ]
