@@ -680,6 +680,7 @@ renderSubscription name appsInfoUrl item =
                 item.id
                 (SubscriptionDetailsRoute
                     { id = item.id }
+                    { tab = Nothing }
                 )
             ]
         , td [ class "dc-table__td" ] [ text item.consumer_group ]

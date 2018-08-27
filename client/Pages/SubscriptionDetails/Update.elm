@@ -1,7 +1,7 @@
 module Pages.SubscriptionDetails.Update exposing (..)
 
 import Pages.SubscriptionDetails.Messages exposing (Msg(..))
-import Pages.SubscriptionDetails.Models exposing (Model, initialModel)
+import Pages.SubscriptionDetails.Models exposing (Model, initialModel, Tabs(..))
 import Stores.SubscriptionStats exposing (fetchStats, config)
 import Helpers.Store as Store exposing (onFetchStart, onFetchOk, onFetchErr, loadStore)
 import Stores.SubscriptionStats exposing (fetchStats)
@@ -216,14 +216,21 @@ update message model =
 modelToRoute : Model -> Route
 modelToRoute model =
     SubscriptionDetailsRoute { id = model.id }
+        { tab =
+            if model.tab == StatsTab then
+                Nothing
+            else
+                Just model.tab
+        }
 
 
 routeToModel : Route -> Model -> Model
 routeToModel route model =
     case route of
-        SubscriptionDetailsRoute params ->
+        SubscriptionDetailsRoute params query ->
             { model
                 | id = params.id
+                , tab = query.tab |> Maybe.withDefault initialModel.tab
             }
 
         _ ->

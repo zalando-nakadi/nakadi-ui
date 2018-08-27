@@ -108,7 +108,7 @@ isInactivePageMsg message route =
 
         SubscriptionDetailsMsg _ ->
             case route of
-                SubscriptionDetailsRoute _ ->
+                SubscriptionDetailsRoute _ _ ->
                     False
 
                 _ ->
@@ -300,7 +300,7 @@ interComponentMessaging message ( model, cmd ) =
                             SubscriptionCloneRoute params ->
                                 [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.Reset) ]
 
-                            SubscriptionDetailsRoute params ->
+                            SubscriptionDetailsRoute params query->
                                 [ SubscriptionDetailsMsg SubscriptionDetailsPageMessages.Refresh ]
 
                             _ ->
@@ -387,7 +387,7 @@ interComponentMessaging message ( model, cmd ) =
                 case subMsg of
                     SubscriptionListPageMessages.SelectSubscription id ->
                         urlRedirect <|
-                            SubscriptionDetailsRoute { id = id }
+                            SubscriptionDetailsRoute { id = id } { tab = Nothing }
 
                     SubscriptionListPageMessages.Refresh ->
                         send [ SubscriptionStoreMsg Stores.Subscription.FetchData ]
@@ -406,7 +406,7 @@ interComponentMessaging message ( model, cmd ) =
                     Pages.SubscriptionCreate.Messages.OutSubscriptionCreated id ->
                         let
                             route =
-                                SubscriptionDetailsRoute { id = id }
+                                SubscriptionDetailsRoute { id = id } { tab = Nothing }
                         in
                             redirectAndSend route [ SubscriptionStoreMsg Stores.Subscription.FetchData ]
 
@@ -449,7 +449,7 @@ interComponentMessaging message ( model, cmd ) =
                     SubscriptionListRoute query ->
                         send [ SubscriptionListMsg (SubscriptionListPageMessages.OnRouteChange model.newRoute) ]
 
-                    SubscriptionDetailsRoute query ->
+                    SubscriptionDetailsRoute param query ->
                         send [ SubscriptionDetailsMsg (SubscriptionDetailsPageMessages.OnRouteChange model.newRoute) ]
 
                     SubscriptionCreateRoute ->

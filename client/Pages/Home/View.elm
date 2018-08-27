@@ -141,6 +141,7 @@ starredSubscriptions model =
                 , UI.internalLink subscriptionId
                     (SubscriptionDetailsRoute
                         { id = subscriptionId }
+                        { tab = Nothing }
                     )
                 ]
 
@@ -192,7 +193,7 @@ lastUpdatedSubscriptions model =
         |> List.map
             (\subscription ->
                 li [ class "dc-list__item" ]
-                    [ UI.internalLink subscription.id (SubscriptionDetailsRoute { id = subscription.id })
+                    [ UI.internalLink subscription.id (SubscriptionDetailsRoute { id = subscription.id } { tab = Nothing })
                     , span [ class "panel--right-float", title subscription.created_at ]
                         [ text (formatDateTime subscription.created_at) ]
                     ]

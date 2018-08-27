@@ -50,7 +50,7 @@ view model =
             Html.map SubscriptionListMsg <|
                 Pages.SubscriptionList.View.view model
 
-        SubscriptionDetailsRoute param ->
+        SubscriptionDetailsRoute param query->
             Html.map SubscriptionDetailsMsg <|
                 Pages.SubscriptionDetails.View.view model
 

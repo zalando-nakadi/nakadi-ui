@@ -23,7 +23,7 @@ type Route
     | EventTypeCloneRoute EventTypeDetails.UrlParams
     | PartitionRoute Partition.UrlParams Partition.UrlQuery
     | SubscriptionListRoute SubscriptionList.UrlQuery
-    | SubscriptionDetailsRoute SubscriptionDetails.UrlParams
+    | SubscriptionDetailsRoute SubscriptionDetails.UrlParams SubscriptionDetails.UrlQuery
     | SubscriptionCreateRoute
     | SubscriptionUpdateRoute SubscriptionDetails.UrlParams
     | SubscriptionCloneRoute SubscriptionDetails.UrlParams
@@ -76,7 +76,7 @@ routingConfig =
       )
     , ( "subscriptions/:id"
       , \( params, query ) ->
-            SubscriptionDetailsRoute (SubscriptionDetails.dictToParams params)
+            SubscriptionDetailsRoute (SubscriptionDetails.dictToParams params) (SubscriptionDetails.dictToQuery query)
       )
     , ( "subscriptions/:id/update"
       , \( params, query ) ->
@@ -123,8 +123,8 @@ routeToUrl route =
         SubscriptionListRoute query ->
             "#subscriptions" ++ SubscriptionList.queryToUrl query
 
-        SubscriptionDetailsRoute params ->
-            "#subscriptions/" ++ (Http.encodeUri params.id)
+        SubscriptionDetailsRoute params query ->
+            "#subscriptions/" ++ (Http.encodeUri params.id) ++ SubscriptionDetails.queryToUrl query
 
         SubscriptionCreateRoute ->
             "#createsubscription"
@@ -172,7 +172,7 @@ routeToTitle route =
             SubscriptionListRoute query ->
                 " - Subscriptions"
 
-            SubscriptionDetailsRoute params ->
+            SubscriptionDetailsRoute params query ->
                 " - Subscription - " ++ params.id
 
             SubscriptionCreateRoute ->

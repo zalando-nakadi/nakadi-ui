@@ -461,7 +461,7 @@ noAuthMessage : Subscription -> Html Msg
 noAuthMessage subscription =
     let
         updateLink =
-            link (SubscriptionCloneRoute { id = subscription.id }) "update subscription"
+            link (SubscriptionUpdateRoute { id = subscription.id } ) "update subscription"
     in
         if subscription.authorization == Nothing then
             warningMessage
