@@ -4,16 +4,21 @@ All notable changes to `Nakadi UI` will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [1.0.0] 2018-08-28
 ### Added
+- Users now can publish batches of events directly from Event Type details page.
+- Added full support of the [subscription authorization](https://nakadi.io/manual.html#definition_Subscription*authorization).
 - Added support for the event type [audience](https://nakadi.io/manual.html#definition_EventType*audience) field.
 - Added support for the event type [cleanup_policy](https://nakadi.io/manual.html#definition_EventType*cleanup_policy) field.
 - Added support for the event type [ordering_key_fields](https://nakadi.io/manual.html#definition_EventType*ordering_key_fields) field.
+- Added a configuration for Scalyr request filter.
 - Added Dockerfile and docker-compose
 
 ### Changed
-- Nakadi UI is open-sourced and moved to github.com
+- Nakadi UI is open-sourced and moved to github.com. All internal links updated.
 
+### Fixed
+- Updated minor versions of all dependencies to fix security audit npm warnings.
 
 ## [0.0.23] 2018-06-19
 ### Added
