@@ -1,5 +1,5 @@
 {
-    "version": "0.0.1",
+    "version": "1.0.0",
     "summary": "UI for Nakadi event bus.",
     "repository": "https://github.com/zalando-incubator/nakadi-ui.git",
     "license": "MIT",
