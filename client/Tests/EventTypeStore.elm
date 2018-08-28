@@ -3,7 +3,7 @@ module Tests.EventTypeStore exposing (..)
 import Test exposing (Test, describe, test)
 import Expect
 import Stores.EventType exposing (..)
-import Stores.EventTypeAuthorization exposing (Key(..))
+import Stores.Authorization exposing (Key(..))
 import Json.Decode
 
 

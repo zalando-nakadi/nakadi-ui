@@ -12,12 +12,13 @@ import Regex
 import Json.Decode
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
 import Helpers.AccessEditor as AccessEditor
-import Stores.EventTypeAuthorization exposing (Authorization, emptyEventTypeAuthorization)
+import Stores.Authorization exposing (Authorization, emptyAuthorization)
 import Constants exposing (emptyString)
 import Stores.EventType exposing (categories, partitionStrategies)
 import Stores.Partition
 import Dom
 import Task
+import Helpers.Forms exposing (..)
 
 
 update : Msg -> Model -> Stores.EventType.Model -> ( Model, Cmd Msg )
@@ -57,11 +58,16 @@ update message model eventTypeStore =
         Validate ->
             ( validate model eventTypeStore, Cmd.none )
 
-        SubmitCreate ->
-            ( Store.onFetchStart model, submitCreate model )
+        Submit ->
+            case model.operation of
+                Create ->
+                    ( Store.onFetchStart model, submitCreate model )
 
-        SubmitUpdate ->
-            ( Store.onFetchStart model, submitUpdate model )
+                Clone name ->
+                    ( Store.onFetchStart model, submitCreate model )
+
+                Update name ->
+                    ( Store.onFetchStart model, submitUpdate model )
 
         Reset ->
             let
@@ -175,7 +181,7 @@ authorizationFromEventType maybeName eventTypeStore =
     maybeName
         |> Maybe.andThen (\name -> Store.get name eventTypeStore)
         |> Maybe.andThen .authorization
-        |> Maybe.withDefault emptyEventTypeAuthorization
+        |> Maybe.withDefault emptyAuthorization
 
 
 validate : Model -> Stores.EventType.Model -> Model
@@ -308,7 +314,7 @@ submitCreate model =
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
-                |> Stores.EventTypeAuthorization.encoder
+                |> Stores.Authorization.encoder
 
         fields =
             [ ( "name", asString FieldName )
@@ -394,7 +400,7 @@ submitUpdate model =
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
-                |> Stores.EventTypeAuthorization.encoder
+                |> Stores.Authorization.encoder
 
         fields =
             [ ( "name", asString FieldName )

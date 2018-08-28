@@ -205,7 +205,7 @@ itemToRoute item =
                 Pages.EventTypeDetails.Models.emptyQuery
 
         SearchItemSubscription subscription starred ->
-            SubscriptionDetailsRoute { id = subscription.id }
+            SubscriptionDetailsRoute { id = subscription.id } { tab = Nothing }
 
 
 search : AppModel -> String -> List SearchItem

@@ -26,6 +26,7 @@ view model =
             ( subscription.id
             , SubscriptionDetailsRoute
                 { id = subscription.id }
+                { tab = Nothing }
             )
 
         typeLink name =

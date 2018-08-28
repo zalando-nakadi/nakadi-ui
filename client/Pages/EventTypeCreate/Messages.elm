@@ -13,8 +13,7 @@ type Msg
     | SchemaFormat
     | SchemaClear
     | Validate
-    | SubmitCreate
-    | SubmitUpdate
+    | Submit
     | Reset
     | OnRouteChange Operation
     | FocusResult (Result Dom.Error ())

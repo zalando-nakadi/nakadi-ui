@@ -33,6 +33,7 @@ import Pages.SubscriptionList.Messages as SubscriptionListPageMessages exposing 
 import Pages.SubscriptionList.Models
 import Pages.SubscriptionDetails.Messages as SubscriptionDetailsPageMessages exposing (Msg(..))
 import Pages.SubscriptionCreate.Messages
+import Pages.SubscriptionCreate.Models
 import Pages.Partition.Messages exposing (Msg(..))
 import Helpers.Browser exposing (log)
 
@@ -107,7 +108,7 @@ isInactivePageMsg message route =
 
         SubscriptionDetailsMsg _ ->
             case route of
-                SubscriptionDetailsRoute _ ->
+                SubscriptionDetailsRoute _ _ ->
                     False
 
                 _ ->
@@ -116,6 +117,9 @@ isInactivePageMsg message route =
         SubscriptionCreateMsg _ ->
             case route of
                 SubscriptionCreateRoute ->
+                    False
+
+                SubscriptionUpdateRoute _ ->
                     False
 
                 SubscriptionCloneRoute _ ->
@@ -290,10 +294,13 @@ interComponentMessaging message ( model, cmd ) =
                 let
                     messages =
                         case model.route of
-                            SubscriptionCloneRoute params ->
-                                [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.CursorsStoreMsg Store.FetchData) ]
+                            SubscriptionUpdateRoute params ->
+                                [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.Reset) ]
 
-                            SubscriptionDetailsRoute params ->
+                            SubscriptionCloneRoute params ->
+                                [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.Reset) ]
+
+                            SubscriptionDetailsRoute params query->
                                 [ SubscriptionDetailsMsg SubscriptionDetailsPageMessages.Refresh ]
 
                             _ ->
@@ -380,7 +387,7 @@ interComponentMessaging message ( model, cmd ) =
                 case subMsg of
                     SubscriptionListPageMessages.SelectSubscription id ->
                         urlRedirect <|
-                            SubscriptionDetailsRoute { id = id }
+                            SubscriptionDetailsRoute { id = id } { tab = Nothing }
 
                     SubscriptionListPageMessages.Refresh ->
                         send [ SubscriptionStoreMsg Stores.Subscription.FetchData ]
@@ -399,7 +406,7 @@ interComponentMessaging message ( model, cmd ) =
                     Pages.SubscriptionCreate.Messages.OutSubscriptionCreated id ->
                         let
                             route =
-                                SubscriptionDetailsRoute { id = id }
+                                SubscriptionDetailsRoute { id = id } { tab = Nothing }
                         in
                             redirectAndSend route [ SubscriptionStoreMsg Stores.Subscription.FetchData ]
 
@@ -442,14 +449,17 @@ interComponentMessaging message ( model, cmd ) =
                     SubscriptionListRoute query ->
                         send [ SubscriptionListMsg (SubscriptionListPageMessages.OnRouteChange model.newRoute) ]
 
-                    SubscriptionDetailsRoute query ->
+                    SubscriptionDetailsRoute param query ->
                         send [ SubscriptionDetailsMsg (SubscriptionDetailsPageMessages.OnRouteChange model.newRoute) ]
 
                     SubscriptionCreateRoute ->
-                        send [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.OnRouteChange Nothing) ]
+                        send [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.OnRouteChange Pages.SubscriptionCreate.Models.Create) ]
+
+                    SubscriptionUpdateRoute param ->
+                        send [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.OnRouteChange (Pages.SubscriptionCreate.Models.Update param.id)) ]
 
                     SubscriptionCloneRoute param ->
-                        send [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.OnRouteChange (Just param.id)) ]
+                        send [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.OnRouteChange (Pages.SubscriptionCreate.Models.Clone param.id)) ]
 
                     _ ->
                         pass

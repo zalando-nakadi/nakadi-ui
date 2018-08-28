@@ -1,7 +1,7 @@
-module Stores.EventTypeAuthorization exposing (..)
+module Stores.Authorization exposing (..)
 
 import Json.Decode exposing (string, Decoder, field, list, succeed)
-import Json.Decode.Pipeline exposing (decode, required, resolve)
+import Json.Decode.Pipeline exposing (decode, required, optional, resolve)
 import Json.Encode as Encode
 
 
@@ -72,8 +72,8 @@ type alias Authorization =
     }
 
 
-emptyEventTypeAuthorization : Authorization
-emptyEventTypeAuthorization =
+emptyAuthorization : Authorization
+emptyAuthorization =
     { readers = []
     , writers = []
     , admins = []
@@ -88,7 +88,7 @@ collectionDecoder : Decoder Authorization
 collectionDecoder =
     decode Authorization
         |> required "readers" (list (memberDecoder readPermission))
-        |> required "writers" (list (memberDecoder writePermission))
+        |> optional "writers" (list (memberDecoder writePermission)) []
         |> required "admins" (list (memberDecoder adminPermission))
 
 

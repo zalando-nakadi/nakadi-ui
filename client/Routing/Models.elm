@@ -23,8 +23,9 @@ type Route
     | EventTypeCloneRoute EventTypeDetails.UrlParams
     | PartitionRoute Partition.UrlParams Partition.UrlQuery
     | SubscriptionListRoute SubscriptionList.UrlQuery
-    | SubscriptionDetailsRoute SubscriptionDetails.UrlParams
+    | SubscriptionDetailsRoute SubscriptionDetails.UrlParams SubscriptionDetails.UrlQuery
     | SubscriptionCreateRoute
+    | SubscriptionUpdateRoute SubscriptionDetails.UrlParams
     | SubscriptionCloneRoute SubscriptionDetails.UrlParams
     | NotFoundRoute
 
@@ -75,7 +76,11 @@ routingConfig =
       )
     , ( "subscriptions/:id"
       , \( params, query ) ->
-            SubscriptionDetailsRoute (SubscriptionDetails.dictToParams params)
+            SubscriptionDetailsRoute (SubscriptionDetails.dictToParams params) (SubscriptionDetails.dictToQuery query)
+      )
+    , ( "subscriptions/:id/update"
+      , \( params, query ) ->
+            SubscriptionUpdateRoute (SubscriptionDetails.dictToParams params)
       )
     , ( "createsubscription"
       , \( params, query ) ->
@@ -118,11 +123,14 @@ routeToUrl route =
         SubscriptionListRoute query ->
             "#subscriptions" ++ SubscriptionList.queryToUrl query
 
-        SubscriptionDetailsRoute params ->
-            "#subscriptions/" ++ (Http.encodeUri params.id)
+        SubscriptionDetailsRoute params query ->
+            "#subscriptions/" ++ (Http.encodeUri params.id) ++ SubscriptionDetails.queryToUrl query
 
         SubscriptionCreateRoute ->
             "#createsubscription"
+
+        SubscriptionUpdateRoute params ->
+            "#subscriptions/" ++ (Http.encodeUri params.id) ++ "/update"
 
         SubscriptionCloneRoute params ->
             "#subscriptions/" ++ (Http.encodeUri params.id) ++ "/clone"
@@ -164,11 +172,14 @@ routeToTitle route =
             SubscriptionListRoute query ->
                 " - Subscriptions"
 
-            SubscriptionDetailsRoute params ->
+            SubscriptionDetailsRoute params query ->
                 " - Subscription - " ++ params.id
 
             SubscriptionCreateRoute ->
                 " - Create Subscription"
+
+            SubscriptionUpdateRoute params ->
+                " - Update Subscription - " ++ params.id
 
             SubscriptionCloneRoute params ->
                 " - Clone Subscription - " ++ params.id

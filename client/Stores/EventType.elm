@@ -5,7 +5,7 @@ import Config
 import Json.Decode exposing (int, string, float, Decoder, list, nullable)
 import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
 import Stores.EventTypeSchema as Schema exposing (EventTypeSchema)
-import Stores.EventTypeAuthorization exposing (Authorization)
+import Stores.Authorization exposing (Authorization)
 import Dict
 import Constants
 
@@ -195,7 +195,7 @@ memberDecoder =
         |> optional "ordering_key_fields" (nullable (list string)) Nothing
         |> optional "default_statistic" (nullable defaultStatisticDecoder) Nothing
         |> optional "options" (nullable optionsDecoder) Nothing
-        |> optional "authorization" (nullable Stores.EventTypeAuthorization.collectionDecoder) Nothing
+        |> optional "authorization" (nullable Stores.Authorization.collectionDecoder) Nothing
         |> optional "cleanup_policy" string cleanupPolicies.delete
         |> optional "audience" (nullable string) Nothing
         |> optional "created_at" (nullable string) Nothing

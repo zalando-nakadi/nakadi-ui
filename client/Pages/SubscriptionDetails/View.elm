@@ -6,11 +6,21 @@ import Html.Events exposing (..)
 import String.Extra exposing (replace)
 import Models exposing (AppModel)
 import Helpers.Store exposing (Id, Status(..), get)
-import Helpers.Panel
-import Helpers.UI exposing (linkToApp, starIcon, helpIcon, grid, refreshButton, PopupPosition(..), none)
+import Helpers.Panel exposing (warningMessage)
+import Helpers.UI
+    exposing
+        ( linkToApp
+        , starIcon
+        , helpIcon
+        , grid
+        , tabs
+        , refreshButton
+        , PopupPosition(..)
+        , none
+        )
 import Helpers.Panel exposing (loadingStatus)
 import Helpers.String exposing (formatDateTime, periodToShortString)
-import Pages.SubscriptionDetails.Models exposing (Model)
+import Pages.SubscriptionDetails.Models exposing (Model, Tabs(..))
 import Pages.SubscriptionDetails.Messages exposing (..)
 import Pages.SubscriptionDetails.Help as Help
 import Pages.SubscriptionList.Models
@@ -23,6 +33,7 @@ import Routing.Models exposing (routeToUrl, Route(..))
 import Routing.Helpers exposing (link)
 import Config
 import Constants
+import Helpers.AccessEditor as AccessEditor
 
 
 view : AppModel -> Html Msg
@@ -63,70 +74,107 @@ detailsLayout id subscription model =
 
         appsInfoUrl =
             model.userStore.user.settings.appsInfoUrl
+
+        usersInfoUrl =
+            model.userStore.user.settings.usersInfoUrl
+
+        tabOptions =
+            { onChange = (\tab -> TabChange tab)
+            , notSelectedView = Just (div [] [ text "No tab selected" ])
+            , class = Just "dc-column"
+            , containerClass = Nothing
+            , tabClass = Nothing
+            , activeTabClass = Nothing
+            , pageClass = Nothing
+            }
     in
-        div [ class "dc-card" ]
-            [ div [ class "dc-row dc-row--collapse" ]
-                [ ul [ class "dc-breadcrumb" ]
-                    [ li [ class "dc-breadcrumb__item" ]
-                        [ link (SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery) "Subscriptions"
+        div []
+            [ noAuthMessage subscription
+            , div [ class "dc-card" ]
+                [ div [ class "dc-row dc-row--collapse" ]
+                    [ ul [ class "dc-breadcrumb" ]
+                        [ li [ class "dc-breadcrumb__item" ]
+                            [ link (SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery) "Subscriptions"
+                            ]
+                        , li [ class "dc-breadcrumb__item" ]
+                            [ span [] [ text id, helpIcon "Subscription" Help.subscription BottomRight ]
+                            ]
                         ]
-                    , li [ class "dc-breadcrumb__item" ]
-                        [ span [] [ text id, helpIcon "Subscription" Help.subscription BottomRight ]
+                    , span [ class "toolbar" ]
+                        [ a
+                            [ title "Update Subscription"
+                            , class "icon-link dc-icon dc-icon--interactive"
+                            , href <|
+                                routeToUrl <|
+                                    SubscriptionUpdateRoute { id = subscription.id }
+                            ]
+                            [ i [ class "far fa-edit" ] [] ]
+                        , a
+                            [ title "Clone Subscription"
+                            , class "icon-link dc-icon dc-icon--interactive"
+                            , href <|
+                                routeToUrl <|
+                                    SubscriptionCloneRoute { id = subscription.id }
+                            ]
+                            [ i [ class "far fa-clone" ] [] ]
+                        , a
+                            [ title "View as raw JSON"
+                            , class "icon-link dc-icon dc-icon--interactive"
+                            , target "_blank"
+                            , href <| Config.urlNakadiApi ++ "subscriptions/" ++ subscription.id
+                            ]
+                            [ i [ class "far fa-file-code" ] [] ]
+                        , a
+                            [ title "Monitoring Graphs"
+                            , class "icon-link dc-icon dc-icon--interactive"
+                            , target "_blank"
+                            , href <| replace "{id}" subscription.id model.userStore.user.settings.subscriptionMonitoringUrl
+                            ]
+                            [ i [ class "fas fa-chart-line" ] [] ]
+                        , starIcon OutAddToFavorite OutRemoveFromFavorite starredStore id
+                        , span
+                            [ onClick OpenDeletePopup
+                            , class "icon-link dc-icon--trash dc-btn--destroy dc-icon dc-icon--interactive"
+                            , title "Delete Subscription"
+                            ]
+                            []
+                        ]
+                    , span [ class "flex-col--stretched" ] [ refreshButton OutRefreshSubscriptions ]
+                    ]
+                , div [ class "dc-row dc-row--collapse" ]
+                    [ div [ class "dc-column dc-column--shrink" ]
+                        [ div [ class "subscription-details__info-form" ]
+                            [ infoField "Owning application " Help.owningApplication BottomRight <|
+                                linkToApp appsInfoUrl subscription.owning_application
+                            , infoField "Consumer group " Help.consumerGroup BottomRight <|
+                                text subscription.consumer_group
+                            , infoField "Read from " Help.readFrom BottomRight <|
+                                text subscription.read_from
+                            , infoField "Created " Help.createdAt TopRight <|
+                                infoDateToText subscription.created_at
+                            , infoField "Event types " Help.eventTypes TopRight <|
+                                infoListToText subscription.event_types
+                            ]
+                        ]
+                    , div [ class "dc-column" ]
+                        [ tabs tabOptions
+                            (Just pageState.tab)
+                            [ ( StatsTab
+                              , "Stats"
+                              , statsPanel pageState
+                              )
+                            , ( AuthTab
+                              , "Authorization"
+                              , authTab
+                                    appsInfoUrl
+                                    usersInfoUrl
+                                    subscription
+                              )
+                            ]
                         ]
                     ]
-                , span [ class "toolbar" ]
-                    [ a
-                        [ title "Clone Subscription"
-                        , class "icon-link dc-icon dc-icon--interactive"
-                        , href <|
-                            routeToUrl <|
-                                SubscriptionCloneRoute { id = subscription.id }
-                        ]
-                        [ i [ class "far fa-clone" ] [] ]
-                    , a
-                        [ title "View as raw JSON"
-                        , class "icon-link dc-icon dc-icon--interactive"
-                        , target "_blank"
-                        , href <| Config.urlNakadiApi ++ "subscriptions/" ++ subscription.id
-                        ]
-                        [ i [ class "far fa-file-code" ] [] ]
-                    , a
-                        [ title "Monitoring Graphs"
-                        , class "icon-link dc-icon dc-icon--interactive"
-                        , target "_blank"
-                        , href <| replace "{id}" subscription.id model.userStore.user.settings.subscriptionMonitoringUrl
-                        ]
-                        [ i [ class "fas fa-chart-line" ] [] ]
-                    , starIcon OutAddToFavorite OutRemoveFromFavorite starredStore id
-                    , span
-                        [ onClick OpenDeletePopup
-                        , class "icon-link dc-icon--trash dc-btn--destroy dc-icon dc-icon--interactive"
-                        , title "Delete Subscription"
-                        ]
-                        []
-                    ]
-                , span [ class "flex-col--stretched" ] [ refreshButton OutRefreshSubscriptions ]
+                , deletePopup model subscription appsInfoUrl
                 ]
-            , div [ class "dc-row dc-row--collapse" ]
-                [ div [ class "dc-column dc-column--shrink" ]
-                    [ div [ class "subscription-details__info-form" ]
-                        [ infoField "Owning application " Help.owningApplication BottomRight <|
-                            linkToApp appsInfoUrl subscription.owning_application
-                        , infoField "Consumer group " Help.consumerGroup BottomRight <|
-                            text subscription.consumer_group
-                        , infoField "Read from " Help.readFrom BottomRight <|
-                            text subscription.read_from
-                        , infoField "Created " Help.createdAt TopRight <|
-                            infoDateToText subscription.created_at
-                        , infoField "Event types " Help.eventTypes TopRight <|
-                            infoListToText subscription.event_types
-                        ]
-                    ]
-                , div [ class "dc-column" ]
-                    [ statsPanel pageState
-                    ]
-                ]
-            , deletePopup model subscription appsInfoUrl
             ]
 
 
@@ -384,5 +432,42 @@ deletePopup model subscription appsInfoUrl =
     in
         if model.subscriptionDetailsPage.deletePopup.isOpen then
             dialog
+        else
+            none
+
+
+authTab : String -> String -> Subscription -> Html Msg
+authTab appsInfoUrl usersInfoUrl subscription =
+    div [ class "dc-card auth-tab" ] <|
+        case subscription.authorization of
+            Nothing ->
+                [ noAuthMessage subscription
+                ]
+
+            Just authorization ->
+                [ div [ class "auth-tab__content" ]
+                    [ AccessEditor.viewReadOnly
+                        { appsInfoUrl = appsInfoUrl
+                        , usersInfoUrl = usersInfoUrl
+                        , showWrite = False
+                        , help = Help.authorization
+                        }
+                        (always Refresh)
+                        authorization
+                    ]
+                ]
+
+
+noAuthMessage : Subscription -> Html Msg
+noAuthMessage subscription =
+    let
+        updateLink =
+            link (SubscriptionUpdateRoute { id = subscription.id }) "update subscription"
+    in
+        if subscription.authorization == Nothing then
+            warningMessage
+                "This Subscription is NOT protected!"
+                "It is open for modification, and statistics reading by everyone in the company."
+                (Just updateLink)
         else
             none

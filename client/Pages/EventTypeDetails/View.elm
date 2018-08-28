@@ -680,6 +680,7 @@ renderSubscription name appsInfoUrl item =
                 item.id
                 (SubscriptionDetailsRoute
                     { id = item.id }
+                    { tab = Nothing }
                 )
             ]
         , td [ class "dc-table__td" ] [ text item.consumer_group ]
@@ -702,7 +703,14 @@ authTab appsInfoUrl usersInfoUrl eventType =
         Just authorization ->
             div [ class "dc-card auth-tab" ]
                 [ div [ class "auth-tab__content" ]
-                    [ AccessEditor.viewReadOnly appsInfoUrl usersInfoUrl (always Reload) authorization
+                    [ AccessEditor.viewReadOnly
+                        { appsInfoUrl = appsInfoUrl
+                        , usersInfoUrl = usersInfoUrl
+                        , showWrite = True
+                        , help = Help.authorization
+                        }
+                        (always Reload)
+                        authorization
                     ]
                 ]
 

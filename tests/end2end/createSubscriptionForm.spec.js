@@ -13,6 +13,7 @@ describe('Create Subscription form', function() {
         this.browser.login('')
         .waitForVisible('h4=Welcome to Nakadi, a distributed, open-source event messaging service!', 1000)
         .click('button=Create')
+        .sleep(300) //waiting for the menu animation to finish
         .click('a=Subscription')
         .waitForVisible('h4=Create Subscription', 10000)
         .click('#subscriptionCreateFormFieldConsumerGroup')
