@@ -19,6 +19,9 @@ It consist of the [node.js](https://nodejs.org) backend and the frontend written
 ## Screenshot
 ![Nakadi UI](screenshot.gif)
 
+## Talks
+[How to Build a Data Streaming Self-Service and not get Killed - Sergii Kamenskyi](https://www.youtube.com/watch?v=nnHQp2juucw)
+
 ## Dependencies
 
 ### API
