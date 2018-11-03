@@ -9,6 +9,7 @@ import Stores.CursorDistance
 import Stores.Partition
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
+import Stores.Query
 import Http
 import RemoteData exposing (WebData)
 
@@ -44,3 +45,5 @@ type Msg
     | SendEvent
     | SendEventResponse (WebData String)
     | SendEventReset
+    | LoadQuery String
+    | LoadQueryResponse (WebData Stores.Query.Query)

@@ -11,6 +11,7 @@ const bodyParser = require('body-parser');
 const logger = require('./logger');
 const auth = require('./auth');
 const nakadiApi = require('./nakadiApi');
+const nakadiSqlApi = require('./nakadiSqlApi');
 const logsApi = require('./logsApi');
 const validationApi = require('./validationApi');
 const staticFiles = require('./staticFiles');
@@ -35,6 +36,7 @@ module.exports = function App(config) {
     .use(analytics(config.analytics, logger))
     .use('/api/logs', authentication, logsApi(config.logsApi))
     .use('/api/nakadi', authentication, nakadiApi(config))
+    .use('/api/nakadi-sql', authentication, nakadiSqlApi(config))
     .use('/api/validation', authentication,validationApi(config))
     .use(staticFiles(config.productionMode))
     .use(logger.errorHandler);

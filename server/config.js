@@ -13,7 +13,7 @@ exports = module.exports = function createConfiguration(env) {
         port: env.HTTP_PORT || 3000,
         baseUrl: required('BASE_URL', env),
         nakadiApiUrl: required('NAKADI_API_URL', env),
-
+        nakadiApiSqlUrl: optional('NAKADI_SQL_API_URL', env, ''),
         serverOptions: envToBool(env.HTTPS_ENABLE) ? {
             key: fs.readFileSync(required('HTTPS_PRIVATE_KEY_FILE', env), 'utf8'),
             cert: fs.readFileSync(required('HTTPS_PUBLIC_KEY_FILE', env), 'utf8')

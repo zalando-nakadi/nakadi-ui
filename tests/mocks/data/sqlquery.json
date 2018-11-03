@@ -1,0 +1,7 @@
+{
+  "id":"sql-test",
+  "sql":"SELECT * FROM test-et",
+  "status":"active",
+  "created":"2018-01-01",
+  "modified":"2018-01-01"
+}

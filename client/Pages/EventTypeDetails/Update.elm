@@ -3,6 +3,7 @@ module Pages.EventTypeDetails.Update exposing (..)
 import Pages.EventTypeDetails.Messages exposing (Msg(..))
 import Pages.EventTypeDetails.Models exposing (Model, initialModel, Tabs(..))
 import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
+import Pages.EventTypeDetails.QueryTab exposing (loadQuery)
 import Routing.Models exposing (Route(EventTypeDetailsRoute))
 import Helpers.Task exposing (dispatch)
 import Helpers.JsonEditor
@@ -51,6 +52,7 @@ update message model =
                     , Cmd.batch
                         [ dispatch (TabChange model.tab)
                         , dispatch (ValidationStoreMsg (loadSubStoreMsg model.name))
+                        , dispatch (LoadQuery model.name)
                         ]
                     )
 
@@ -69,6 +71,9 @@ update message model =
                 TabChange tab ->
                     ( { model | tab = tab }
                     , case tab of
+                        QueryTab ->
+                            Cmd.none
+
                         SchemaTab ->
                             dispatch (EventTypeSchemasStoreMsg (loadSubStoreMsg model.name))
 
@@ -121,6 +126,12 @@ update message model =
                             Stores.EventTypeSchema.update subMsg model.eventTypeSchemasStore
                     in
                         ( { model | eventTypeSchemasStore = subModel }, Cmd.map EventTypeSchemasStoreMsg msCmd )
+
+                LoadQuery id ->
+                    ( { model | loadQueryResponse = NotAsked }, loadQuery LoadQueryResponse id )
+
+                LoadQueryResponse resp ->
+                    ( { model | loadQueryResponse = resp }, Cmd.none )
 
                 LoadPublishers ->
                     ( model, dispatch (PublishersStoreMsg (loadSubStoreMsg model.name)) )
