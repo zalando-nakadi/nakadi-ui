@@ -14,6 +14,11 @@ const proxy = require('express-http-proxy');
 const logger = require('./logger');
 
 module.exports = function NakadiSqlProxyRoute(config) {
+
+    if (!config.nakadiApiSqlUrl){
+        return []
+    }
+
     return [
         authorization(config.authorize),
         proxy(config.nakadiApiSqlUrl, {
@@ -21,12 +26,6 @@ module.exports = function NakadiSqlProxyRoute(config) {
                 if (!origReq.authorizationToken) {
                     origReq.log('warn', 'No nakadi authorizationToken(server to server) in the request object.');
                     return;
-                }
-
-                // Workaround for https://github.com/zalando/nakadi/issues/792
-                // Nakadi doesn't accept fake tokens even with NAKADI_OAUTH2_MODE=OFF
-                if (origReq.authorizationToken === '__NONE__') {
-                    return proxyReq;
                 }
 
                 proxyReq.headers['Authorization'] = 'Bearer ' + origReq.authorizationToken;

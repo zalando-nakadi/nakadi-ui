@@ -43,6 +43,7 @@ describe('Config', function() {
             port: '3000',
             baseUrl: 'https://localhost:3000',
             nakadiApiUrl: 'https://nakadi-staging.example.com',
+            nakadiApiSqlUrl:'',
             serverOptions: {
                 key: 'test fake private certificate',
                 cert: 'test fake public certificate'
@@ -67,7 +68,8 @@ describe('Config', function() {
                 docsUrl: "https://nakadi-faq.docs.example.com/",
                 supportUrl: "https://hipchat.example.com/chat/room/12345",
                 forbidDeleteUrl: "https://nakadi-faq.docs.example.com/#how-to-delete-et",
-                allowDeleteEvenType: true
+                allowDeleteEvenType: true,
+                showNakadiSql: false
             },
             authorize: {
                 strategy: 'myGoogleAdapter',

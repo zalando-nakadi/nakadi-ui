@@ -36,7 +36,8 @@ exports = module.exports = function createConfiguration(env) {
             docsUrl: optional('DOCS_URL', env, ''),
             supportUrl: optional('SUPPORT_URL', env, ''),
             allowDeleteEvenType: envToBool(env.ALLOW_DELETE_EVENT_TYPE),
-            forbidDeleteUrl: optional('FORBID_DELETE_URL', env, '')
+            forbidDeleteUrl: optional('FORBID_DELETE_URL', env, ''),
+            showNakadiSql: envToBool(env.SHOW_NAKADI_SQL),
         },
 
         authorize: {
