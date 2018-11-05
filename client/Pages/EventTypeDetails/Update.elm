@@ -20,11 +20,12 @@ import User.Commands exposing (logoutIfExpired)
 import Constants
 import Http
 import Config
-import RemoteData exposing (RemoteData(NotAsked))
+import RemoteData exposing (isFailure, RemoteData(Loading, Failure, NotAsked))
+import User.Models exposing (Settings)
 
 
-update : Msg -> Model -> ( Model, Cmd Msg, Route )
-update message model =
+update : Settings -> Msg -> Model -> ( Model, Cmd Msg, Route )
+update settings message model =
     let
         deletePopup =
             model.deletePopup
@@ -128,10 +129,34 @@ update message model =
                         ( { model | eventTypeSchemasStore = subModel }, Cmd.map EventTypeSchemasStoreMsg msCmd )
 
                 LoadQuery id ->
-                    ( { model | loadQueryResponse = NotAsked }, loadQuery LoadQueryResponse id )
+                    let
+                        startLoadingQuery =
+                            ( { model | loadQueryResponse = Loading }
+                            , loadQuery LoadQueryResponse id
+                            )
+
+                        switchTab =
+                            ( { model | loadQueryResponse = Failure Http.NetworkError }
+                            , if model.tab == QueryTab then
+                                dispatch (TabChange SchemaTab)
+                              else
+                                Cmd.none
+                            )
+                    in
+                        if settings.showNakadiSql then
+                            startLoadingQuery
+                        else
+                            switchTab
 
                 LoadQueryResponse resp ->
-                    ( { model | loadQueryResponse = resp }, Cmd.none )
+                    let
+                        switchTabOnFailure =
+                            if isFailure resp && model.tab == QueryTab then
+                                dispatch (TabChange SchemaTab)
+                            else
+                                Cmd.none
+                    in
+                        ( { model | loadQueryResponse = resp }, switchTabOnFailure )
 
                 LoadPublishers ->
                     ( model, dispatch (PublishersStoreMsg (loadSubStoreMsg model.name)) )

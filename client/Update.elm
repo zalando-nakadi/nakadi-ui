@@ -204,7 +204,7 @@ updateComponents message model =
         EventTypeDetailsMsg subMsg ->
             let
                 ( newModel, subCmd, newRoute ) =
-                    PageEventTypeDetails.update subMsg model.eventTypeDetailsPage
+                    PageEventTypeDetails.update model.userStore.user.settings subMsg model.eventTypeDetailsPage
             in
                 ( { model | eventTypeDetailsPage = newModel, newRoute = newRoute }, Cmd.map EventTypeDetailsMsg subCmd )
 

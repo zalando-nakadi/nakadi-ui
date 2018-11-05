@@ -109,6 +109,9 @@ detailsLayout typeName eventType model =
         usersInfoUrl =
             model.userStore.user.settings.usersInfoUrl
 
+        showNakadiSql =
+            model.userStore.user.settings.showNakadiSql
+
         tab =
             pageState.tab
 
@@ -216,11 +219,12 @@ detailsLayout typeName eventType model =
                         (Just tab)
                       <|
                         (\tabList ->
-                            if isSuccess pageState.loadQueryResponse then
+                            if showNakadiSql && isSuccess pageState.loadQueryResponse then
                                 ( QueryTab
                                 , "SQL Query"
                                 , queryTab pageState
-                                ):: tabList
+                                )
+                                    :: tabList
                             else
                                 tabList
                         )

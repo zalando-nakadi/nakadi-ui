@@ -147,7 +147,7 @@ stringToTabs str =
             Just PublishTab
 
         "QueryTab" ->
-            Just SchemaTab
+            Just QueryTab
 
         _ ->
             Nothing
