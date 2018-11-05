@@ -215,65 +215,64 @@ detailsLayout typeName eventType model =
                                 infoDateToText eventType.updated_at
                             ]
                         ]
-                    , tabs tabOptions
-                        (Just tab)
-                      <|
-                        (\tabList ->
-                            if showNakadiSql && isSuccess pageState.loadQueryResponse then
-                                ( QueryTab
-                                , "SQL Query"
-                                , queryTab pageState
-                                )
-                                    :: tabList
-                            else
-                                tabList
-                        )
-                        <|
-                            [ ( SchemaTab
-                              , "Schema"
-                              , schemaTab
+                    , tabs tabOptions (Just tab) <|
+                        List.concat
+                            [ [ ( SchemaTab
+                                , "Schema"
+                                , schemaTab
                                     jsonEditorState
                                     pageState.eventTypeSchemasStore
                                     selectedVersion
                                     pageState.formatted
                                     pageState.effective
                                     eventType
+                                )
+                              ]
+                            , (if showNakadiSql && isSuccess pageState.loadQueryResponse then
+                                [ ( QueryTab
+                                  , "SQL Query"
+                                  , queryTab pageState
+                                  )
+                                ]
+                               else
+                                []
                               )
-                            , ( PartitionsTab
-                              , "Partitions"
-                              , partitionsTab
+                            , [ ( PartitionsTab
+                                , "Partitions"
+                                , partitionsTab
                                     eventType
                                     pageState.partitionsStore
                                     pageState.totalsStore
-                              )
-                            , ( PublisherTab
-                              , "Publishers"
-                              , publisherTab
+                                )
+                              , ( PublisherTab
+                                , "Publishers"
+                                , publisherTab
                                     eventType
                                     pageState.publishersStore
                                     appsInfoUrl
                                     usersInfoUrl
-                              )
-                            , ( ConsumerTab
-                              , "Consumers"
-                              , consumersTab
+                                )
+                              , ( ConsumerTab
+                                , "Consumers"
+                                , consumersTab
                                     eventType
                                     pageState.consumersStore
                                     model.subscriptionStore
                                     appsInfoUrl
                                     usersInfoUrl
-                              )
-                            , ( AuthTab
-                              , "Authorization"
-                              , authTab
+                                )
+                              , ( AuthTab
+                                , "Authorization"
+                                , authTab
                                     appsInfoUrl
                                     usersInfoUrl
                                     eventType
-                              )
-                            , ( PublishTab
-                              , "Publish Events"
-                              , publishTab pageState
-                              )
+                                )
+                              , ( PublishTab
+                                , "Publish Events"
+                                , publishTab pageState
+                                )
+                              ]
                             ]
                     ]
                 , deletePopup model
