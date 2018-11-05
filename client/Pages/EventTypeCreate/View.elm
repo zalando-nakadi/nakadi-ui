@@ -63,6 +63,10 @@ view model =
                     Helpers.Panel.loadingStatus formModel.partitionsStore <|
                         findEventType name viewFormClone
 
+                CreateQuery ->
+                    container <|
+                        viewFormCreateQuery model
+
 
 viewFormCreate : AppModel -> Html Msg
 viewFormCreate model =
@@ -70,6 +74,19 @@ viewFormCreate model =
         { updateMode = False
         , formTitle = "Create Event Type"
         , successMessage = "Event Type Created!"
+        , categoriesOptions = allCategories
+        , compatibilityModeOptions = allModes
+        , cleanupPoliciesOptions = allCleanupPolicies
+        , partitionStrategyEditing = Enabled
+        }
+
+
+viewFormCreateQuery : AppModel -> Html Msg
+viewFormCreateQuery model =
+    viewForm model
+        { updateMode = False
+        , formTitle = "Create SQL Query"
+        , successMessage = "Query Created!"
         , categoriesOptions = allCategories
         , compatibilityModeOptions = allModes
         , cleanupPoliciesOptions = allCleanupPolicies

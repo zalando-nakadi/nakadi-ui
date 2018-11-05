@@ -36,7 +36,7 @@ navLinks model =
         , tab (SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery) "Subscriptions"
         , span [ class "header__link" ]
             [ UI.externalLink "Documentation" model.userStore.user.settings.docsUrl ]
-        , buttonCreate
+        , buttonCreate model.userStore.user.settings.showNakadiSql
         ]
     ]
 
@@ -58,8 +58,8 @@ rightPanel model =
     ]
 
 
-buttonCreate : AppHtml
-buttonCreate =
+buttonCreate : Bool -> AppHtml
+buttonCreate showNakadiSql =
     div [ class "dropdown-menu" ]
         [ button [ class "dc-btn dc-btn--primary" ]
             [ text "Create"
@@ -71,6 +71,14 @@ buttonCreate =
                 , href (routeToUrl EventTypeCreateRoute)
                 ]
                 [ text "Event Type" ]
+            , if showNakadiSql then
+                a
+                    [ class "dropdown-menu__item dc-link"
+                    , href (routeToUrl QueryCreateRoute)
+                    ]
+                    [ text "SQL Query" ]
+              else
+                UI.none
             , a
                 [ class "dropdown-menu__item dc-link"
                 , href (routeToUrl SubscriptionCreateRoute)

@@ -27,6 +27,7 @@ type Route
     | SubscriptionCreateRoute
     | SubscriptionUpdateRoute SubscriptionDetails.UrlParams
     | SubscriptionCloneRoute SubscriptionDetails.UrlParams
+    | QueryCreateRoute
     | NotFoundRoute
 
 
@@ -57,6 +58,10 @@ routingConfig =
     , ( "createtype"
       , \( params, query ) ->
             EventTypeCreateRoute
+      )
+    , ( "createquery"
+      , \( params, query ) ->
+            QueryCreateRoute
       )
     , ( "types/:name/update"
       , \( params, query ) ->
@@ -135,6 +140,9 @@ routeToUrl route =
         SubscriptionCloneRoute params ->
             "#subscriptions/" ++ (Http.encodeUri params.id) ++ "/clone"
 
+        QueryCreateRoute ->
+            "#createquery"
+
 
 routeToTitle : Route -> String
 routeToTitle route =
@@ -183,6 +191,9 @@ routeToTitle route =
 
             SubscriptionCloneRoute params ->
                 " - Clone Subscription - " ++ params.id
+
+            QueryCreateRoute ->
+                " - Create SQL Query"
 
 
 initialModel : Model

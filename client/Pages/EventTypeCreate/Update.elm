@@ -69,6 +69,9 @@ update message model eventTypeStore =
                 Update name ->
                     ( Store.onFetchStart model, submitUpdate model )
 
+                CreateQuery ->
+                    ( Store.onFetchStart model, submitCreate model )
+
         Reset ->
             let
                 newModel =
@@ -90,6 +93,9 @@ update message model eventTypeStore =
                                         |> setValue FieldName ("clone_of_" ++ name)
                             }
 
+                        CreateQuery ->
+                            { initialModel | operation = model.operation }
+
                 authorization =
                     case model.operation of
                         Create ->
@@ -100,6 +106,9 @@ update message model eventTypeStore =
 
                         Clone name ->
                             authorizationFromEventType (Just name) eventTypeStore
+
+                        CreateQuery ->
+                            authorizationFromEventType Nothing eventTypeStore
 
                 loadPartitionsCmd =
                     case model.operation of
@@ -113,6 +122,9 @@ update message model eventTypeStore =
                             Store.SetParams [ ( Constants.eventTypeName, name ) ]
                                 |> PartitionsStoreMsg
                                 |> dispatch
+
+                        CreateQuery ->
+                            Cmd.none
 
                 cmd =
                     Cmd.batch
@@ -213,6 +225,9 @@ validate model eventTypeStore =
                         |> checkPartitionKeys model
                         |> checkSchemaFormat model
                         |> isNotEmpty FieldSchema model
+
+                CreateQuery ->
+                    checkAll
     in
         { model | validationErrors = errors }
 

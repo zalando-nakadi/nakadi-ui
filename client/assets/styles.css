@@ -85,7 +85,7 @@ body {
 
 .dropdown-menu:hover .dropdown-menu__popup {
     transition: height .1s ease-out;
-    height: 100px;
+    height: 150px;
 }
 
 .dropdown-menu__item {
@@ -123,6 +123,10 @@ body {
     display: inline-flex;
     font-size: 2rem;
     line-height: 2rem;
+}
+
+.user-menu.dropdown-menu:hover .dropdown-menu__popup {
+    height: 100px;
 }
 
 .user-menu__popup {

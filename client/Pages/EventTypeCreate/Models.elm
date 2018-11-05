@@ -23,7 +23,7 @@ type Operation
     = Create
     | Update String
     | Clone String
-
+    | CreateQuery
 
 type Field
     = FieldName
