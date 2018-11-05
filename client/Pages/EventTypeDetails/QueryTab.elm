@@ -27,7 +27,7 @@ queryTab pageState =
             (\query ->
                 div []
                     [ h3 [ class "dc-h3" ] [ text query.status ]
-                    , pre [ class "schema-box" ] [ text query.sql ]
+                    , pre [ class "sql-box" ] [ text query.sql ]
                     ]
             )
         ]

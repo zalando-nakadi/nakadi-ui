@@ -102,7 +102,7 @@ body {
 }
 
 .main-content {
-    height: calc(100vh - 70px);
+    height: calc(100vh - 140px);
 }
 
 .page {
@@ -279,11 +279,6 @@ body {
     text-transform: none;
 }
 
-.schema-box {
-    height: 500px;
-    overflow: auto;
-}
-
 .tabs__tab__btn {
     margin-right: 0;
     margin-bottom: 0;
@@ -393,35 +388,43 @@ body {
 }
 
 .event-type-details__info-form {
-    height: calc(100vh - 165px);
+    height: calc(100vh - 280px);
     max-width: 280px;
     overflow: auto;
 }
 
 .schema-box {
     width: calc(100vw - 490px);
-    height: calc(100vh - 280px);
+    height: calc(100vh - 400px);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;
-    margin-bottom: -20px;
+    margin-bottom: -10px;
+}
+
+.sql-box {
+    width: calc(100vw - 490px);
+    height: calc(100vh - 400px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;
+    margin-bottom: -10px;
+    padding: 10px;
 }
 
 .partitions-tab__list {
-    height: calc(100vh - 350px);
+    height: calc(100vh - 400px);
     overflow: auto;
 }
 
 .publisher-tab__list {
-    height: calc(100vh - 350px);
+    height: calc(100vh - 400px);
     overflow: auto;
 }
 
 .consumer-tab__list {
-    height: calc((100vh - 300px) / 2);
+    height: calc((100vh - 400px) / 2);
     overflow: auto;
 }
 
 .auth-tab {
-    min-height: calc(100vh - 200px)
+    min-height: calc(100vh - 400px)
 }
 
 .auth-tab__content {
