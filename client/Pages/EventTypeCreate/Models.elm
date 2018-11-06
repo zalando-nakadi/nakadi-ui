@@ -39,6 +39,7 @@ type Field
     | FieldAccess
     | FieldAudience
     | FieldCleanupPolicy
+    | FieldSql
 
 
 type alias Model =
@@ -84,6 +85,8 @@ defaultValues =
     , ( FieldOrderingKeyFields, emptyString )
     , ( FieldRetentionTime, toString defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
+    , ( FieldSql, defaultSql )
+
     , ( FieldCompatibilityMode, compatibilityModes.forward )
     , ( FieldAudience, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
@@ -154,4 +157,12 @@ defaultSchema =
         }
     }
 }
+"""
+
+defaultSql : String
+defaultSql =
+    """
+    SELECT *
+    FROM `my-source-event-type` as payload
+
 """

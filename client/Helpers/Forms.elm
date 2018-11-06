@@ -83,18 +83,21 @@ textInput :
     -> Locking
     -> Html msg
 textInput formModel field onInputMsg inputLabel inputPlaceholder hint help isRequired isDisabled =
-    inputFrame field inputLabel hint help isRequired formModel <|
-        input
-            [ onInput (onInputMsg field)
-            , value (getValue field formModel.values)
-            , type_ "text"
-            , validationClass field "dc-input" formModel
-            , id (inputId formModel.formId field)
-            , placeholder inputPlaceholder
-            , tabindex 1
-            , disabled (isDisabled == Disabled)
-            ]
-            []
+    if isDisabled == Disabled then
+        none
+    else
+        inputFrame field inputLabel hint help isRequired formModel <|
+            input
+                [ onInput (onInputMsg field)
+                , value (getValue field formModel.values)
+                , type_ "text"
+                , validationClass field "dc-input" formModel
+                , id (inputId formModel.formId field)
+                , placeholder inputPlaceholder
+                , tabindex 1
+                , disabled (isDisabled == Disabled)
+                ]
+                []
 
 
 selectInput :
@@ -119,24 +122,27 @@ selectInput formModel field onInputMsg inputLabel hint help isRequired isDisable
             else
                 (isDisabled == Disabled)
     in
-        inputFrame field inputLabel hint help isRequired formModel <|
-            select
-                [ onSelect (onInputMsg field)
-                , validationClass field "dc-select" formModel
-                , id (inputId formModel.formId field)
-                , tabindex 1
-                , disabled isDisabledOrOne
-                ]
-                (options
-                    |> List.map
-                        (\optionName ->
-                            option
-                                [ selected (selectedValue == optionName)
-                                , value optionName
-                                ]
-                                [ text optionName ]
-                        )
-                )
+        if isDisabledOrOne then
+            none
+        else
+            inputFrame field inputLabel hint help isRequired formModel <|
+                select
+                    [ onSelect (onInputMsg field)
+                    , validationClass field "dc-select" formModel
+                    , id (inputId formModel.formId field)
+                    , tabindex 1
+                    , disabled isDisabledOrOne
+                    ]
+                    (options
+                        |> List.map
+                            (\optionName ->
+                                option
+                                    [ selected (selectedValue == optionName)
+                                    , value optionName
+                                    ]
+                                    [ text optionName ]
+                            )
+                    )
 
 
 areaInput :

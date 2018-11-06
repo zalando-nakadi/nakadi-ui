@@ -2,6 +2,7 @@ module Pages.EventTypeCreate.Update exposing (..)
 
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
+import Pages.EventTypeCreate.Query exposing (submitQueryCreate)
 import Http
 import Dict
 import Json.Encode as Json
@@ -70,7 +71,7 @@ update message model eventTypeStore =
                     ( Store.onFetchStart model, submitUpdate model )
 
                 CreateQuery ->
-                    ( Store.onFetchStart model, submitCreate model )
+                    ( Store.onFetchStart model, submitQueryCreate model )
 
         Reset ->
             let
