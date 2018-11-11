@@ -39,6 +39,9 @@ initialModel =
         , status = Unknown
         , error = Nothing
         }
+    , deleteQueryPopupOpen = False
+    , deleteQueryPopupCheck = False
+    , deleteQueryResponse = NotAsked
     }
 
 
@@ -74,6 +77,9 @@ type alias Model =
         , status : Status
         , error : Maybe ErrorMessage
         }
+    , deleteQueryPopupOpen : Bool
+    , deleteQueryPopupCheck : Bool
+    , deleteQueryResponse : WebData ()
     }
 
 

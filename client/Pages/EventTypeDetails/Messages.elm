@@ -13,6 +13,7 @@ import Stores.Query
 import Http
 import RemoteData exposing (WebData)
 
+
 type Msg
     = OnRouteChange Route
     | Reload
@@ -47,3 +48,8 @@ type Msg
     | SendEventReset
     | LoadQuery String
     | LoadQueryResponse (WebData Stores.Query.Query)
+    | OpenDeleteQueryPopup
+    | CloseDeleteQueryPopup
+    | ConfirmQueryDelete
+    | QueryDelete
+    | QueryDeleteResponse (WebData ())

@@ -103,14 +103,17 @@ detailsLayout typeName eventType model =
             model.eventTypeDetailsPage.version
                 |> Maybe.withDefault (eventType.schema.version |> Maybe.withDefault Constants.noneLabel)
 
+        settings =
+            model.userStore.user.settings
+
         appsInfoUrl =
-            model.userStore.user.settings.appsInfoUrl
+            settings.appsInfoUrl
 
         usersInfoUrl =
-            model.userStore.user.settings.usersInfoUrl
+            settings.usersInfoUrl
 
         showNakadiSql =
-            model.userStore.user.settings.showNakadiSql
+            settings.showNakadiSql
 
         tab =
             pageState.tab
@@ -231,7 +234,7 @@ detailsLayout typeName eventType model =
                             , (if showNakadiSql && isSuccess pageState.loadQueryResponse then
                                 [ ( QueryTab
                                   , "SQL Query"
-                                  , queryTab pageState
+                                  , queryTab settings pageState
                                   )
                                 ]
                                else

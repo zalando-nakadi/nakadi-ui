@@ -3,7 +3,7 @@ module Pages.EventTypeDetails.Update exposing (..)
 import Pages.EventTypeDetails.Messages exposing (Msg(..))
 import Pages.EventTypeDetails.Models exposing (Model, initialModel, Tabs(..))
 import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
-import Pages.EventTypeDetails.QueryTab exposing (loadQuery)
+import Pages.EventTypeDetails.QueryTab exposing (loadQuery, deleteQuery)
 import Routing.Models exposing (Route(EventTypeDetailsRoute))
 import Helpers.Task exposing (dispatch)
 import Helpers.JsonEditor
@@ -20,7 +20,7 @@ import User.Commands exposing (logoutIfExpired)
 import Constants
 import Http
 import Config
-import RemoteData exposing (isFailure, RemoteData(Loading, Failure, NotAsked))
+import RemoteData exposing (isFailure, isSuccess, RemoteData(Loading, Failure, NotAsked))
 import User.Models exposing (Settings)
 
 
@@ -279,6 +279,37 @@ update settings message model =
 
                         Err error ->
                             ( { model | deletePopup = Store.onFetchErr deletePopup error }, logoutIfExpired error )
+
+                OpenDeleteQueryPopup ->
+                    ( { model
+                        | deleteQueryResponse = NotAsked
+                        , deleteQueryPopupCheck = False
+                        , deleteQueryPopupOpen = True
+                      }
+                    , Cmd.none
+                    )
+
+                CloseDeleteQueryPopup ->
+                    ( { model | deleteQueryPopupOpen = False }, Cmd.none )
+
+                ConfirmQueryDelete ->
+                    ( { model | deleteQueryPopupCheck = not model.deleteQueryPopupCheck }, Cmd.none )
+
+                QueryDelete ->
+                    ( model, deleteQuery QueryDeleteResponse model.name )
+
+                QueryDeleteResponse response ->
+                    let
+                        cmd =
+                            if response |> isSuccess then
+                                Cmd.batch
+                                    [ dispatch CloseDeleteQueryPopup
+                                    , dispatch (LoadQuery model.name)
+                                    ]
+                            else
+                                Cmd.none
+                    in
+                        ( { model | deleteQueryResponse = response }, cmd )
 
                 OutOnEventTypeDeleted ->
                     ( model, Cmd.none )

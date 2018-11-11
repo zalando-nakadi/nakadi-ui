@@ -382,12 +382,14 @@ body {
     margin: 0 20px 0 5px;
 }
 
-.schema-tab__label {
+.schema-tab__label,
+.query-tab__label {
     font-size: smaller;
     color: gray;
 }
 
-.schema-tab__value {
+.schema-tab__value,
+.query-tab__value {
     margin: 0 20px 0 5px;
 }
 

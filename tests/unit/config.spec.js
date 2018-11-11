@@ -69,7 +69,8 @@ describe('Config', function() {
                 supportUrl: "https://hipchat.example.com/chat/room/12345",
                 forbidDeleteUrl: "https://nakadi-faq.docs.example.com/#how-to-delete-et",
                 allowDeleteEvenType: true,
-                showNakadiSql: false
+                showNakadiSql: false,
+                queryMonitoringUrl: ''
             },
             authorize: {
                 strategy: 'myGoogleAdapter',

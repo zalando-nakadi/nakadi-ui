@@ -11,8 +11,12 @@ app.get('/queries/:id', (req, res, done) =>{
        res.json(query)
 });
 
+app.delete('/queries/:id', (req, res, done) =>{
+    res.json({})
+});
+
 app.post('/queries', (req, res, done) => {
        res.json({})
 });
 
-http.createServer(app).listen(6341);
+module.exports = http.createServer(app);
