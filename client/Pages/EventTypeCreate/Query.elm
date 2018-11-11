@@ -23,6 +23,7 @@ import Pages.EventTypeDetails.Help as Help
 import Helpers.Panel
 import Stores.EventType exposing (allAudiences)
 import Models exposing (AppModel)
+import Helpers.UI exposing (..)
 
 
 viewQueryForm : AppModel -> Html Msg
@@ -43,7 +44,7 @@ viewQueryForm model =
                 , textInput formModel
                     FieldName
                     OnInput
-                    "Outut Event Type Name"
+                    "Output Event Type Name"
                     "Example: bazar.price-updater.price_changed"
                     "Should be several words (with '_', '-') separated by dot."
                     Help.eventType
@@ -92,15 +93,10 @@ viewQueryForm model =
 
 sqlEditor : Model -> Html Msg
 sqlEditor formModel =
-    inputFrame FieldSql "SQL Query" "" Help.schema Required formModel <|
+    inputFrame FieldSql "SQL Query" "" helpSql Required formModel <|
         div []
             [ div [ class "dc-btn-group" ]
-                [ button
-                    [ onClick SchemaClear
-                    , class "dc-btn dc-btn--in-btn-group"
-                    ]
-                    [ text "Clear" ]
-                ]
+                []
             , textarea
                 [ onInput (OnInput FieldSql)
                 , value (getValue FieldSql formModel.values)
@@ -184,3 +180,20 @@ stringToJsonList str =
         |> List.filter (String.isEmpty >> not)
         |> List.map Json.string
         |> Json.list
+
+
+helpSql : List (Html msg)
+helpSql =
+    [ text "The SQL query to be run by the executor."
+    , newline
+    , text "The SQL statements supported are a subset of ANSI SQL."
+    , newline
+    , text "The operations supported are joining two or more EventTypes and filtering"
+    , text " EventTypes to an output EventType. The EventTypes on which these queries are run MUST"
+    , text " be log-compacted EventTypes. The EventTypes that are used for join queries MUST have the"
+    , text " equal number of partitions and the EventTypes are joined on their compaction keys. Also,"
+    , text " the join is done on per partition basis. The output EventType has the same number of"
+    , text " partitions as the input EventType(s)."
+    , newline
+    , link "More in the API Manual" "https://apis.zalando.net/apis/3d932e38-b9db-42cf-84bb-0898a72895fb/ui"
+    ]
