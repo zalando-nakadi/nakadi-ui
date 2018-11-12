@@ -121,6 +121,7 @@ sqlAccessEditor appsInfoUrl usersInfoUrl formModel =
         { appsInfoUrl = appsInfoUrl
         , usersInfoUrl = usersInfoUrl
         , showWrite = False
+        , showAnyToken = False
         , help = Help.authorization
         }
         AccessEditorMsg

@@ -726,6 +726,7 @@ authTab appsInfoUrl usersInfoUrl eventType =
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
                         , showWrite = True
+                        , showAnyToken = True
                         , help = Help.authorization
                         }
                         (always Reload)

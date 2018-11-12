@@ -450,6 +450,7 @@ authTab appsInfoUrl usersInfoUrl subscription =
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
                         , showWrite = False
+                        , showAnyToken = True
                         , help = Help.authorization
                         }
                         (always Refresh)
