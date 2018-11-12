@@ -155,7 +155,7 @@ submitQueryCreate model =
             , ( "owning_application", asString FieldOwningApplication )
             , ( "ordering_key_fields", orderingKeyFields )
             , ( "audience", asString FieldAudience )
-            , ( "sql", asString FieldAudience )
+            , ( "sql", asString FieldSql )
             , ( "authorization", auth )
             ]
 
