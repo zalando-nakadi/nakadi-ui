@@ -116,6 +116,12 @@ encoder authorization =
         , ( "admins", Encode.list (authorization.admins |> List.map encodeAttribute) )
         ]
 
+encoderReadAdmin : Authorization -> Encode.Value
+encoderReadAdmin authorization =
+    Encode.object
+        [ ( "readers", Encode.list (authorization.readers |> List.map encodeAttribute) )
+        , ( "admins", Encode.list (authorization.admins |> List.map encodeAttribute) )
+        ]
 
 encodeAttribute : AuthorizationAttribute -> Encode.Value
 encodeAttribute attr =

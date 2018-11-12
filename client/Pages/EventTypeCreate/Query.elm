@@ -148,7 +148,7 @@ submitQueryCreate model =
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
-                |> Stores.Authorization.encoder
+                |> Stores.Authorization.encoderReadAdmin
 
         fields =
             [ ( "name", asString FieldName )
