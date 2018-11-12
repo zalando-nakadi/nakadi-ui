@@ -86,7 +86,6 @@ defaultValues =
     , ( FieldRetentionTime, toString defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
     , ( FieldSql, defaultSql )
-
     , ( FieldCompatibilityMode, compatibilityModes.forward )
     , ( FieldAudience, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
@@ -161,8 +160,6 @@ defaultSchema =
 
 defaultSql : String
 defaultSql =
-    """
-    SELECT *
+    """SELECT *
     FROM `my-source-event-type` as payload
-
 """

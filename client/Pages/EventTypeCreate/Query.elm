@@ -109,7 +109,6 @@ sqlEditor formModel =
                     , Ace.extensions [ "language_tools" ]
                     , Ace.enableLiveAutocompletion True
                     , Ace.enableBasicAutocompletion True
-
                     ]
                     []
                 ]
