@@ -28,6 +28,7 @@ import Stores.EventType
 import Helpers.AccessEditor as AccessEditor
 import Config
 import Helpers.Forms exposing (..)
+import Helpers.Ace as Ace
 
 
 view : AppModel -> Html Msg
@@ -344,12 +345,19 @@ schemaEditor formModel =
                     ]
                     [ text "Clear" ]
                 ]
-            , textarea
-                [ onInput (OnInput FieldSchema)
-                , value (getValue FieldSchema formModel.values)
-                , id (inputId formModel.formId FieldSchema)
-                , validationClass FieldSchema "dc-textarea" formModel
-                , tabindex 2
+            , pre
+                [ class "ace-edit" ]
+                [ Ace.toHtml
+                    [ Ace.value (getValue FieldSchema formModel.values)
+                    , Ace.onSourceChange (OnInput FieldSchema)
+                    , Ace.mode "json"
+                    , Ace.theme "dawn"
+                    , Ace.tabSize 4
+                    , Ace.useSoftTabs False
+                    , Ace.extensions [ "language_tools" ]
+                    , Ace.enableLiveAutocompletion True
+                    , Ace.enableBasicAutocompletion True
+                    ]
+                    []
                 ]
-                []
             ]

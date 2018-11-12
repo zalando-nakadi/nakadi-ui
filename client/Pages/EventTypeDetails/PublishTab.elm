@@ -15,6 +15,7 @@ import Http
 import Json.Decode
 import Config
 import Result
+import Helpers.Ace as Ace
 
 
 publishTab : Model -> Html Msg
@@ -63,14 +64,21 @@ Example:
             [ h3 [ class "dc-h3" ] [ text "Publish event to this Event Type" ]
             , p [ class "dc--text-less-important" ] [ text "Expectd JSON array of events. Example: [{\"order_id\": \"1052\"}, {\"order_id\": \"8364\"}]" ]
             , div []
-                [ textarea
-                    [ onInput EditEvent
-                    , placeholder aPlaceholder
-                    , value pageState.editEvent
-                    , rows 15
-                    , class "dc-textarea"
+                [ pre
+                    [ class "ace-edit" ]
+                    [ Ace.toHtml
+                        [ Ace.value pageState.editEvent
+                        , Ace.onSourceChange EditEvent
+                        , Ace.mode "json"
+                        , Ace.theme "dawn"
+                        , Ace.tabSize 4
+                        , Ace.useSoftTabs False
+                        , Ace.extensions [ "language_tools" ]
+                        , Ace.enableLiveAutocompletion True
+                        , Ace.enableBasicAutocompletion True
+                        ]
+                        []
                     ]
-                    []
                 ]
             , div [ class "dc--text-error" ] [ text jsonError ]
             , showRemoteDataStatus pageState.sendEventResponse

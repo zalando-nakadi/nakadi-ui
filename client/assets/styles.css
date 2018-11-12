@@ -406,12 +406,27 @@ body {
     margin-bottom: -10px;
 }
 
-.sql-box {
+.sql-view {
     width: calc(100vw - 490px);
     height: calc(100vh - 400px);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;
     margin-bottom: -10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;
+    background-color: #F9F9F9;
     padding: 10px;
+}
+
+.ace-edit {
+    height: 500px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;
+    background-color: #F9F9F9;
+    padding: 10px;
+}
+
+.ace-edit > .elm-ace,
+.sql-view > .elm-ace {
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
 }
 
 .partitions-tab__list {

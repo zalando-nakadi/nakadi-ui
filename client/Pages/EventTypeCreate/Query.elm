@@ -24,6 +24,7 @@ import Helpers.Panel
 import Stores.EventType exposing (allAudiences)
 import Models exposing (AppModel)
 import Helpers.UI exposing (..)
+import Helpers.Ace as Ace
 
 
 viewQueryForm : AppModel -> Html Msg
@@ -95,17 +96,23 @@ sqlEditor : Model -> Html Msg
 sqlEditor formModel =
     inputFrame FieldSql "SQL Query" "" helpSql Required formModel <|
         div []
-            [ div [ class "dc-btn-group" ]
-                []
-            , textarea
-                [ onInput (OnInput FieldSql)
-                , value (getValue FieldSql formModel.values)
-                , id (inputId formModel.formId FieldSql)
-                , validationClass FieldSql "dc-textarea" formModel
-                , tabindex 2
-                , rows 10
+            [ div [ class "dc-btn-group" ] []
+            , pre
+                [ class "ace-edit" ]
+                [ Ace.toHtml
+                    [ Ace.value (getValue FieldSql formModel.values)
+                    , Ace.onSourceChange (OnInput FieldSql)
+                    , Ace.mode "sql"
+                    , Ace.theme "dawn"
+                    , Ace.tabSize 4
+                    , Ace.useSoftTabs False
+                    , Ace.extensions [ "language_tools" ]
+                    , Ace.enableLiveAutocompletion True
+                    , Ace.enableBasicAutocompletion True
+
+                    ]
+                    []
                 ]
-                []
             ]
 
 

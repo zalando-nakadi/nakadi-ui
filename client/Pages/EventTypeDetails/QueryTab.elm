@@ -16,6 +16,7 @@ import Json.Decode
 import Config
 import User.Models exposing (Settings)
 import String.Extra exposing (replace)
+import Helpers.Ace as Ace
 
 
 queryTab : Settings -> Model -> Html Msg
@@ -80,7 +81,7 @@ queryTabHeader settings model query =
                     [ i [ class "far fa-clipboard" ] [] ]
                 , terminate
                 ]
-            , pre [ class "sql-box" ] [ text query.sql ]
+            , sqlView query.sql
             , deleteQueryPopup model query
             ]
 
@@ -99,6 +100,22 @@ queryHelp =
     , newline
     , link "More in the API Manual" "https://apis.zalando.net/apis/3d932e38-b9db-42cf-84bb-0898a72895fb/ui"
     ]
+
+
+sqlView : String -> Html msg
+sqlView sql =
+    pre [ class "sql-view" ]
+        [ Ace.toHtml
+            [ Ace.value sql
+            , Ace.mode "sql"
+            , Ace.theme "dawn"
+            , Ace.tabSize 4
+            , Ace.useSoftTabs False
+            , Ace.extensions [ "language_tools" ]
+            , Ace.readOnly True
+            ]
+            []
+        ]
 
 
 loadQuery : (WebData Query -> msg) -> String -> Cmd msg
