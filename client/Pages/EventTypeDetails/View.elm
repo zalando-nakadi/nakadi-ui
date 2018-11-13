@@ -115,6 +115,9 @@ detailsLayout typeName eventType model =
         showNakadiSql =
             settings.showNakadiSql
 
+        isQueryOutput =
+            showNakadiSql && isSuccess pageState.loadQueryResponse
+
         tab =
             pageState.tab
 
@@ -231,7 +234,7 @@ detailsLayout typeName eventType model =
                                     eventType
                                 )
                               ]
-                            , (if showNakadiSql && isSuccess pageState.loadQueryResponse then
+                            , (if isQueryOutput then
                                 [ ( QueryTab
                                   , "SQL Query"
                                   , queryTab settings pageState
@@ -271,11 +274,15 @@ detailsLayout typeName eventType model =
                                     usersInfoUrl
                                     eventType
                                 )
-                              , ( PublishTab
-                                , "Publish Events"
-                                , publishTab pageState
-                                )
                               ]
+                            , if not isQueryOutput then
+                                [ ( PublishTab
+                                  , "Publish Events"
+                                  , publishTab pageState
+                                  )
+                                ]
+                              else
+                                []
                             ]
                     ]
                 , deletePopup model
