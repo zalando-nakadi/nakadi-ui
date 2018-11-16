@@ -91,7 +91,7 @@ queryHelp =
     [ text "Nakadi SQL API provides a self-serviceable SQL interface for stream processing Nakadi event"
     , text " types. By expressing transformations as SQL, this service enables a broader audience to analyse"
     , text " and process streaming data in real-time. Nakadi SQL is scalable, elastic and fault-tolerant."
-    , text " It's planned to support a wide range of streaming operations, including data filtering,"
+    , text " It is planned to support a wide range of streaming operations, including data filtering,"
     , text " transformations, aggregations, joins, windowing, and sessionization."
     , newline
     , text "A query describes a set of operations to be performed on one or more EventTypes."
