@@ -3,6 +3,7 @@ module Pages.EventTypeDetails.View exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import RemoteData exposing (isSuccess)
 import String.Extra exposing (replace)
 import Models exposing (AppModel)
 import Helpers.Panel exposing (loadingStatus, warningMessage)
@@ -30,6 +31,7 @@ import Pages.EventTypeDetails.Messages exposing (..)
 import Pages.EventTypeDetails.Models exposing (Tabs(..), Model)
 import Pages.EventTypeDetails.Help as Help
 import Pages.EventTypeDetails.PublishTab exposing (publishTab)
+import Pages.EventTypeDetails.QueryTab exposing (queryTab)
 import Pages.EventTypeDetails.EffectiveSchema exposing (toEffective)
 import Pages.EventTypeList.Models
 import Pages.Partition.Models
@@ -101,11 +103,20 @@ detailsLayout typeName eventType model =
             model.eventTypeDetailsPage.version
                 |> Maybe.withDefault (eventType.schema.version |> Maybe.withDefault Constants.noneLabel)
 
+        settings =
+            model.userStore.user.settings
+
         appsInfoUrl =
-            model.userStore.user.settings.appsInfoUrl
+            settings.appsInfoUrl
 
         usersInfoUrl =
-            model.userStore.user.settings.usersInfoUrl
+            settings.usersInfoUrl
+
+        showNakadiSql =
+            settings.showNakadiSql
+
+        isQueryOutput =
+            showNakadiSql && isSuccess pageState.loadQueryResponse
 
         tab =
             pageState.tab
@@ -210,54 +221,69 @@ detailsLayout typeName eventType model =
                                 infoDateToText eventType.updated_at
                             ]
                         ]
-                    , tabs tabOptions
-                        (Just tab)
-                        [ ( SchemaTab
-                          , "Schema"
-                          , schemaTab
-                                jsonEditorState
-                                pageState.eventTypeSchemasStore
-                                selectedVersion
-                                pageState.formatted
-                                pageState.effective
-                                eventType
-                          )
-                        , ( PartitionsTab
-                          , "Partitions"
-                          , partitionsTab
-                                eventType
-                                pageState.partitionsStore
-                                pageState.totalsStore
-                          )
-                        , ( PublisherTab
-                          , "Publishers"
-                          , publisherTab
-                                eventType
-                                pageState.publishersStore
-                                appsInfoUrl
-                                usersInfoUrl
-                          )
-                        , ( ConsumerTab
-                          , "Consumers"
-                          , consumersTab
-                                eventType
-                                pageState.consumersStore
-                                model.subscriptionStore
-                                appsInfoUrl
-                                usersInfoUrl
-                          )
-                        , ( AuthTab
-                          , "Authorization"
-                          , authTab
-                                appsInfoUrl
-                                usersInfoUrl
-                                eventType
-                          )
-                        , ( PublishTab
-                          , "Publish Events"
-                          , publishTab pageState
-                          )
-                        ]
+                    , tabs tabOptions (Just tab) <|
+                        List.concat
+                            [ [ ( SchemaTab
+                                , "Schema"
+                                , schemaTab
+                                    jsonEditorState
+                                    pageState.eventTypeSchemasStore
+                                    selectedVersion
+                                    pageState.formatted
+                                    pageState.effective
+                                    eventType
+                                )
+                              ]
+                            , (if isQueryOutput then
+                                [ ( QueryTab
+                                  , "SQL Query"
+                                  , queryTab settings pageState
+                                  )
+                                ]
+                               else
+                                []
+                              )
+                            , [ ( PartitionsTab
+                                , "Partitions"
+                                , partitionsTab
+                                    eventType
+                                    pageState.partitionsStore
+                                    pageState.totalsStore
+                                )
+                              , ( PublisherTab
+                                , "Publishers"
+                                , publisherTab
+                                    eventType
+                                    pageState.publishersStore
+                                    appsInfoUrl
+                                    usersInfoUrl
+                                )
+                              , ( ConsumerTab
+                                , "Consumers"
+                                , consumersTab
+                                    eventType
+                                    pageState.consumersStore
+                                    model.subscriptionStore
+                                    appsInfoUrl
+                                    usersInfoUrl
+                                )
+                              , ( AuthTab
+                                , "Authorization"
+                                , authTab
+                                    appsInfoUrl
+                                    usersInfoUrl
+                                    eventType
+                                )
+                              ]
+                            , if not isQueryOutput then
+                                [ ( PublishTab
+                                  , "Publish Events"
+                                  , publishTab pageState
+                                  )
+                                ]
+                              else
+                                []
+                            ]
                     ]
                 , deletePopup model
                     eventType
@@ -707,6 +733,7 @@ authTab appsInfoUrl usersInfoUrl eventType =
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
                         , showWrite = True
+                        , showAnyToken = True
                         , help = Help.authorization
                         }
                         (always Reload)

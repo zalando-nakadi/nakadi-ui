@@ -42,6 +42,10 @@ view model =
             Html.map EventTypeCreateMsg <|
                 Pages.EventTypeCreate.View.view model
 
+        QueryCreateRoute ->
+            Html.map EventTypeCreateMsg <|
+                Pages.EventTypeCreate.View.view model
+
         PartitionRoute param query ->
             Html.map PartitionMsg <|
                 Pages.Partition.View.view model

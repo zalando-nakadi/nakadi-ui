@@ -10,6 +10,10 @@ urlNakadiApi : String
 urlNakadiApi =
     urlBase ++ "api/nakadi/"
 
+urlNakadiSqlApi : String
+urlNakadiSqlApi =
+    urlBase ++ "api/nakadi-sql/"
+
 
 urlValidationApi : String
 urlValidationApi =

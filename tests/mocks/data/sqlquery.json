@@ -1,0 +1,26 @@
+{
+  "authorization": {
+    "admins": [
+      {
+        "data_type": "user",
+        "value": "lmontrieux"
+      }
+    ],
+    "readers": [
+      {
+        "data_type": "user",
+        "value": "lmontrieux"
+      }
+    ]
+  },
+  "created": "2018-10-31T09:41:21.274",
+  "id": "lm.sql.test1.output",
+  "output_event_type": {
+    "category": "data",
+    "name": "lm.sql.test1.output",
+    "owning_application": "stups_nakadi"
+  },
+  "sql": "select * from \"lm.sql.test1\" t1",
+  "status": "active",
+  "updated": "2018-10-31T09:41:21.274"
+}

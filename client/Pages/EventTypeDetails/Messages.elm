@@ -9,8 +9,10 @@ import Stores.CursorDistance
 import Stores.Partition
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
+import Stores.Query
 import Http
 import RemoteData exposing (WebData)
+
 
 type Msg
     = OnRouteChange Route
@@ -44,3 +46,10 @@ type Msg
     | SendEvent
     | SendEventResponse (WebData String)
     | SendEventReset
+    | LoadQuery String
+    | LoadQueryResponse (WebData Stores.Query.Query)
+    | OpenDeleteQueryPopup
+    | CloseDeleteQueryPopup
+    | ConfirmQueryDelete
+    | QueryDelete
+    | QueryDeleteResponse (WebData ())

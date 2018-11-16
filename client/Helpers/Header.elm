@@ -36,7 +36,7 @@ navLinks model =
         , tab (SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery) "Subscriptions"
         , span [ class "header__link" ]
             [ UI.externalLink "Documentation" model.userStore.user.settings.docsUrl ]
-        , buttonCreate
+        , buttonCreate model.userStore.user.settings.showNakadiSql
         ]
     ]
 
@@ -58,23 +58,38 @@ rightPanel model =
     ]
 
 
-buttonCreate : AppHtml
-buttonCreate =
-    div [ class "dropdown-menu" ]
-        [ button [ class "dc-btn dc-btn--primary" ]
-            [ text "Create"
-            , span [ class "dc-btn-dropdown__arrow dc-btn-dropdown__arrow--down" ] []
-            ]
-        , div [ class "dropdown-menu__popup" ]
-            [ a
-                [ class "dropdown-menu__item dc-link"
-                , href (routeToUrl EventTypeCreateRoute)
+buttonCreate : Bool -> AppHtml
+buttonCreate showNakadiSql =
+    let
+        className =
+            if showNakadiSql then
+                "show-sql-feature dropdown-menu"
+            else
+                "dropdown-menu"
+    in
+        div [ class className ]
+            [ button [ class "dc-btn dc-btn--primary" ]
+                [ text "Create"
+                , span [ class "dc-btn-dropdown__arrow dc-btn-dropdown__arrow--down" ] []
                 ]
-                [ text "Event Type" ]
-            , a
-                [ class "dropdown-menu__item dc-link"
-                , href (routeToUrl SubscriptionCreateRoute)
+            , div [ class "dropdown-menu__popup" ]
+                [ a
+                    [ class "dropdown-menu__item dc-link"
+                    , href (routeToUrl EventTypeCreateRoute)
+                    ]
+                    [ text "Event Type" ]
+                , if showNakadiSql then
+                    a
+                        [ class "dropdown-menu__item dc-link"
+                        , href (routeToUrl QueryCreateRoute)
+                        ]
+                        [ text "SQL Query" ]
+                  else
+                    UI.none
+                , a
+                    [ class "dropdown-menu__item dc-link"
+                    , href (routeToUrl SubscriptionCreateRoute)
+                    ]
+                    [ text "Subscription" ]
                 ]
-                [ text "Subscription" ]
             ]
-        ]

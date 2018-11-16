@@ -53,6 +53,8 @@ type alias Settings =
     , supportUrl : String
     , forbidDeleteUrl : String
     , allowDeleteEvenType : Bool
+    , showNakadiSql : Bool
+    , queryMonitoringUrl : String
     }
 
 
@@ -69,4 +71,6 @@ initialSettings =
     , supportUrl = emptyString
     , forbidDeleteUrl = emptyString
     , allowDeleteEvenType = False
+    , showNakadiSql = False
+    , queryMonitoringUrl = emptyString
     }

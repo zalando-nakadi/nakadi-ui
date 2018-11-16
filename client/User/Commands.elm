@@ -38,7 +38,8 @@ settingsDecoder =
         |> optional "supportUrl" string emptyString
         |> optional "forbidDeleteUrl" string emptyString
         |> optional "allowDeleteEvenType" bool False
-
+        |> optional "showNakadiSql" bool False
+        |> optional "queryMonitoringUrl" string emptyString
 
 {-| Redirect  browser to logout
     This function never actually returns

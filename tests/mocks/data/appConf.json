@@ -3,6 +3,7 @@
   "port": "3000",
   "baseUrl": "http://localhost:3000",
   "nakadiApiUrl": "http://localhost:5341",
+  "nakadiApiSqlUrl": "http://localhost:6341",
   "serverOptions": {},
   "auth": {
     "strategy": "../tests/mocks/testPassportStrategy",
@@ -20,8 +21,10 @@
     "monitoringUrl": "https://zmon.example.com/grafana/dashboard/db/nakadi-staging",
     "sloMonitoringUrl": "https://zmon.example.com/grafana/dashboard/db/nakadi-slos",
     "eventTypeMonitoringUrl": "https://zmon.example.com/grafana/dashboard/db/nakadi-et/?var-stack=nakadi-staging&var-et={et}",
+    "queryMonitoringUrl": "https://zmon.example.com/grafana/dashboard/db/nakadi-sql-query/?var-stack=live&var-queryId={query}",
     "subscriptionMonitoringUrl": "https://zmon.example.com/grafana/dashboard/db/nakadi-subscription/?var-stack=nakadi-staging&var-id={id}",
-    "allowDeleteEvenType": true
+    "allowDeleteEvenType": true,
+    "showNakadiSql": true
   },
   "logsApi": {
     "scalyrUrl": "http://localhost:5342",

@@ -43,4 +43,8 @@ ENV CREDENTIALS_DIR="deploy/OAUTH"
 ENV HTTPS_ENABLE=0
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 
+ENV SHOW_NAKADI_SQL=yes
+ENV NAKADI_SQL_API_URL="http://nakadi-sql.example.com"
+ENV QUERY_MONITORING_URL="https://zmon.example.com/grafana/dashboard/db/nakadi-et/?var-stack=live&var-$queryId={query}"
+
 ENTRYPOINT npm run start:prod

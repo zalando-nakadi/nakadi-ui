@@ -126,6 +126,13 @@ AUTHORIZE_OPTIONS=myscope
 #ANALYTICS_OPTIONS_url="https://nakadi-staging.example.com"
 #ANALYTICS_OPTIONS_name="example-team.nakadi-ui.access-log"
 
+# Nakadi SQL Support
+# If "yes" shows create SQL Query menu item and the SQL Query tab
+# for query output event types
+SHOW_NAKADI_SQL=no
+NAKADI_SQL_API_URL="http://nakadi-sql.example.com"
+QUERY_MONITORING_URL="https://zmon.example.com/grafana/dashboard/db/nakadi-et/?var-stack=live&var-$queryId={query}"
+
 # The key used to encode/decode user session.
 # Required
 COOKIE_SECRET="!!! CHANGE THIS!!! ksdgi98NNliuHHy^fdjy6b!khl_ig6%^#vGdsljhgl Bfdes&8yh3e"

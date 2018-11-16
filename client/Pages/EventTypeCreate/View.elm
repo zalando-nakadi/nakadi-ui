@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
+import Pages.EventTypeCreate.Query exposing (viewQueryForm)
 import Helpers.UI exposing (helpIcon, PopupPosition(..), onSelect, none, externalLink)
 import Pages.EventTypeDetails.Help as Help
 import Models exposing (AppModel)
@@ -27,6 +28,7 @@ import Stores.EventType
 import Helpers.AccessEditor as AccessEditor
 import Config
 import Helpers.Forms exposing (..)
+import Helpers.Ace as Ace
 
 
 view : AppModel -> Html Msg
@@ -63,17 +65,22 @@ view model =
                     Helpers.Panel.loadingStatus formModel.partitionsStore <|
                         findEventType name viewFormClone
 
+                CreateQuery ->
+                    container <|
+                        viewQueryForm model
+
 
 viewFormCreate : AppModel -> Html Msg
 viewFormCreate model =
     viewForm model
-        { updateMode = False
+        { nameEditing = Enabled
         , formTitle = "Create Event Type"
         , successMessage = "Event Type Created!"
         , categoriesOptions = allCategories
         , compatibilityModeOptions = allModes
         , cleanupPoliciesOptions = allCleanupPolicies
         , partitionStrategyEditing = Enabled
+        , partitionNumberEditing = Enabled
         }
 
 
@@ -114,44 +121,47 @@ viewFormUpdate model originalEventType =
             [ originalEventType.cleanup_policy ]
     in
         viewForm model
-            { updateMode = True
+            { nameEditing = Disabled
             , formTitle = "Update Event Type"
             , successMessage = "Event Type Updated!"
             , categoriesOptions = categoriesOptions
             , compatibilityModeOptions = compatibilityModeOptions
             , cleanupPoliciesOptions = cleanupPoliciesOptions
             , partitionStrategyEditing = partitionStrategyEditing
+            , partitionNumberEditing = Disabled
             }
 
 
 viewFormClone : AppModel -> EventType -> Html Msg
 viewFormClone model originalEventType =
     viewForm model
-        { updateMode = False
+        { nameEditing = Enabled
         , formTitle = "Clone Event Type"
         , successMessage = "Event Type Cloned!"
         , categoriesOptions = allCategories
         , compatibilityModeOptions = allModes
         , cleanupPoliciesOptions = allCleanupPolicies
         , partitionStrategyEditing = Enabled
+        , partitionNumberEditing = Enabled
         }
 
 
 type alias FormSetup =
-    { updateMode : Bool
+    { nameEditing : Locking
     , formTitle : String
     , successMessage : String
     , categoriesOptions : List String
     , compatibilityModeOptions : List String
     , cleanupPoliciesOptions : List String
     , partitionStrategyEditing : Locking
+    , partitionNumberEditing : Locking
     }
 
 
 viewForm : AppModel -> FormSetup -> Html Msg
 viewForm model setup =
     let
-        { updateMode, formTitle, successMessage, categoriesOptions, compatibilityModeOptions, cleanupPoliciesOptions, partitionStrategyEditing } =
+        { nameEditing, formTitle, successMessage, categoriesOptions, compatibilityModeOptions, cleanupPoliciesOptions, partitionStrategyEditing, partitionNumberEditing } =
             setup
 
         formModel =
@@ -177,11 +187,7 @@ viewForm model setup =
                     "Should be several words (with '_', '-') separated by dot."
                     Help.eventType
                     Required
-                    (if updateMode then
-                        Disabled
-                     else
-                        Enabled
-                    )
+                    nameEditing
                 , textInput formModel
                     FieldOwningApplication
                     OnInput
@@ -230,18 +236,15 @@ viewForm model setup =
                           )
                         ]
                     ]
-                , if updateMode then
-                    none
-                  else
-                    selectInput formModel
-                        FieldPartitionsNumber
-                        OnInput
-                        "Number of Partitions"
-                        ""
-                        Help.defaultStatistic
-                        Optional
-                        Enabled
-                        (List.range 1 Config.maxPartitionNumber |> List.map toString)
+                , selectInput formModel
+                    FieldPartitionsNumber
+                    OnInput
+                    "Number of Partitions"
+                    ""
+                    Help.defaultStatistic
+                    Optional
+                    partitionNumberEditing
+                    (List.range 1 Config.maxPartitionNumber |> List.map toString)
                 , textInput formModel
                     FieldOrderingKeyFields
                     OnInput
@@ -320,6 +323,7 @@ accessEditor appsInfoUrl usersInfoUrl formModel =
         { appsInfoUrl = appsInfoUrl
         , usersInfoUrl = usersInfoUrl
         , showWrite = True
+        , showAnyToken = True
         , help = Help.authorization
         }
         AccessEditorMsg
@@ -342,12 +346,19 @@ schemaEditor formModel =
                     ]
                     [ text "Clear" ]
                 ]
-            , textarea
-                [ onInput (OnInput FieldSchema)
-                , value (getValue FieldSchema formModel.values)
-                , id (inputId formModel.formId FieldSchema)
-                , validationClass FieldSchema "dc-textarea" formModel
-                , tabindex 2
+            , pre
+                [ class "ace-edit" ]
+                [ Ace.toHtml
+                    [ Ace.value (getValue FieldSchema formModel.values)
+                    , Ace.onSourceChange (OnInput FieldSchema)
+                    , Ace.mode "json"
+                    , Ace.theme "dawn"
+                    , Ace.tabSize 4
+                    , Ace.useSoftTabs False
+                    , Ace.extensions [ "language_tools" ]
+                    , Ace.enableLiveAutocompletion True
+                    , Ace.enableBasicAutocompletion True
+                    ]
+                    []
                 ]
-                []
             ]

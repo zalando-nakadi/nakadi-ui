@@ -87,6 +87,9 @@ isInactivePageMsg message route =
                 EventTypeCloneRoute _ ->
                     False
 
+                QueryCreateRoute ->
+                    False
+
                 _ ->
                     True
 
@@ -204,7 +207,7 @@ updateComponents message model =
         EventTypeDetailsMsg subMsg ->
             let
                 ( newModel, subCmd, newRoute ) =
-                    PageEventTypeDetails.update subMsg model.eventTypeDetailsPage
+                    PageEventTypeDetails.update model.userStore.user.settings subMsg model.eventTypeDetailsPage
             in
                 ( { model | eventTypeDetailsPage = newModel, newRoute = newRoute }, Cmd.map EventTypeDetailsMsg subCmd )
 
@@ -283,6 +286,9 @@ interComponentMessaging message ( model, cmd ) =
                             EventTypeDetailsRoute params query ->
                                 [ EventTypeDetailsMsg EventTypeDetailsPageMessages.Reload ]
 
+                            QueryCreateRoute ->
+                                [ EventTypeCreateMsg Pages.EventTypeCreate.Messages.Reset ]
+
                             _ ->
                                 []
                 in
@@ -300,7 +306,7 @@ interComponentMessaging message ( model, cmd ) =
                             SubscriptionCloneRoute params ->
                                 [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.Reset) ]
 
-                            SubscriptionDetailsRoute params query->
+                            SubscriptionDetailsRoute params query ->
                                 [ SubscriptionDetailsMsg SubscriptionDetailsPageMessages.Refresh ]
 
                             _ ->
@@ -460,6 +466,12 @@ interComponentMessaging message ( model, cmd ) =
 
                     SubscriptionCloneRoute param ->
                         send [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.OnRouteChange (Pages.SubscriptionCreate.Models.Clone param.id)) ]
+
+                    QueryCreateRoute ->
+                        send
+                            [ EventTypeCreateMsg
+                                (Pages.EventTypeCreate.Messages.OnRouteChange Pages.EventTypeCreate.Models.CreateQuery)
+                            ]
 
                     _ ->
                         pass

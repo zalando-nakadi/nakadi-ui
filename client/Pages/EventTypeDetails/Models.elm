@@ -10,6 +10,7 @@ import Stores.Partition
 import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
+import Stores.Query exposing (Query)
 import Helpers.Store exposing (Status(Unknown), ErrorMessage)
 import Http
 import RemoteData exposing (WebData, RemoteData(NotAsked))
@@ -31,12 +32,16 @@ initialModel =
     , validationIssuesStore = Stores.EventTypeValidation.initialModel
     , editEvent = emptyString
     , sendEventResponse = NotAsked
+    , loadQueryResponse = NotAsked
     , deletePopup =
         { isOpen = False
         , deleteCheckbox = False
         , status = Unknown
         , error = Nothing
         }
+    , deleteQueryPopupOpen = False
+    , deleteQueryPopupCheck = False
+    , deleteQueryResponse = NotAsked
     }
 
 
@@ -47,6 +52,7 @@ type Tabs
     | ConsumerTab
     | AuthTab
     | PublishTab
+    | QueryTab
 
 
 type alias Model =
@@ -64,12 +70,16 @@ type alias Model =
     , validationIssuesStore : Stores.EventTypeValidation.Model
     , editEvent : String
     , sendEventResponse : WebData String
+    , loadQueryResponse : WebData Query
     , deletePopup :
         { isOpen : Bool
         , deleteCheckbox : Bool
         , status : Status
         , error : Maybe ErrorMessage
         }
+    , deleteQueryPopupOpen : Bool
+    , deleteQueryPopupCheck : Bool
+    , deleteQueryResponse : WebData ()
     }
 
 
@@ -141,6 +151,9 @@ stringToTabs str =
 
         "PublishTab" ->
             Just PublishTab
+
+        "QueryTab" ->
+            Just QueryTab
 
         _ ->
             Nothing

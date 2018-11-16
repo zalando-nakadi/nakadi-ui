@@ -39,7 +39,8 @@ type alias Config =
     { appsInfoUrl : String
     , usersInfoUrl : String
     , showWrite : Bool
-    , help: List (Html Msg)
+    , showAnyToken : Bool
+    , help : List (Html Msg)
     }
 
 
@@ -395,7 +396,10 @@ accessTable config renderer records =
     in
         UI.grid header
             (List.concat
-                [ renderSection All emptyString
+                [ if config.showAnyToken then
+                    renderSection All emptyString
+                  else
+                    []
                 , renderSection User "Users:"
                 , renderSection Service "Services:"
                 , renderSection Unknown "Unknown types:"
@@ -496,5 +500,3 @@ hasPermission permissionType record =
 
         Admin ->
             record.permission.admin
-
-

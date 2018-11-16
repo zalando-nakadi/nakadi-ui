@@ -3,6 +3,7 @@ module Pages.EventTypeDetails.Update exposing (..)
 import Pages.EventTypeDetails.Messages exposing (Msg(..))
 import Pages.EventTypeDetails.Models exposing (Model, initialModel, Tabs(..))
 import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
+import Pages.EventTypeDetails.QueryTab exposing (loadQuery, deleteQuery)
 import Routing.Models exposing (Route(EventTypeDetailsRoute))
 import Helpers.Task exposing (dispatch)
 import Helpers.JsonEditor
@@ -19,11 +20,12 @@ import User.Commands exposing (logoutIfExpired)
 import Constants
 import Http
 import Config
-import RemoteData exposing (RemoteData(NotAsked))
+import RemoteData exposing (isFailure, isSuccess, RemoteData(Loading, Failure, NotAsked))
+import User.Models exposing (Settings)
 
 
-update : Msg -> Model -> ( Model, Cmd Msg, Route )
-update message model =
+update : Settings -> Msg -> Model -> ( Model, Cmd Msg, Route )
+update settings message model =
     let
         deletePopup =
             model.deletePopup
@@ -51,6 +53,7 @@ update message model =
                     , Cmd.batch
                         [ dispatch (TabChange model.tab)
                         , dispatch (ValidationStoreMsg (loadSubStoreMsg model.name))
+                        , dispatch (LoadQuery model.name)
                         ]
                     )
 
@@ -69,6 +72,9 @@ update message model =
                 TabChange tab ->
                     ( { model | tab = tab }
                     , case tab of
+                        QueryTab ->
+                            Cmd.none
+
                         SchemaTab ->
                             dispatch (EventTypeSchemasStoreMsg (loadSubStoreMsg model.name))
 
@@ -121,6 +127,36 @@ update message model =
                             Stores.EventTypeSchema.update subMsg model.eventTypeSchemasStore
                     in
                         ( { model | eventTypeSchemasStore = subModel }, Cmd.map EventTypeSchemasStoreMsg msCmd )
+
+                LoadQuery id ->
+                    let
+                        startLoadingQuery =
+                            ( { model | loadQueryResponse = Loading }
+                            , loadQuery LoadQueryResponse id
+                            )
+
+                        switchTab =
+                            ( { model | loadQueryResponse = Failure Http.NetworkError }
+                            , if model.tab == QueryTab then
+                                dispatch (TabChange SchemaTab)
+                              else
+                                Cmd.none
+                            )
+                    in
+                        if settings.showNakadiSql then
+                            startLoadingQuery
+                        else
+                            switchTab
+
+                LoadQueryResponse resp ->
+                    let
+                        switchTabOnFailure =
+                            if isFailure resp && model.tab == QueryTab then
+                                dispatch (TabChange SchemaTab)
+                            else
+                                Cmd.none
+                    in
+                        ( { model | loadQueryResponse = resp }, switchTabOnFailure )
 
                 LoadPublishers ->
                     ( model, dispatch (PublishersStoreMsg (loadSubStoreMsg model.name)) )
@@ -243,6 +279,37 @@ update message model =
 
                         Err error ->
                             ( { model | deletePopup = Store.onFetchErr deletePopup error }, logoutIfExpired error )
+
+                OpenDeleteQueryPopup ->
+                    ( { model
+                        | deleteQueryResponse = NotAsked
+                        , deleteQueryPopupCheck = False
+                        , deleteQueryPopupOpen = True
+                      }
+                    , Cmd.none
+                    )
+
+                CloseDeleteQueryPopup ->
+                    ( { model | deleteQueryPopupOpen = False }, Cmd.none )
+
+                ConfirmQueryDelete ->
+                    ( { model | deleteQueryPopupCheck = not model.deleteQueryPopupCheck }, Cmd.none )
+
+                QueryDelete ->
+                    ( model, deleteQuery QueryDeleteResponse model.name )
+
+                QueryDeleteResponse response ->
+                    let
+                        cmd =
+                            if response |> isSuccess then
+                                Cmd.batch
+                                    [ dispatch CloseDeleteQueryPopup
+                                    , dispatch (LoadQuery model.name)
+                                    ]
+                            else
+                                Cmd.none
+                    in
+                        ( { model | deleteQueryResponse = response }, cmd )
 
                 OutOnEventTypeDeleted ->
                     ( model, Cmd.none )
