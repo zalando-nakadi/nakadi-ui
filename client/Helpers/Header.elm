@@ -60,29 +60,36 @@ rightPanel model =
 
 buttonCreate : Bool -> AppHtml
 buttonCreate showNakadiSql =
-    div [ class "dropdown-menu" ]
-        [ button [ class "dc-btn dc-btn--primary" ]
-            [ text "Create"
-            , span [ class "dc-btn-dropdown__arrow dc-btn-dropdown__arrow--down" ] []
-            ]
-        , div [ class "dropdown-menu__popup" ]
-            [ a
-                [ class "dropdown-menu__item dc-link"
-                , href (routeToUrl EventTypeCreateRoute)
+    let
+        className =
+            if showNakadiSql then
+                "show-sql-feature dropdown-menu"
+            else
+                "dropdown-menu"
+    in
+        div [ class className ]
+            [ button [ class "dc-btn dc-btn--primary" ]
+                [ text "Create"
+                , span [ class "dc-btn-dropdown__arrow dc-btn-dropdown__arrow--down" ] []
                 ]
-                [ text "Event Type" ]
-            , if showNakadiSql then
-                a
+            , div [ class "dropdown-menu__popup" ]
+                [ a
                     [ class "dropdown-menu__item dc-link"
-                    , href (routeToUrl QueryCreateRoute)
+                    , href (routeToUrl EventTypeCreateRoute)
                     ]
-                    [ text "SQL Query" ]
-              else
-                UI.none
-            , a
-                [ class "dropdown-menu__item dc-link"
-                , href (routeToUrl SubscriptionCreateRoute)
+                    [ text "Event Type" ]
+                , if showNakadiSql then
+                    a
+                        [ class "dropdown-menu__item dc-link"
+                        , href (routeToUrl QueryCreateRoute)
+                        ]
+                        [ text "SQL Query" ]
+                  else
+                    UI.none
+                , a
+                    [ class "dropdown-menu__item dc-link"
+                    , href (routeToUrl SubscriptionCreateRoute)
+                    ]
+                    [ text "Subscription" ]
                 ]
-                [ text "Subscription" ]
             ]
-        ]

@@ -85,6 +85,11 @@ body {
 
 .dropdown-menu:hover .dropdown-menu__popup {
     transition: height .1s ease-out;
+    height: 100px;
+}
+
+.show-sql-feature.dropdown-menu:hover .dropdown-menu__popup {
+    transition: height .1s ease-out;
     height: 150px;
 }
 
