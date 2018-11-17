@@ -19,6 +19,7 @@ type Msg
     | AddValueChange String
     | AddPermissionChange PermissionType Bool
     | Add
+    | Remove AuthorizationAttribute
 
 
 
@@ -108,6 +109,13 @@ update msg model =
                     record :: model.authorization |> List.sortBy .value
             in
                 ( { model | authorization = newAuthorization, value = emptyString }, Cmd.none )
+
+        Remove record ->
+            let
+                authorization =
+                    model.authorization |> List.filter (\r -> r /= record)
+            in
+                ( { model | authorization = authorization }, Cmd.none )
 
         ChangePermission key value accessType on ->
             let
@@ -245,7 +253,7 @@ view config tagger model =
             , hr [ class "dc-divider" ] []
             , div []
                 [ addRowControls config model
-                , accessTable config (row checkboxWrite) model.authorization
+                , accessTable config rowWrite model.authorization
                 ]
             ]
 
@@ -260,7 +268,7 @@ viewReadOnly config tagger auth =
                 , span [ class "dc-label__sub" ] [ text "required" ]
                 ]
             , hr [ class "dc-divider" ] []
-            , accessTable config (row checkboxReadOnly) <| flatten auth
+            , accessTable config rowReadOnly <| flatten auth
             ]
 
 
@@ -390,9 +398,9 @@ accessTable config renderer records =
 
         header =
             if config.showWrite then
-                [ "Name", "Read", "Write", "Admin" ]
+                [ "Name", "Read", "Write", "Admin", "" ]
             else
-                [ "Name", "Read", "Admin" ]
+                [ "Name", "Read", "Admin", "" ]
     in
         UI.grid header
             (List.concat
@@ -410,38 +418,64 @@ accessTable config renderer records =
 typeRow : String -> Html Msg
 typeRow name =
     tr [ class "dc-table__tr" ]
-        [ td [ class "dc-table__td", colspan 5 ]
+        [ td [ class "dc-table__td", colspan 6 ]
             [ label [ class "access-editor__type-label" ] [ text name ]
             ]
         ]
 
 
-row : (PermissionType -> AuthorizationAttribute -> Html Msg) -> Config -> AuthorizationAttribute -> Html Msg
-row checkboxView config record =
-    let
-        name =
-            case record.key of
-                All ->
-                    text "Any valid token"
-
-                Unknown ->
-                    span [ class "access-editor_name" ] [ text ("Key:" ++ record.data_type ++ " Value:" ++ record.value) ]
-
-                Service ->
-                    span [ class "access-editor_name" ] [ UI.linkToApp config.appsInfoUrl record.value ]
-
-                User ->
-                    span [ class "access-editor_name" ] [ UI.linkToApp config.usersInfoUrl record.value ]
-    in
-        tr [ class "dc-table__tr" ]
-            [ td [ class "dc-table__td access-editor_name-cell" ] [ name ]
-            , checkboxView Read record
-            , if config.showWrite then
-                checkboxView Write record
-              else
+rowWrite : Config -> AuthorizationAttribute -> Html Msg
+rowWrite config record =
+    tr [ class "dc-table__tr" ]
+        [ td [ class "dc-table__td access-editor_name-cell" ] [ recordName config record ]
+        , checkboxWrite Read record
+        , if config.showWrite then
+            checkboxWrite Write record
+          else
+            none
+        , checkboxWrite Admin record
+        , case record.key of
+            All ->
                 none
-            , checkboxView Admin record
-            ]
+
+            _ ->
+                div
+                    [ onClick (Remove record)
+                    , class "icon-link dc-icon--close dc-icon dc-icon--interactive dc--island-100"
+                    , title "Remove item"
+                    ]
+                    []
+        ]
+
+
+rowReadOnly : Config -> AuthorizationAttribute -> Html Msg
+rowReadOnly config record =
+    tr [ class "dc-table__tr" ]
+        [ td [ class "dc-table__td access-editor_name-cell" ] [ recordName config record ]
+        , checkboxReadOnly Read record
+        , if config.showWrite then
+            checkboxReadOnly Write record
+          else
+            none
+        , checkboxReadOnly Admin record
+        , none
+        ]
+
+
+recordName : Config -> AuthorizationAttribute -> Html Msg
+recordName config record =
+    case record.key of
+        All ->
+            text "Any valid token"
+
+        Unknown ->
+            span [ class "access-editor_name" ] [ text ("Key:" ++ record.data_type ++ " Value:" ++ record.value) ]
+
+        Service ->
+            span [ class "access-editor_name" ] [ UI.linkToApp config.appsInfoUrl record.value ]
+
+        User ->
+            span [ class "access-editor_name" ] [ UI.linkToApp config.usersInfoUrl record.value ]
 
 
 checkboxReadOnly : PermissionType -> AuthorizationAttribute -> Html Msg
