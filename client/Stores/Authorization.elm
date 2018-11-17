@@ -87,21 +87,21 @@ userAuthorization userId =
             User
             "user"
             userId
-            (Permission True True True)
+            readPermission
         ]
     , writers =
         [ AuthorizationAttribute
             User
             "user"
             userId
-            (Permission True True True)
+            writePermission
         ]
     , admins =
         [ AuthorizationAttribute
             User
             "user"
             userId
-            (Permission True True True)
+            adminPermission
         ]
     }
 
