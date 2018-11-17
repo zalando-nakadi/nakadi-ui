@@ -226,9 +226,17 @@ validate model eventTypeStore =
                         |> checkPartitionKeys model
                         |> checkSchemaFormat model
                         |> isNotEmpty FieldSchema model
+                        |> isNotEmpty FieldOwningApplication model
+                        |> isNotEmpty FieldAudience model
 
                 CreateQuery ->
-                    checkAll
+                    Dict.empty
+                        |> checkNameUnique model eventTypeStore
+                        |> checkNameFormat model
+                        |> isNotEmpty FieldName model
+                        |> isNotEmpty FieldSql model
+                        |> isNotEmpty FieldOwningApplication model
+                        |> isNotEmpty FieldAudience model
     in
         { model | validationErrors = errors }
 
