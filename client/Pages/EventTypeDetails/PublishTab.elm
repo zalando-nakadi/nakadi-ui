@@ -1,12 +1,9 @@
 module Pages.EventTypeDetails.PublishTab exposing (..)
 
-import Pages.EventTypeDetails.Models exposing (Model)
-import Pages.EventTypeDetails.Messages exposing (..)
 import RemoteData
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Helpers.UI exposing (..)
 import Helpers.Panel exposing (renderError, warningMessage)
 import Helpers.Store exposing (errorToViewRecord)
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
@@ -16,16 +13,70 @@ import Json.Decode
 import Config
 import Result
 import Helpers.Ace as Ace
+import Date exposing (Date)
+import Strftime exposing (format)
+import String.Extra
+import Constants exposing (isoDateTimeFormat)
+import RemoteData exposing (WebData, RemoteData(..))
+import Task
+
+
+type Msg
+    = EditEvent String
+    | SendEvent
+    | SendEventResponse (WebData String)
+    | SendEventReset
+    | SetPublishTemplate
+    | SetPublishTemplateWithTime Date
+
+
+type alias Model =
+    { editEvent : String
+    , sendEventResponse : WebData String
+    }
+
+
+initialModel : Model
+initialModel =
+    { editEvent = ""
+    , sendEventResponse = NotAsked
+    }
+
+
+update : Msg -> Model -> String -> ( Model, Cmd Msg )
+update message model name =
+    case message of
+        EditEvent value ->
+            ( { model | editEvent = value }, Cmd.none )
+
+        SendEvent ->
+            ( { model | sendEventResponse = Loading }, sendEvent SendEventResponse name model.editEvent )
+
+        SendEventResponse value ->
+            ( { model | sendEventResponse = value }, Cmd.none )
+
+        SendEventReset ->
+            ( { model | sendEventResponse = NotAsked, editEvent = "" }, Cmd.none )
+
+        SetPublishTemplateWithTime date ->
+            let
+                editEvent =
+                    eventsTemplate date
+            in
+                ( { model | editEvent = editEvent }, Cmd.none )
+
+        SetPublishTemplate ->
+            ( model, Date.now |> Task.perform SetPublishTemplateWithTime )
 
 
 publishTab : Model -> Html Msg
-publishTab pageState =
+publishTab model =
     let
         jsonParsed =
-            (Json.Decode.decodeString Json.Decode.value pageState.editEvent)
+            (Json.Decode.decodeString Json.Decode.value model.editEvent)
 
         jsonError =
-            if String.isEmpty pageState.editEvent then
+            if String.isEmpty model.editEvent then
                 ""
             else
                 case jsonParsed of
@@ -36,9 +87,9 @@ publishTab pageState =
                         err
 
         isDisabled =
-            (isLoading pageState.sendEventResponse)
+            (isLoading model.sendEventResponse)
                 || (Result.toMaybe jsonParsed == Nothing)
-                || (String.isEmpty pageState.editEvent)
+                || (String.isEmpty model.editEvent)
 
         classDisabled =
             if isDisabled then
@@ -61,13 +112,19 @@ Example:
 """
     in
         div [ class "dc-card" ]
-            [ h3 [ class "dc-h3" ] [ text "Publish event to this Event Type" ]
+            [ div []
+                [ button
+                    [ class "dc-btn dc-btn--small"
+                    , onClick SetPublishTemplate
+                    ]
+                    [ text "Insert template" ]
+                ]
             , p [ class "dc--text-less-important" ] [ text "Expectd JSON array of events. Example: [{\"order_id\": \"1052\"}, {\"order_id\": \"8364\"}]" ]
             , div []
                 [ pre
-                    [ class "ace-edit" ]
+                    [ class "ace-edit", style [ ( "height", "400px" ) ] ]
                     [ Ace.toHtml
-                        [ Ace.value pageState.editEvent
+                        [ Ace.value model.editEvent
                         , Ace.onSourceChange EditEvent
                         , Ace.mode "json"
                         , Ace.theme "dawn"
@@ -81,13 +138,37 @@ Example:
                     ]
                 ]
             , div [ class "dc--text-error" ] [ text jsonError ]
-            , showRemoteDataStatus pageState.sendEventResponse
+            , showRemoteDataStatus model.sendEventResponse
             , div []
                 [ button [ onClick SendEvent, disabled isDisabled, class ("dc-btn dc-btn--primary " ++ classDisabled) ] [ text "Send" ]
                 , span [ class "dc--island-100" ] []
                 , button [ onClick SendEventReset, class "dc-btn " ] [ text "Reset" ]
                 ]
             ]
+
+
+eventsTemplate : Date -> String
+eventsTemplate date =
+    let
+        timeStr =
+            format isoDateTimeFormat date
+
+        eid =
+            toString (9000 - (Date.millisecond date))
+    in
+        """
+[
+    {
+        "metadata": {
+          "occurred_at":"{timeStr}",
+          "eid":"{eid}9179-ef95-41b8-9c04-ee84685e5555"
+        },
+        "your_field":"ABC-1"
+    }
+]
+"""
+            |> String.Extra.replace "{timeStr}" timeStr
+            |> String.Extra.replace "{eid}" eid
 
 
 sendEvent : (WebData String -> msg) -> String -> String -> Cmd msg
@@ -113,15 +194,15 @@ sendEvent tagger name event =
 showRemoteDataStatus : WebData String -> Html Msg
 showRemoteDataStatus state =
     case state of
-        RemoteData.NotAsked ->
-            div [] [ none ]
+        NotAsked ->
+            div [] [ text "" ]
 
-        RemoteData.Loading ->
+        Loading ->
             div [] [ text "Publishing..." ]
 
-        RemoteData.Success resp ->
+        Success resp ->
             if String.isEmpty resp then
-                div [ class "dc--text-success" ] [ text ("Event(s) succsessfuly published!") ]
+                div [ class "dc--text-success flash-msg" ] [ text ("Event(s) succsessfuly published!") ]
             else
                 warningMessage
                     "Unexpected server response"
@@ -130,5 +211,5 @@ showRemoteDataStatus state =
                         (pre [ class "dc-pre" ] [ text (prettyPrintJson resp) ])
                     )
 
-        RemoteData.Failure resp ->
+        Failure resp ->
             resp |> errorToViewRecord |> renderError

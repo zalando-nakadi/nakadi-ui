@@ -12,6 +12,7 @@ import Stores.EventTypeValidation
 import Stores.Query
 import Http
 import RemoteData exposing (WebData)
+import Pages.EventTypeDetails.PublishTab
 
 
 type Msg
@@ -42,10 +43,6 @@ type Msg
     | OutAddToFavorite String
     | OutRemoveFromFavorite String
     | ValidationStoreMsg Stores.EventTypeValidation.Msg
-    | EditEvent String
-    | SendEvent
-    | SendEventResponse (WebData String)
-    | SendEventReset
     | LoadQuery String
     | LoadQueryResponse (WebData Stores.Query.Query)
     | OpenDeleteQueryPopup
@@ -53,3 +50,4 @@ type Msg
     | ConfirmQueryDelete
     | QueryDelete
     | QueryDeleteResponse (WebData ())
+    | PublishTabMsg Pages.EventTypeDetails.PublishTab.Msg

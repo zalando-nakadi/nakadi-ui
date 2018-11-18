@@ -965,3 +965,8 @@ body {
     box-shadow: #ffe2ae 0 0 20px;
     transition: box-shadow 0.3s;
 }
+
+.flash-msg {
+    opacity: 0;
+    transition: opacity 1s 2s;
+}

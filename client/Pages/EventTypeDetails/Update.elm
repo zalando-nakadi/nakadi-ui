@@ -22,6 +22,7 @@ import Http
 import Config
 import RemoteData exposing (isFailure, isSuccess, RemoteData(Loading, Failure, NotAsked))
 import User.Models exposing (Settings)
+import Pages.EventTypeDetails.PublishTab
 
 
 update : Settings -> Msg -> Model -> ( Model, Cmd Msg, Route )
@@ -232,17 +233,12 @@ update settings message model =
                     in
                         ( { model | validationIssuesStore = newSubModel }, Cmd.map ValidationStoreMsg newSubMsg )
 
-                EditEvent value ->
-                    ( { model | editEvent = value }, Cmd.none )
-
-                SendEvent ->
-                    ( model, sendEvent SendEventResponse model.name model.editEvent )
-
-                SendEventResponse value ->
-                    ( { model | sendEventResponse = value }, Cmd.none )
-
-                SendEventReset ->
-                    ( { model | sendEventResponse = NotAsked, editEvent = "" }, Cmd.none )
+                PublishTabMsg subMsg ->
+                    let
+                        ( newSubModel, newSubMsg ) =
+                            Pages.EventTypeDetails.PublishTab.update subMsg model.publishTab model.name
+                    in
+                        ( { model | publishTab = newSubModel }, Cmd.map PublishTabMsg newSubMsg )
 
                 OpenDeletePopup ->
                     let
