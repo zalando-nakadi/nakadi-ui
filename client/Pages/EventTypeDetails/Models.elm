@@ -12,8 +12,8 @@ import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import Stores.Query exposing (Query)
 import Helpers.Store exposing (Status(Unknown), ErrorMessage)
-import Http
 import RemoteData exposing (WebData, RemoteData(NotAsked))
+import Pages.EventTypeDetails.PublishTab
 
 
 initialModel : Model
@@ -30,8 +30,6 @@ initialModel =
     , eventTypeSchemasStore = Stores.EventTypeSchema.initialModel
     , totalsStore = Stores.CursorDistance.initialModel
     , validationIssuesStore = Stores.EventTypeValidation.initialModel
-    , editEvent = emptyString
-    , sendEventResponse = NotAsked
     , loadQueryResponse = NotAsked
     , deletePopup =
         { isOpen = False
@@ -42,6 +40,7 @@ initialModel =
     , deleteQueryPopupOpen = False
     , deleteQueryPopupCheck = False
     , deleteQueryResponse = NotAsked
+    , publishTab = Pages.EventTypeDetails.PublishTab.initialModel
     }
 
 
@@ -68,8 +67,6 @@ type alias Model =
     , eventTypeSchemasStore : Stores.EventTypeSchema.Model
     , totalsStore : Stores.CursorDistance.Model
     , validationIssuesStore : Stores.EventTypeValidation.Model
-    , editEvent : String
-    , sendEventResponse : WebData String
     , loadQueryResponse : WebData Query
     , deletePopup :
         { isOpen : Bool
@@ -80,6 +77,7 @@ type alias Model =
     , deleteQueryPopupOpen : Bool
     , deleteQueryPopupCheck : Bool
     , deleteQueryResponse : WebData ()
+    , publishTab : Pages.EventTypeDetails.PublishTab.Model
     }
 
 

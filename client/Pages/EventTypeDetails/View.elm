@@ -278,7 +278,8 @@ detailsLayout typeName eventType model =
                             , if not isQueryOutput then
                                 [ ( PublishTab
                                   , "Publish Events"
-                                  , publishTab pageState
+                                  , publishTab pageState.publishTab
+                                        |> Html.map PublishTabMsg
                                   )
                                 ]
                               else

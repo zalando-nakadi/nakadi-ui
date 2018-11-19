@@ -7,7 +7,6 @@ import Http
 import Config
 import Helpers.Forms exposing (..)
 import Helpers.AccessEditor as AccessEditor
-import Helpers.Store as Store
 import Stores.Authorization exposing (Authorization, emptyAuthorization)
 
 
@@ -15,7 +14,6 @@ import Stores.Authorization exposing (Authorization, emptyAuthorization)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (..)
 import Helpers.AccessEditor as AccessEditor
 import Config
 import Helpers.Forms exposing (..)

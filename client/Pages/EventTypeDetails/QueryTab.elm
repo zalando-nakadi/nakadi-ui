@@ -12,7 +12,6 @@ import Helpers.Panel exposing (renderError, warningMessage)
 import Helpers.Store exposing (errorToViewRecord)
 import RemoteData exposing (WebData, isLoading)
 import Http
-import Json.Decode
 import Config
 import User.Models exposing (Settings)
 import String.Extra exposing (replace)

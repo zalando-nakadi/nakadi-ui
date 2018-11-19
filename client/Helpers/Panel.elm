@@ -3,14 +3,15 @@ module Helpers.Panel exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Messages exposing (..)
-import Routing.Models exposing (Route)
-import Routing.Messages exposing (Msg(Redirect))
 import Helpers.Store exposing (Status(..), ErrorMessage)
-import Helpers.UI exposing (none)
 
 
-panel : Int -> String -> List (Html Messages.Msg) -> Html Messages.Msg
+none : Html msg
+none =
+    text ""
+
+
+panel : Int -> String -> List (Html msg) -> Html msg
 panel gridSize title desc =
     div [ class ("dc-column  dc-column dc-column--small-" ++ toString gridSize) ]
         [ div [ class "dc-card dc-column__contents" ]
@@ -21,18 +22,7 @@ panel gridSize title desc =
         ]
 
 
-panelWithButton : Int -> String -> List (Html Messages.Msg) -> String -> Route -> Html Messages.Msg
-panelWithButton gridSize title desc btnText route =
-    panel gridSize
-        title
-        [ p [] desc
-        , div [ class "dc--text-center" ]
-            [ button [ class "dc-btn dc-btn--primary dc--text-center", onClick (RoutingMsg (Redirect route)) ] [ text btnText ]
-            ]
-        ]
-
-
-simplePanel : Int -> String -> List (Html Messages.Msg) -> Html Messages.Msg
+simplePanel : Int -> String -> List (Html msg) -> Html msg
 simplePanel gridSize title desc =
     div [ class "page dc-row dc-row--align--center " ]
         [ div [ class ("dc-column  dc-column dc-column--small-" ++ toString gridSize) ]
@@ -45,7 +35,7 @@ simplePanel gridSize title desc =
         ]
 
 
-page : List Messages.Msg -> List (Html Messages.Msg) -> Html Messages.Msg
+page : List msg -> List (Html msg) -> Html msg
 page attr cols =
     div [ class "page dc-row dc-row--align--center " ] cols
 
@@ -135,7 +125,7 @@ successMessage titleText message maybeMore =
 
 loadingProgress : Html msg
 loadingProgress =
-    div [ class "loading"]
+    div [ class "loading" ]
         [ text "Loading..."
         , div
             [ class "loading-bar dc-loading-bar" ]
