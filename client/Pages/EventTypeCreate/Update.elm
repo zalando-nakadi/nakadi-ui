@@ -13,17 +13,18 @@ import Regex
 import Json.Decode
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
 import Helpers.AccessEditor as AccessEditor
-import Stores.Authorization exposing (Authorization, emptyAuthorization)
+import Stores.Authorization exposing (Authorization, userAuthorization)
 import Constants exposing (emptyString)
 import Stores.EventType exposing (categories, partitionStrategies)
 import Stores.Partition
 import Dom
 import Task
 import Helpers.Forms exposing (..)
+import User.Models exposing (User)
 
 
-update : Msg -> Model -> Stores.EventType.Model -> ( Model, Cmd Msg )
-update message model eventTypeStore =
+update : Msg -> Model -> Stores.EventType.Model -> User -> ( Model, Cmd Msg )
+update message model eventTypeStore user =
     case message of
         OnInput field value ->
             let
@@ -100,16 +101,16 @@ update message model eventTypeStore =
                 authorization =
                     case model.operation of
                         Create ->
-                            authorizationFromEventType Nothing eventTypeStore
+                            authorizationFromEventType Nothing eventTypeStore user.id
 
                         Update name ->
-                            authorizationFromEventType (Just name) eventTypeStore
+                            authorizationFromEventType (Just name) eventTypeStore user.id
 
                         Clone name ->
-                            authorizationFromEventType (Just name) eventTypeStore
+                            authorizationFromEventType (Just name) eventTypeStore user.id
 
                         CreateQuery ->
-                            authorizationFromEventType Nothing eventTypeStore
+                            authorizationFromEventType Nothing eventTypeStore user.id
 
                 loadPartitionsCmd =
                     case model.operation of
@@ -189,12 +190,12 @@ formValuesFromEventType name eventTypeStore =
                 loadValues eventType
 
 
-authorizationFromEventType : Maybe String -> Stores.EventType.Model -> Authorization
-authorizationFromEventType maybeName eventTypeStore =
+authorizationFromEventType : Maybe String -> Stores.EventType.Model -> String -> Authorization
+authorizationFromEventType maybeName eventTypeStore userId =
     maybeName
         |> Maybe.andThen (\name -> Store.get name eventTypeStore)
         |> Maybe.andThen .authorization
-        |> Maybe.withDefault emptyAuthorization
+        |> Maybe.withDefault (userAuthorization userId)
 
 
 validate : Model -> Stores.EventType.Model -> Model

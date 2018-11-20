@@ -23,8 +23,9 @@ import MultiSearch.Models exposing (SearchItem(SearchItemEventType), Config)
 import List.Extra
 import Helpers.FileReader as FileReader
 import Helpers.AccessEditor as AccessEditor
-import Stores.Authorization exposing (Authorization, emptyAuthorization)
+import Stores.Authorization exposing (Authorization, userAuthorization)
 import Helpers.Forms exposing (..)
+import User.Models exposing (User)
 
 
 searchConfig : Stores.EventType.Model -> Config
@@ -39,8 +40,8 @@ searchConfig eventTypeStore =
     }
 
 
-update : Msg -> Model -> Stores.EventType.Model -> Stores.Subscription.Model -> ( Model, Cmd Msg )
-update message model eventTypeStore subscriptionStore =
+update : Msg -> Model -> Stores.EventType.Model -> Stores.Subscription.Model -> User -> ( Model, Cmd Msg )
+update message model eventTypeStore subscriptionStore user =
     case message of
         OnInput field value ->
             let
@@ -71,7 +72,7 @@ update message model eventTypeStore subscriptionStore =
                     )
 
                 authorization maybeId =
-                    authorizationFromSubscription maybeId subscriptionStore
+                    authorizationFromSubscription maybeId subscriptionStore user.id
 
                 setAuthEditorCmd maybeId =
                     dispatch (AccessEditorMsg (AccessEditor.Set (authorization maybeId)))
@@ -451,9 +452,9 @@ cloneSubscription subscriptionStore id model =
         { initialModel | values = values, cursorsStore = model.cursorsStore, operation = model.operation }
 
 
-authorizationFromSubscription : Maybe String -> Stores.Subscription.Model -> Authorization
-authorizationFromSubscription maybeId subscriptionsStore =
+authorizationFromSubscription : Maybe String -> Stores.Subscription.Model -> String -> Authorization
+authorizationFromSubscription maybeId subscriptionsStore userId =
     maybeId
         |> Maybe.andThen (\id -> Store.get id subscriptionsStore)
         |> Maybe.andThen .authorization
-        |> Maybe.withDefault emptyAuthorization
+        |> Maybe.withDefault (userAuthorization userId)

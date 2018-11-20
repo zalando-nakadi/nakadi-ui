@@ -180,6 +180,7 @@ updateComponents message model =
                         model.subscriptionCreatePage
                         model.eventTypeStore
                         model.subscriptionStore
+                        model.userStore.user
             in
                 ( { model | subscriptionCreatePage = newModel }, Cmd.map SubscriptionCreateMsg subCmd )
 
@@ -214,7 +215,7 @@ updateComponents message model =
         EventTypeCreateMsg subMsg ->
             let
                 ( newModel, subCmd ) =
-                    PageEventTypeCreate.update subMsg model.eventTypeCreatePage model.eventTypeStore
+                    PageEventTypeCreate.update subMsg model.eventTypeCreatePage model.eventTypeStore model.userStore.user
             in
                 ( { model | eventTypeCreatePage = newModel }, Cmd.map EventTypeCreateMsg subCmd )
 
