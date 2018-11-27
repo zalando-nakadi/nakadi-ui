@@ -23,7 +23,6 @@ import Stores.EventType exposing (allAudiences)
 import Models exposing (AppModel)
 import Helpers.UI exposing (..)
 import Helpers.Ace as Ace
-import Stores.EventType exposing (categories)
 
 
 viewQueryForm : AppModel -> Html Msg
@@ -59,18 +58,6 @@ viewQueryForm model =
                     Help.owningApplication
                     Required
                     Enabled
-                , selectInput
-                    formModel
-                    FieldCategory
-                    OnInput
-                    "Category"
-                    ""
-                    Help.category
-                    Optional
-                    Enabled
-                    [ categories.business
-                    , categories.data
-                    ]
                 , textInput formModel
                     FieldOrderingKeyFields
                     OnInput
@@ -166,7 +153,6 @@ submitQueryCreate model =
               , Json.object
                     [ ( "name", asString FieldName )
                     , ( "owning_application", asString FieldOwningApplication )
-                    , ( "category", asString FieldCategory )
                     , ( "ordering_key_fields", orderingKeyFields )
                     , ( "audience", asString FieldAudience )
                     ]
