@@ -40,6 +40,7 @@ type Field
     | FieldAudience
     | FieldCleanupPolicy
     | FieldSql
+    | FieldPartitionCompactionKeyField
 
 
 type alias Model =
@@ -89,6 +90,7 @@ defaultValues =
     , ( FieldCompatibilityMode, compatibilityModes.forward )
     , ( FieldAudience, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
+    , ( FieldPartitionCompactionKeyField, emptyString)
     ]
         |> toValuesDict
 

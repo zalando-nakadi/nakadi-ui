@@ -8,6 +8,7 @@ import Config
 import Helpers.Forms exposing (..)
 import Helpers.AccessEditor as AccessEditor
 import Stores.Authorization exposing (Authorization, emptyAuthorization)
+import Stores.EventType exposing (cleanupPolicies)
 
 
 {--------------- View -----------------}
@@ -58,6 +59,41 @@ viewQueryForm model =
                     Help.owningApplication
                     Required
                     Enabled
+                , selectInput formModel
+                    FieldCleanupPolicy
+                    OnInput
+                    "Cleanup policy"
+                    ""
+                    Help.cleanupPolicy
+                    Required
+                    Enabled
+                    [ cleanupPolicies.compact
+                    , cleanupPolicies.delete
+                    ]
+                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.compact then
+                    textInput formModel
+                        FieldPartitionCompactionKeyField
+                        OnInput
+                        "Partition Compaction Key Field"
+                        "Example: product.order_name"
+                        "Field to be used as partition_compaction_key"
+                        Help.partitionCompactionKeyField
+                        Optional
+                        Enabled
+                  else
+                    none
+                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.delete then
+                    selectInput formModel
+                        FieldRetentionTime
+                        OnInput
+                        "Retention Time (Days)"
+                        ""
+                        Help.options
+                        Optional
+                        Enabled
+                        [ "2", "3", "4" ]
+                  else
+                    none
                 , textInput formModel
                     FieldOrderingKeyFields
                     OnInput
@@ -153,6 +189,7 @@ submitQueryCreate model =
               , Json.object
                     [ ( "name", asString FieldName )
                     , ( "owning_application", asString FieldOwningApplication )
+                    , ( "cleanup_policy", asString FieldCleanupPolicy )
                     , ( "ordering_key_fields", orderingKeyFields )
                     , ( "audience", asString FieldAudience )
                     ]
