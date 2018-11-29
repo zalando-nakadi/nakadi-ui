@@ -5,6 +5,7 @@ import Pages.EventTypeCreate.Models exposing (..)
 import Json.Encode as Json
 import Http
 import Config
+import Constants exposing (emptyString)
 import Helpers.Forms exposing (..)
 import Helpers.AccessEditor as AccessEditor
 import Stores.Authorization exposing (Authorization, emptyAuthorization)
@@ -190,6 +191,8 @@ submitQueryCreate model =
                     [ ( "name", asString FieldName )
                     , ( "owning_application", asString FieldOwningApplication )
                     , ( "cleanup_policy", asString FieldCleanupPolicy )
+                    , ( "retention_time", daysToRetentionTimeJson model.values)
+                    , ( "partition_compaction_key_field", asString FieldPartitionCompactionKeyField)
                     , ( "ordering_key_fields", orderingKeyFields )
                     , ( "audience", asString FieldAudience )
                     ]
@@ -226,6 +229,16 @@ stringToJsonList str =
         |> List.filter (String.isEmpty >> not)
         |> List.map Json.string
         |> Json.list
+
+
+daysToRetentionTimeJson : ValuesDict -> Json.Value
+daysToRetentionTimeJson values =
+    values
+        |> getValue FieldRetentionTime
+        |> String.toInt
+        |> Result.withDefault defaultRetentionDays
+        |> (*) Constants.msInDay
+        |> Json.int
 
 
 helpSql : List (Html msg)

@@ -498,12 +498,11 @@ authorization =
 
 partitionCompactionKeyField : List (Html msg)
 partitionCompactionKeyField =
-    [ text "This field is useful & necessary in case the input event type is non log-compacted"
-     , text " and the output event type is required to be log-compacted. The user then needs to specify"
-     , text " the field to be used as the partition_compaction_key for the output event type"
-     , text " using the path of a non-nullable string field. If the output and the input event type"
-     , text " are both log-compacted, then the compaction key of input is used as the compaction key"
-     , text " for the output."
+    [ text "This field is useful & necessary in case the output event-type is log-compacted"
+     , text " The value in the field specified is used as the partition_compaction_key for the output"
+     , text " event type. Thus, this field should be non-nullable and of type string. In case of join queries,"
+     , text " this field should be set to metadata.partition_compaction_key and partition_compaction_key from"
+     , text " one of the joined events is used as the key for the output event type."
     , newline
     , bold "This field is mandatory only if input event type is non log-compacted and output event type is compacted"
     , newline
