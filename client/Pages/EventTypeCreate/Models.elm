@@ -163,5 +163,5 @@ defaultSchema =
 defaultSql : String
 defaultSql =
     """SELECT *
-    FROM `my-source-event-type` as payload
+    FROM "my-source-event-type" as payload
 """
