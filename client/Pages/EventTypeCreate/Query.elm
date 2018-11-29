@@ -5,9 +5,11 @@ import Pages.EventTypeCreate.Models exposing (..)
 import Json.Encode as Json
 import Http
 import Config
+import Constants exposing (emptyString)
 import Helpers.Forms exposing (..)
 import Helpers.AccessEditor as AccessEditor
 import Stores.Authorization exposing (Authorization, emptyAuthorization)
+import Stores.EventType exposing (cleanupPolicies)
 
 
 {--------------- View -----------------}
@@ -58,6 +60,41 @@ viewQueryForm model =
                     Help.owningApplication
                     Required
                     Enabled
+                , selectInput formModel
+                    FieldCleanupPolicy
+                    OnInput
+                    "Cleanup policy"
+                    ""
+                    Help.cleanupPolicy
+                    Required
+                    Enabled
+                    [ cleanupPolicies.compact
+                    , cleanupPolicies.delete
+                    ]
+                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.compact then
+                    textInput formModel
+                        FieldPartitionCompactionKeyField
+                        OnInput
+                        "Partition Compaction Key Field"
+                        "Example: metadata.partition_compaction_key"
+                        "Field to be used as partition_compaction_key"
+                        Help.partitionCompactionKeyField
+                        Required
+                        Enabled
+                  else
+                    none
+                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.delete then
+                    selectInput formModel
+                        FieldRetentionTime
+                        OnInput
+                        "Retention Time (Days)"
+                        ""
+                        Help.options
+                        Optional
+                        Enabled
+                        [ "2", "3", "4" ]
+                  else
+                    none
                 , textInput formModel
                     FieldOrderingKeyFields
                     OnInput
@@ -153,6 +190,9 @@ submitQueryCreate model =
               , Json.object
                     [ ( "name", asString FieldName )
                     , ( "owning_application", asString FieldOwningApplication )
+                    , ( "cleanup_policy", asString FieldCleanupPolicy )
+                    , ( "retention_time", daysToRetentionTimeJson model.values)
+                    , ( "partition_compaction_key_field", asString FieldPartitionCompactionKeyField)
                     , ( "ordering_key_fields", orderingKeyFields )
                     , ( "audience", asString FieldAudience )
                     ]
@@ -189,6 +229,16 @@ stringToJsonList str =
         |> List.filter (String.isEmpty >> not)
         |> List.map Json.string
         |> Json.list
+
+
+daysToRetentionTimeJson : ValuesDict -> Json.Value
+daysToRetentionTimeJson values =
+    values
+        |> getValue FieldRetentionTime
+        |> String.toInt
+        |> Result.withDefault defaultRetentionDays
+        |> (*) Constants.msInDay
+        |> Json.int
 
 
 helpSql : List (Html msg)
