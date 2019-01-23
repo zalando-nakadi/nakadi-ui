@@ -16,7 +16,7 @@ We are happy to accept your contributions to make Nakadi UI better and more awes
 To avoid unnecessary work on either side, please stick to the following process:
 
 1. Check if there is already an issue for your concern.
-2. If there is not, [open a new one](https://github.com/zalando-incubator/nakadi-ui/issues) to start a discussion. We hate to close finished PRs!
+2. If there is not, [open a new one](https://github.com/zalando-nakadi/nakadi-ui/issues) to start a discussion. We hate to close finished PRs!
 3. If we decide your concern needs code changes, we would be happy to accept a pull request. Please consider the commit guidelines below.
 In case you just want to help out and don't know where to start, issues with "help wanted" label are good for first-time contributors.
 
@@ -32,7 +32,7 @@ This is a rough outline of what the workflow for code contributions looks like:
 - Make commits of logical units.
 - Write good commit messages (see below).
 - Push your changes to a topic branch in your fork of the repository.
-- Submit a pull request to [zalando-incubator/nakadi-ui](https://github.com/zalando-incubator/nakadi-ui)
+- Submit a pull request to [zalando-nakadi/nakadi-ui](https://github.com/zalando-nakadi/nakadi-ui)
 - Your pull request must receive a :thumbsup: from two [Maintainers](MAINTAINERS)
 
 Thanks for your contributions!

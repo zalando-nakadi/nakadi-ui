@@ -2,7 +2,7 @@
 // https://github.com/simonh1000/file-reader/blob/master/src/Native/FileReader.js
 
 // const _user$project$Native_FileReader = function() {
-const _zalando_incubator$nakadi_ui$Native_FileReader = function() {
+const _zalando_nakadi$nakadi_ui$Native_FileReader = function() {
 
     const scheduler = _elm_lang$core$Native_Scheduler;
 

@@ -3,7 +3,7 @@
  * Copy of https://github.com/elm-lang/persistent-cache/blob/master/src/Native/LocalStorage.js
  */
 
-var _zalando_incubator$nakadi_ui$Native_LocalStorage = function() {
+var _zalando_nakadi$nakadi_ui$Native_LocalStorage = function() {
 
     if (typeof Storage === "undefined" || !localStorage || !localStorage.getItem || !localStorage.setItem) {
         function disabled() {

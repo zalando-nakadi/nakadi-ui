@@ -14,10 +14,10 @@ npm install elm@0.18 -g
 Download source code using [Git](https://git-scm.com/)
 
 ```bash
-git clone git@github.bus.zalan.do:zalando-incubator/nakadi-ui.git
+git clone git@github.bus.zalan.do:zalando-nakadi/nakadi-ui.git
 ```
 
-or as [zip archive](https://github.com/zalando-incubator/nakadi-ui/archive/master.zip)
+or as [zip archive](https://github.com/zalando-nakadi/nakadi-ui/archive/master.zip)
 
 
 ## Build
