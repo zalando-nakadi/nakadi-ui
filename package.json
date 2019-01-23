@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zalando-incubator/nakadi-ui.git"
+    "url": "git+https://github.com/zalando-nakadi/nakadi-ui.git"
   },
   "keywords": [
     "nakadi",
@@ -28,9 +28,9 @@
   "author": "sergii.kamenskyi@zalando.de",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zalando-incubator/nakadi-ui/issues"
+    "url": "https://github.com/zalando-nakadi/nakadi-ui/issues"
   },
-  "homepage": "https://github.com/zalando-incubator/nakadi-ui#readme",
+  "homepage": "https://github.com/zalando-nakadi/nakadi-ui#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
     "client-sessions": "^0.8.0",
