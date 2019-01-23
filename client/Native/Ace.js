@@ -1,4 +1,4 @@
-var _zalando_incubator$nakadi_ui$Native_Ace = function() {
+var _zalando_nakadi$nakadi_ui$Native_Ace = function() {
 
 // TODO Check memory leaks
 // TODO Set options directly to Ace, maybe...

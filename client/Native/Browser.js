@@ -1,4 +1,4 @@
-const _zalando_incubator$nakadi_ui$Native_Browser = function() {
+const _zalando_nakadi$nakadi_ui$Native_Browser = function() {
 
 
     function setLocation(url) {
