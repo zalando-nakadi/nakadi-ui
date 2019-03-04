@@ -8,3 +8,13 @@ approvals:
       from:
         orgs:
           - zalando
+
+specification:
+  title:
+    minimum-length:
+      enabled: true
+      length: 8
+  body:
+    minimum-length:
+      enabled: true
+      length: 8
