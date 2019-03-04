@@ -233,7 +233,7 @@ statsPanel model =
             Helpers.Store.items statsStore
 
         tableLayout =
-            grid [ "Partition ID", "State", "Unconsumed", "Stream ID", "Commited Offset", "" ]
+            grid [ "Partition ID", "State", "Unconsumed", "Stream ID", "Committed Offset", "" ]
                 (list
                     |> List.map (renderType model)
                     |> List.concat
