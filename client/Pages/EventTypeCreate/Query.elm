@@ -9,7 +9,7 @@ import Constants exposing (emptyString)
 import Helpers.Forms exposing (..)
 import Helpers.AccessEditor as AccessEditor
 import Stores.Authorization exposing (Authorization, emptyAuthorization)
-import Stores.EventType exposing (cleanupPolicies)
+import Stores.EventType exposing (cleanupPolicies, categories)
 
 
 {--------------- View -----------------}
@@ -95,6 +95,18 @@ viewQueryForm model =
                         [ "2", "3", "4" ]
                   else
                     none
+                , selectInput
+                    formModel
+                    FieldCategory
+                    OnInput
+                    "Category"
+                    ""
+                    Help.category
+                    Optional
+                    Enabled
+                    [ categories.business
+                    , categories.data
+                    ]
                 , textInput formModel
                     FieldOrderingKeyFields
                     OnInput
@@ -190,6 +202,7 @@ submitQueryCreate model =
               , Json.object
                     [ ( "name", asString FieldName )
                     , ( "owning_application", asString FieldOwningApplication )
+                    , ( "category", asString FieldCategory )
                     , ( "cleanup_policy", asString FieldCleanupPolicy )
                     , ( "retention_time", daysToRetentionTimeJson model.values)
                     , ( "partition_compaction_key_field", asString FieldPartitionCompactionKeyField)
