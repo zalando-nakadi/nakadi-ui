@@ -1,4 +1,4 @@
-# Nakadi UI
+# Nakadi UI1
 A web-based graphical user interface to [Nakadi Event Broker](https://nakadi.io)
 
 ## Overview
