@@ -1,16 +1,21 @@
-port module Routing.Update exposing (..)
+module Routing.Update exposing (makeCmdForNewRoute, setTitle, update)
 
-import Models exposing (AppModel)
-import Routing.Messages exposing (Msg(..))
-import Routing.Helpers exposing (routeToUrl, locationToRoute)
-import Routing.Models exposing (Route, routeToTitle)
-import Helpers.Task exposing (dispatch)
-import Helpers.Browser as Browser
-import Task
 import Constants exposing (emptyString)
+import Helpers.Browser as Browser
+import Helpers.Task exposing (dispatch)
+import Http
+import Json.Decode
+import Models exposing (AppModel)
+import Routing.Helpers exposing (locationToRoute, routeToUrl)
+import Routing.Messages exposing (Msg(..))
+import Routing.Models exposing (Route, routeToTitle)
+import Task
 
 
-port title : String -> Cmd a
+setTitle : (Result Http.Error String -> Msg) -> String -> Cmd Msg
+setTitle tagger str =
+    Http.post "elm:title" (Http.stringBody "" str) Json.Decode.string
+        |> Http.send tagger
 
 
 update : Msg -> AppModel -> ( AppModel, Cmd Msg )
@@ -24,7 +29,7 @@ update message model =
                 cmd =
                     makeCmdForNewRoute model.route route
             in
-                ( { model | route = route }, cmd )
+            ( { model | route = route }, cmd )
 
         OnLocationChange location ->
             let
@@ -34,19 +39,23 @@ update message model =
                 changeRoute =
                     if realUrlRoute == model.route then
                         Cmd.none
+
                     else
                         dispatch (RouteChanged realUrlRoute)
             in
-                ( { model | route = realUrlRoute, newRoute = realUrlRoute }
-                , changeRoute
-                )
+            ( { model | route = realUrlRoute, newRoute = realUrlRoute }
+            , changeRoute
+            )
 
         RouteChanged route ->
             let
                 updateTitle =
-                    title (routeToTitle route)
+                    setTitle TitleChanged (routeToTitle route)
             in
-                ( model, updateTitle )
+            ( model, updateTitle )
+
+        TitleChanged _ ->
+            ( model, Cmd.none )
 
 
 makeCmdForNewRoute : Route -> Route -> Cmd Msg
@@ -75,9 +84,11 @@ makeCmdForNewRoute oldRoute newRoute =
         newPath =
             extractPath newRoute
     in
-        if oldRoute == newRoute then
-            Cmd.none
-        else if oldPath == newPath then
-            cmdReplaceHistory newRoute
-        else
-            cmdPushHistory newRoute
+    if oldRoute == newRoute then
+        Cmd.none
+
+    else if oldPath == newPath then
+        cmdReplaceHistory newRoute
+
+    else
+        cmdPushHistory newRoute

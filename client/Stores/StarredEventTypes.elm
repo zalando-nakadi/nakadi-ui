@@ -8,7 +8,7 @@ import Dict
 config : Dict.Dict String String -> Store.Config String
 config params =
     { getKey = (\index name -> name)
-    , url = "starred.eventTypes"
+    , url = "elm:localStorage?key=starred.eventTypes"
     , decoder = StoreLocal.collectionDecoder
     , headers = []
     }

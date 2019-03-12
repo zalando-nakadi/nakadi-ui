@@ -1,13 +1,11 @@
-module Helpers.StoreLocal exposing (..)
+module Helpers.StoreLocal exposing (Model, Msg(..), collectionDecoder, config, fetchAll, has, initialModel, saveAll, update, updateWithConfig)
 
-import Helpers.LocalStorage as LocalStorage exposing (Error(..))
+import Dict
+import Helpers.Store as Store exposing (ErrorMessage, Status(..), onFetchErr)
+import Helpers.Task exposing (dispatch)
+import Http exposing (Error)
 import Json.Decode as Json exposing (..)
 import Json.Encode
-import Helpers.Store as Store exposing (Status(..), ErrorMessage)
-import Constants exposing (emptyString)
-import Dict
-import Task
-import Helpers.Task exposing (dispatch)
 
 
 type alias Model =
@@ -16,11 +14,11 @@ type alias Model =
 
 type Msg
     = FetchData
-    | FetchAllDone (Result LocalStorage.Error (Maybe String))
+    | FetchAllDone (Result Error String)
     | Add String
     | Remove String
     | SaveData
-    | SaveAllDone (Result LocalStorage.Error ())
+    | SaveAllDone (Result Error String)
     | SetParams (List ( String, String ))
 
 
@@ -31,7 +29,7 @@ initialModel =
 
 config : Dict.Dict String String -> Store.Config String
 config params =
-    { getKey = (\index eventTypeName -> eventTypeName)
+    { getKey = \index eventTypeName -> eventTypeName
     , url = "event-types"
     , decoder = collectionDecoder
     , headers = []
@@ -48,16 +46,16 @@ has name store =
             False
 
 
-fetchAll : (Result Error (Maybe String) -> Msg) -> Store.Config String -> Cmd Msg
+fetchAll : (Result Error String -> Msg) -> Store.Config String -> Cmd Msg
 fetchAll tagger config =
-    Task.attempt tagger <|
-        LocalStorage.get config.url
+    Http.send tagger <|
+        Http.getString config.url
 
 
-saveAll : (Result Error () -> Msg) -> Store.Config String -> String -> Cmd Msg
+saveAll : (Result Error String -> Msg) -> Store.Config String -> String -> Cmd Msg
 saveAll tagger config data =
-    Task.attempt tagger <|
-        LocalStorage.set config.url data
+    Http.send tagger <|
+        Http.post config.url (Http.stringBody "" data) string
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -71,11 +69,10 @@ updateWithConfig config message store =
         FetchData ->
             ( Store.onFetchStart store, fetchAll (\result -> FetchAllDone result) (config store.params) )
 
-        FetchAllDone (Ok maybeJsonStr) ->
+        FetchAllDone (Ok jsonStr) ->
             let
                 decodedResult =
-                    maybeJsonStr
-                        |> Maybe.withDefault "[]"
+                    jsonStr
                         |> decodeString (config store.params).decoder
 
                 newModel =
@@ -85,18 +82,22 @@ updateWithConfig config message store =
                                 Store.loadStore (config store.params) decodedItems store
 
                         Err error ->
-                            onFetchErr store
-                                (ErrorMessage
-                                    0
-                                    "LocalStore parsing error"
-                                    (toString error)
-                                    (toString maybeJsonStr)
-                                )
+                            { store
+                                | status = Error
+                                , error =
+                                    Just
+                                        (ErrorMessage
+                                            0
+                                            "LocalStore parsing error"
+                                            (toString error)
+                                            (toString jsonStr)
+                                        )
+                            }
             in
-                ( newModel, Cmd.none )
+            ( newModel, Cmd.none )
 
         FetchAllDone (Err error) ->
-            ( onFetchErr store (localStoreErrorToViewRecord error), Cmd.none )
+            ( onFetchErr store error, Cmd.none )
 
         SaveData ->
             let
@@ -107,34 +108,34 @@ updateWithConfig config message store =
                         |> Json.Encode.list
                         |> Json.Encode.encode 0
             in
-                ( store, saveAll SaveAllDone (config store.params) dataStr )
+            ( store, saveAll SaveAllDone (config store.params) dataStr )
 
-        SaveAllDone (Ok ()) ->
+        SaveAllDone (Ok _) ->
             ( store, Cmd.none )
 
         SaveAllDone (Err error) ->
-            ( onFetchErr store (localStoreErrorToViewRecord error), Cmd.none )
+            ( onFetchErr store error, Cmd.none )
 
         Add name ->
             let
                 newDict =
                     Dict.insert name name store.dict
             in
-                ( { store | dict = newDict }, dispatch SaveData )
+            ( { store | dict = newDict }, dispatch SaveData )
 
         Remove name ->
             let
                 newDict =
                     Dict.remove name store.dict
             in
-                ( { store | dict = newDict }, dispatch SaveData )
+            ( { store | dict = newDict }, dispatch SaveData )
 
         SetParams params ->
             let
                 newParams =
                     Dict.fromList params
             in
-                updateWithConfig config FetchData { store | params = newParams }
+            updateWithConfig config FetchData { store | params = newParams }
 
 
 collectionDecoder : Decoder (List String)
@@ -142,30 +143,22 @@ collectionDecoder =
     list string
 
 
-onFetchErr :
-    { a | error : Maybe ErrorMessage, status : Status }
-    -> ErrorMessage
-    -> { a | error : Maybe ErrorMessage, status : Status }
-onFetchErr store error =
-    { store
-        | status = Error
-        , error = Just error
-    }
 
+{-
+   localStoreErrorToViewRecord : LocalStorage.Error -> ErrorMessage
+   localStoreErrorToViewRecord error =
+       case error of
+           QuotaExceeded ->
+               ErrorMessage
+                   0
+                   "LocalStorage quota exceeded"
+                   "Browser LocalStorage quota exceeded."
+                   emptyString
 
-localStoreErrorToViewRecord : LocalStorage.Error -> ErrorMessage
-localStoreErrorToViewRecord error =
-    case error of
-        QuotaExceeded ->
-            ErrorMessage
-                0
-                "LocalStorage quota exceeded"
-                "Browser LocalStorage quota exceeded."
-                emptyString
-
-        Disabled ->
-            ErrorMessage
-                1
-                "LocalStorage unavailable"
-                "LocalStorage not supported or disabled in this browser."
-                emptyString
+           Disabled ->
+               ErrorMessage
+                   1
+                   "LocalStorage unavailable"
+                   "LocalStorage not supported or disabled in this browser."
+                   emptyString
+-}

@@ -35,3 +35,4 @@ type Msg
     | NavigatorClicked Int
     | OldFirst Bool
     | Download
+    | DownloadStarted (Result Http.Error String)
