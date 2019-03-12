@@ -25,38 +25,25 @@ queryTab setting pageState =
             pageState.loadQueryResponse
             (queryTabHeader setting pageState)
         ]
-
-
 queryTabHeader : Settings -> Model -> Query -> Html Msg
 queryTabHeader settings model query =
     let
-        statClass =
-            case query.status of
-                "active" ->
-                    "schema-tab__value dc-status dc-status--active"
-
-                "inactive" ->
-                    "schema-tab__value dc-status dc-status--error"
-
-                _ ->
-                    "schema-tab__value dc-status dc-status--inactive"
+        statClass = "schema-tab__value dc-status dc-status--active"
 
         terminate =
-            if query.status == "active" then
-                span
-                    [ onClick OpenDeleteQueryPopup
-                    , class "icon-link dc-icon--trash dc-btn--destroy dc-icon dc-icon--interactive"
-                    , title "Terminate Query"
-                    ]
-                    []
-            else
-                none
+            span
+                [ onClick OpenDeleteQueryPopup
+                , class "icon-link dc-icon--trash dc-btn--destroy dc-icon dc-icon--interactive"
+                , title "Terminate Query"
+                ]
+                []
+
     in
         div []
             [ span [] [ text "SQL Query" ]
             , helpIcon "Nakadi SQL" queryHelp BottomRight
             , label [ class "query-tab__label" ] [ text " Status: " ]
-            , span [ class (statClass) ] [ text query.status ]
+            , span [ class (statClass) ] [ text "active" ]
             , span [ class "query-tab__value toolbar" ]
                 [ a
                     [ title "View Query as raw JSON"
