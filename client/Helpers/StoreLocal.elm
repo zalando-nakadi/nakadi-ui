@@ -141,24 +141,3 @@ updateWithConfig config message store =
 collectionDecoder : Decoder (List String)
 collectionDecoder =
     list string
-
-
-
-{-
-   localStoreErrorToViewRecord : LocalStorage.Error -> ErrorMessage
-   localStoreErrorToViewRecord error =
-       case error of
-           QuotaExceeded ->
-               ErrorMessage
-                   0
-                   "LocalStorage quota exceeded"
-                   "Browser LocalStorage quota exceeded."
-                   emptyString
-
-           Disabled ->
-               ErrorMessage
-                   1
-                   "LocalStorage unavailable"
-                   "LocalStorage not supported or disabled in this browser."
-                   emptyString
--}
