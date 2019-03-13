@@ -2,7 +2,7 @@ module Pages.Partition.Update exposing (distanceFromBegin, modelToRoute, normali
 
 import Constants
 import Dict
-import Helpers.Browser exposing (copyToClipboard)
+import Helpers.Http exposing (postString)
 import Helpers.JsonEditor as JsonEditor
 import Helpers.Store as Store exposing (onFetchErr, onFetchOk, onFetchStart)
 import Helpers.Task exposing (dispatch)
@@ -58,7 +58,10 @@ update message model =
                     ( { model | formatted = enable }, Cmd.none )
 
                 CopyToClipboard str ->
-                    ( model, copyToClipboard str )
+                    ( model, postString CopyToClipboardDone "elm:copyToClipboard" str )
+
+                CopyToClipboardDone _ ->
+                    (model,Cmd.none)
 
                 LoadPartitions ->
                     let

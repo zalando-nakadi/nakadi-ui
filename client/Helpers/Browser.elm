@@ -43,27 +43,3 @@ replaceState : String -> Task x String
 replaceState =
     Native.Browser.replaceState
 
-
-{-| Getting the  real client width of the element (without borders)
-example:
-    w =
-        getElementWidth "header"
--}
-getElementWidth : String -> Int
-getElementWidth =
-    Native.Browser.getElementWidth
-
-
-{-| Getting the real client height of the element (without borders)
-example:
-    h =
-        getElementHeight "header"
--}
-getElementHeight : String -> Int
-getElementHeight =
-    Native.Browser.getElementHeight
-
-
-copyToClipboard : String -> a
-copyToClipboard =
-    Native.Browser.copyToClipboard

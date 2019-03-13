@@ -13,7 +13,7 @@ import Stores.Query
 import Http
 import RemoteData exposing (WebData)
 import Pages.EventTypeDetails.PublishTab
-
+import Helpers.Http exposing (HttpStringResult)
 
 type Msg
     = OnRouteChange Route
@@ -21,6 +21,7 @@ type Msg
     | FormatSchema Bool
     | EffectiveSchema Bool
     | CopyToClipboard String
+    | CopyToClipboardDone HttpStringResult
     | TabChange Tabs
     | SchemaVersionChange String
     | JsonEditorMsg Helpers.JsonEditor.Msg

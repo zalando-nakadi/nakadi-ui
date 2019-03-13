@@ -7,7 +7,7 @@ import Pages.EventTypeDetails.QueryTab exposing (loadQuery, deleteQuery)
 import Routing.Models exposing (Route(EventTypeDetailsRoute))
 import Helpers.Task exposing (dispatch)
 import Helpers.JsonEditor
-import Helpers.Browser exposing (copyToClipboard)
+import Helpers.Http exposing (postString)
 import Helpers.Store as Store
 import Stores.Partition
 import Stores.Publisher
@@ -65,7 +65,10 @@ update settings message model =
                     ( { model | effective = enable }, Cmd.none )
 
                 CopyToClipboard content ->
-                    ( model, copyToClipboard content )
+                    ( model, postString CopyToClipboardDone "elm:copyToClipboard" content )
+
+                CopyToClipboardDone _ ->
+                    ( model, Cmd.none )
 
                 SchemaVersionChange version ->
                     ( { model | version = Just version }, Cmd.none )

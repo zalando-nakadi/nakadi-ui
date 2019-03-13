@@ -8,12 +8,13 @@ import Stores.CursorDistance
 import Http
 import Helpers.JsonEditor as JsonEditor
 import Char exposing (KeyCode)
-
+import Helpers.Http exposing (HttpStringResult)
 
 type Msg
     = OnRouteChange Route
     | SetFormatted Bool
     | CopyToClipboard String
+    | CopyToClipboardDone HttpStringResult
     | LoadPartitions
     | PartitionsLoaded (Result Http.Error (List Partition))
     | LoadEvents

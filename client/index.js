@@ -25,6 +25,20 @@ ElmExpress.create(window, router => {
       router.post('title', (req, res) =>
           res.ok(document.title = req.body))
 
+      router.post('copyToClipboard',(req, res) =>{
+        const el = document.createElement('textarea');
+        el.value = req.body;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        res.ok()
+      })
+
+
       router.get('loadFileFromInput', (req, res) => {
         const id = req.params.get('id')
         const reader = new FileReader()
