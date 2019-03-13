@@ -19,21 +19,6 @@ getLocation : a -> String
 getLocation dummy =
     Native.Browser.getLocation dummy
 
-
-{-| Show the value in debug console with the time metric
--}
-log : b -> a -> a
-log =
-    Native.Browser.log
-
-
-{-| Start browser debugger
--}
-startDebugger : a -> a
-startDebugger any =
-    Native.Browser.startDebugger any
-
-
 pushState : String -> Task x String
 pushState =
     Native.Browser.pushState
