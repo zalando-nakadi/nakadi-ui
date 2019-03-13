@@ -1,21 +1,12 @@
-module Routing.Update exposing (makeCmdForNewRoute, setTitle, update)
+module Routing.Update exposing (makeCmdForNewRoute, update)
 
 import Constants exposing (emptyString)
-import Helpers.Browser as Browser
 import Helpers.Task exposing (dispatch)
-import Http
-import Json.Decode
+import Helpers.Http exposing (postString)
 import Models exposing (AppModel)
 import Routing.Helpers exposing (locationToRoute, routeToUrl)
 import Routing.Messages exposing (Msg(..))
 import Routing.Models exposing (Route, routeToTitle)
-import Task
-
-
-setTitle : (Result Http.Error String -> Msg) -> String -> Cmd Msg
-setTitle tagger str =
-    Http.post "elm:title" (Http.stringBody "" str) Json.Decode.string
-        |> Http.send tagger
 
 
 update : Msg -> AppModel -> ( AppModel, Cmd Msg )
@@ -50,7 +41,7 @@ update message model =
         RouteChanged route ->
             let
                 updateTitle =
-                    setTitle TitleChanged (routeToTitle route)
+                    postString TitleChanged "elm:title" (routeToTitle route)
             in
             ( model, updateTitle )
 
@@ -69,14 +60,11 @@ makeCmdForNewRoute oldRoute newRoute =
                 |> Maybe.withDefault emptyString
 
         cmdPushHistory route =
-            toCmd Browser.pushState route
+            postString (always (RouteChanged route)) "elm:pushState" (routeToUrl route)
+
 
         cmdReplaceHistory route =
-            toCmd Browser.replaceState route
-
-        toCmd task route =
-            task (routeToUrl route)
-                |> Task.perform (always (RouteChanged route))
+            postString (always (RouteChanged route)) "elm:replaceState" (routeToUrl route)
 
         oldPath =
             extractPath oldRoute

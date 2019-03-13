@@ -358,7 +358,9 @@ navigation partitionPage =
                 |> Maybe.withDefault ( emptyString, emptyString )
 
         onClickPos =
-            Decode.map NavigatorClicked (Decode.field "offsetX" Decode.int)
+            Decode.map2 NavigatorClicked
+                (Decode.field "offsetX" Decode.int)
+                (Decode.at ["target", "clientWidth"] Decode.int)
     in
         div [ class "event-list__navigator" ]
             [ div []

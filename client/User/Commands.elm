@@ -5,7 +5,7 @@ import Json.Decode as Decode exposing (..)
 import User.Messages exposing (Msg(FetchAllDone))
 import Config
 import User.Models exposing (User, Settings)
-import Helpers.Browser as Browser
+import Helpers.Http exposing (postString)
 import Constants exposing (emptyString)
 import Json.Decode.Pipeline exposing (decode, required, optional)
 
@@ -47,14 +47,7 @@ settingsDecoder =
 -}
 logout : a -> Cmd msg
 logout dummy =
-    let
-        currentUrl =
-            Http.encodeUri (Browser.getLocation dummy)
-
-        url =
-            Config.urlLogout ++ "?returnTo=" ++ currentUrl
-    in
-        Browser.setLocation url
+   postString (\r->Debug.crash "Logout performed") "elm:forceReLogin" Config.urlLogout
 
 
 {-| Check the response from the server and if return is not recoverable

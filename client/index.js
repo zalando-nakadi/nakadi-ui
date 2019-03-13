@@ -25,16 +25,25 @@ ElmExpress.create(window, router => {
       router.post('title', (req, res) =>
           res.ok(document.title = req.body))
 
-      router.post('copyToClipboard',(req, res) =>{
-        const el = document.createElement('textarea');
-        el.value = req.body;
-        el.setAttribute('readonly', '');
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
+      router.post('forceReLogin', (req, res) =>
+          res.ok(document.location.href = `${req.body}?returnTo=${encodeURIComponent(document.location.href)}`))
+
+      router.post('pushState', (req, res) =>
+          res.ok(history.pushState({}, '', req.body)))
+
+      router.post('replaceState', (req, res) =>
+          res.ok(history.replaceState({}, '', req.body)))
+
+      router.post('copyToClipboard', (req, res) => {
+        const el = document.createElement('textarea')
+        el.value = req.body
+        el.setAttribute('readonly', '')
+        el.style.position = 'absolute'
+        el.style.left = '-9999px'
+        document.body.appendChild(el)
+        el.select()
+        document.execCommand('copy')
+        document.body.removeChild(el)
         res.ok()
       })
 

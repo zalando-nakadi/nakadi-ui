@@ -33,7 +33,7 @@ type Msg
     | NavigatorJumpStoreMsg Stores.ShiftedCursor.Msg
     | PageBackCursorStoreMsg Stores.ShiftedCursor.Msg
     | PageNewestCursorStoreMsg Stores.ShiftedCursor.Msg
-    | NavigatorClicked Int
+    | NavigatorClicked Int Int
     | OldFirst Bool
     | Download
     | DownloadStarted (Result Http.Error String)

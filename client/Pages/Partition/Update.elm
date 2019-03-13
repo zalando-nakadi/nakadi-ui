@@ -9,7 +9,6 @@ import Helpers.Task exposing (dispatch)
 import Http
 import Json.Decode
 import Keyboard.Extra
-import Native.Browser
 import Pages.Partition.Messages exposing (Msg(..))
 import Pages.Partition.Models
     exposing
@@ -256,10 +255,8 @@ update message model =
                     in
                     ( { model | distanceStore = newStore }, Cmd.map DistanceStoreMsg newSubMsg )
 
-                NavigatorClicked pos ->
+                NavigatorClicked pos width ->
                     let
-                        width =
-                            Native.Browser.getElementWidth "navigator-bar-total"
 
                         total =
                             model.totalStore
