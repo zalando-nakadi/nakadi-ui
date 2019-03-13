@@ -132,8 +132,8 @@ class Response {
     this.resolve([200, JSON.stringify(res)])
   }
 
-  error(e) {
-    this.resolve([500, `Internal JS error: ${e.toString()}`])
+  error(e = 'Internal error.') {
+    this.resolve([500, `${e.toString()}`])
   }
 }
 

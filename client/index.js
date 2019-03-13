@@ -25,6 +25,18 @@ ElmExpress.create(window, router => {
       router.post('title', (req, res) =>
           res.ok(document.title = req.body))
 
+      router.get('loadFileFromInput', (req, res) => {
+        const id = req.params.get('id')
+        const reader = new FileReader()
+        reader.onload = e => res.text(e.target.result)
+
+        const file = document.getElementById(id).files[0]
+        if (file.size > 2000000) {
+          return res.error('Selected file is too big. 2mb max.')
+        }
+        reader.readAsText(file)
+      })
+
       router.post('downloadAs', (req, res) => {
         const format = req.params.get('format')
         const filename = req.params.get('filename')

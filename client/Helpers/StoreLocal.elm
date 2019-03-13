@@ -1,12 +1,11 @@
-module Helpers.StoreLocal exposing (Model, Msg(..), collectionDecoder, config, fetchAll, has, initialModel, saveAll, update, updateWithConfig)
+module Helpers.StoreLocal exposing (Model, Msg(..), collectionDecoder, config, has, initialModel, update, updateWithConfig)
 
 import Dict
 import Helpers.Store as Store exposing (ErrorMessage, Status(..), onFetchErr)
 import Helpers.Task exposing (dispatch)
-import Http exposing (Error)
 import Json.Decode as Json exposing (..)
 import Json.Encode
-
+import Helpers.Http exposing (HttpStringResult,getString,postString)
 
 type alias Model =
     Store.Model String
@@ -14,11 +13,11 @@ type alias Model =
 
 type Msg
     = FetchData
-    | FetchAllDone (Result Error String)
+    | FetchAllDone (HttpStringResult)
     | Add String
     | Remove String
     | SaveData
-    | SaveAllDone (Result Error String)
+    | SaveAllDone (HttpStringResult)
     | SetParams (List ( String, String ))
 
 
@@ -46,18 +45,6 @@ has name store =
             False
 
 
-fetchAll : (Result Error String -> Msg) -> Store.Config String -> Cmd Msg
-fetchAll tagger config =
-    Http.send tagger <|
-        Http.getString config.url
-
-
-saveAll : (Result Error String -> Msg) -> Store.Config String -> String -> Cmd Msg
-saveAll tagger config data =
-    Http.send tagger <|
-        Http.post config.url (Http.stringBody "" data) string
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message store =
     updateWithConfig config message store
@@ -67,7 +54,7 @@ updateWithConfig : (Dict.Dict String String -> Store.Config String) -> Msg -> Mo
 updateWithConfig config message store =
     case message of
         FetchData ->
-            ( Store.onFetchStart store, fetchAll (\result -> FetchAllDone result) (config store.params) )
+            ( Store.onFetchStart store, getString FetchAllDone (config store.params).url )
 
         FetchAllDone (Ok jsonStr) ->
             let
@@ -108,7 +95,7 @@ updateWithConfig config message store =
                         |> Json.Encode.list
                         |> Json.Encode.encode 0
             in
-            ( store, saveAll SaveAllDone (config store.params) dataStr )
+            ( store, postString SaveAllDone (config store.params).url dataStr )
 
         SaveAllDone (Ok _) ->
             ( store, Cmd.none )

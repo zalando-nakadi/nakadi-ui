@@ -6,6 +6,7 @@ import Http
 import Dict
 import Json.Encode as Json
 import Helpers.Store as Store
+import Helpers.Http exposing (getString)
 import Config
 import Helpers.Task exposing (dispatch)
 import Json.Decode
@@ -21,7 +22,6 @@ import MultiSearch.Messages
 import MultiSearch.Update
 import MultiSearch.Models exposing (SearchItem(SearchItemEventType), Config)
 import List.Extra
-import Helpers.FileReader as FileReader
 import Helpers.AccessEditor as AccessEditor
 import Stores.Authorization exposing (Authorization, userAuthorization)
 import Helpers.Forms exposing (..)
@@ -162,13 +162,8 @@ update message model eventTypeStore subscriptionStore user =
                     _ ->
                         ( { model | addEventTypeWidget = subModel }, Cmd.map AddEventTypeWidgetMsg cmd )
 
-        FileSelected files ->
-            case List.head files of
-                Nothing ->
-                    ( model, Cmd.none )
-
-                Just file ->
-                    ( model, Task.attempt FileLoaded <| FileReader.readAsTextFile file.blob )
+        FileSelected id _ ->
+                    ( model, getString FileLoaded ("elm:loadFileFromInput?id=" ++ id))
 
         FileLoaded result ->
             case result of
@@ -176,7 +171,7 @@ update message model eventTypeStore subscriptionStore user =
                     ( { model | fileLoaderError = Nothing }, dispatch (OnInput FieldCursors str) )
 
                 Err error ->
-                    ( { model | fileLoaderError = Just (FileReader.prettyPrint error) }, Cmd.none )
+                    ( { model | fileLoaderError = Just error }, Cmd.none )
 
         AccessEditorMsg subMsg ->
             let
