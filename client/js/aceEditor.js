@@ -6,11 +6,22 @@
  */
 require('ace-builds/src-min-noconflict/ace')
 require('ace-builds/src-min-noconflict/ext-searchbox')
+require('ace-builds/src-min-noconflict/ext-statusbar')
 require('ace-builds/src-min-noconflict/ext-settings_menu')
 require('ace-builds/src-min-noconflict/ext-language_tools')
+require('ace-builds/src-min-noconflict/snippets/text')
 require('ace-builds/src-min-noconflict/mode-sql')
+require('ace-builds/src-min-noconflict/snippets/sql')
 require('ace-builds/src-min-noconflict/mode-json')
+require('ace-builds/src-min-noconflict/snippets/json')
 require('ace-builds/src-min-noconflict/theme-dawn')
+require('ace-builds/src-min-noconflict/ext-error_marker')
+
+// In order for syntax validation to work you need to
+// copy 'ace-builds/src-min-noconflict/worker-json.js'
+// to the root of you static files 'client/assets/static/worker-json.js'
+// so it should be accessible as https://loaclhost:3000/worker-json.js
+// It required because Ace uses web workers for the validation
 
 
 // Creates an object based in the HTML Element prototype
@@ -48,19 +59,39 @@ class AceEditor extends HTMLElement {
 
     shadowRoot.innerHTML = `
         <style>
-        :host{
+        :host {
             display: flex;
             min-height: 1em;
             flex-direction: column;
+            white-space: normal;
         }
-        #ace-editor-container{
+        #ace-editor-container {
             flex: 1;
             height: 100%;
         }
+        #ace-editor-status {                        
+            position: relative;
+            font-size: 0.7em;
+            line-height: 1.5em;
+            border-top: 1px solid #ebebeb;
+            bottom: -5px;
+        }
+        .help {            
+            position: absolute;
+            right: 16px;       
+            color: #0ba4cb;!important;     
+        }
+        
         </style>
-        <div id="ace-editor-container"></div>`
+        <div id="ace-editor-container">loading...</div>
+        <div id="ace-editor-status">
+            <a title="Keyboard Shortcuts" class="help" target="_blank" 
+            href="https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts">Keys❓</a>
+        </div>`
+
 
     self.container = shadowRoot.getElementById('ace-editor-container')
+    self.statusBar = shadowRoot.getElementById('ace-editor-status')
     return self
   }
 
@@ -97,8 +128,14 @@ class AceEditor extends HTMLElement {
     editor.setFontSize(parseInt(this.getAttribute('fontsize')) || 18)
     editor.setReadOnly(this.hasAttribute('readonly'))
     editor.setOptions({
-      enableBasicAutocompletion: true
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true
     })
+    const StatusBar = window.ace.require("ace/ext/statusbar").StatusBar;
+    // create a simple selection status indicator
+    new StatusBar(editor, this.statusBar)
+
     const session = editor.getSession()
     session.setMode(this.getAttribute('mode'))
     session.setUseSoftTabs(this.getAttribute('softtabs'))
