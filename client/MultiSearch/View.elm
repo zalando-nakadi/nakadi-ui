@@ -48,7 +48,7 @@ view config model =
         , ul
             [ id config.dropdownId
             , class "multi-search__dropdown dc-list dc-suggest"
-            , style [ ( "max-height", config.dropdownHeight |> toPx ) ]
+            , style "max-height" (config.dropdownHeight |> toPx)
             ]
             (renderSuggestions config model.filter model.filtered model.selected model.showAll)
         ]
@@ -96,7 +96,7 @@ renderSuggestions config filter list selected showAll =
 
             moreText =
                 if moreCount > 1 then
-                    "Show " ++ toString moreCount ++ " more results"
+                    "Show " ++ String.fromInt moreCount ++ " more results"
 
                 else
                     "Show one more result"
@@ -181,7 +181,7 @@ renderResultItem config filter selected listIndex searchItem =
     in
     li
         [ class ("multi-search__item dc-suggest__item dc-link" ++ isSelected)
-        , style [ ( "height", config.itemHeight |> toPx ) ]
+        , style "height" (config.itemHeight |> toPx)
         , onClick <| Selected searchItem
         ]
         resultItem

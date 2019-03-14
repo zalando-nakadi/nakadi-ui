@@ -165,7 +165,7 @@ subscriptionStats =
     , text "- "
     , mono "state"
     , text ": The state of this partition in the current subscription. The following values are possible:"
-    , p [ style [ ( "margin", "0 0 0 20px" ) ] ]
+    , p [ style "margin" "0 0 0 20px" ]
         [ mono "unassigned"
         , text "the partition is not assigned to any client;"
         , newline

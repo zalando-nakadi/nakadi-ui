@@ -77,8 +77,8 @@ updateWithConfig config message store =
                                         (ErrorMessage
                                             0
                                             "LocalStore parsing error"
-                                            (toString error)
-                                            (toString jsonStr)
+                                            (Debug.toString error)
+                                            (Debug.toString jsonStr)
                                         )
                             }
             in

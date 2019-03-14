@@ -335,7 +335,7 @@ renderRow config index rowData =
                     ViewInt getVal ->
                         rowData
                             |> getVal
-                            |> toString
+                            |> String.fromInt
                             |> highlightFound config.filter
 
                     ViewCustom getVal ->

@@ -154,7 +154,7 @@ update message model eventTypeStore user =
                                 (partitionsStore
                                     |> Store.size
                                     |> Basics.clamp 1 Config.maxPartitionNumber
-                                    |> toString
+                                    |> String.fromInt
                                 )
 
                     else
@@ -246,7 +246,7 @@ validate model eventTypeStore =
 isNotEmpty : Field -> Model -> ErrorsDict -> ErrorsDict
 isNotEmpty field model dict =
     if String.isEmpty (String.trim (getValue field model.values)) then
-        Dict.insert (toString field) "This field is required" dict
+        Dict.insert (Debug.toString field) "This field is required" dict
 
     else
         dict
@@ -255,7 +255,7 @@ isNotEmpty field model dict =
 checkNameUnique : Model -> Stores.EventType.Model -> ErrorsDict -> ErrorsDict
 checkNameUnique model eventTypeStore dict =
     if Store.has (String.trim (getValue FieldName model.values)) eventTypeStore then
-        Dict.insert (toString FieldName) "Name is already used." dict
+        Dict.insert (Debug.toString FieldName) "Name is already used." dict
 
     else
         dict
@@ -274,7 +274,7 @@ checkNameFormat model dict =
         dict
 
     else
-        Dict.insert (toString FieldName) "Wrong format." dict
+        Dict.insert (Debug.toString FieldName) "Wrong format." dict
 
 
 checkPartitionStrategy : Model -> ErrorsDict -> ErrorsDict
@@ -283,7 +283,7 @@ checkPartitionStrategy model dict =
         (getValue FieldCategory model.values == categories.undefined)
             && (getValue FieldPartitionStrategy model.values == partitionStrategies.user_defined)
     then
-        Dict.insert (toString FieldPartitionStrategy)
+        Dict.insert (Debug.toString FieldPartitionStrategy)
             "The 'user_defined' partitioning strategy cannot be used with event types of category 'undefined'"
             dict
 
@@ -314,7 +314,7 @@ checkSchemaFormat model dict =
             dict
 
         Err err ->
-            Dict.insert (toString FieldSchema) ("JSON expected. " ++ toString err) dict
+            Dict.insert (Debug.toString FieldSchema) ("JSON expected. " ++ Debug.toString err) dict
 
 
 submitCreate : Model -> Cmd Msg
@@ -334,7 +334,7 @@ submitCreate model =
             model.values
                 |> getValue FieldPartitionsNumber
                 |> String.toInt
-                |> Result.withDefault 1
+                |> Maybe.withDefault 1
                 |> Json.int
 
         asString field =
@@ -505,6 +505,6 @@ daysToRetentionTimeJson values =
     values
         |> getValue FieldRetentionTime
         |> String.toInt
-        |> Result.withDefault defaultRetentionDays
+        |> Maybe.withDefault defaultRetentionDays
         |> (*) Constants.msInDay
         |> Json.int

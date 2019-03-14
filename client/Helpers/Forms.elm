@@ -1,7 +1,8 @@
 module Helpers.Forms exposing (ErrorsDict, FormModel, Locking(..), Requirement(..), ValuesDict, areaInput, buttonPanel, getError, getValue, inputFrame, inputId, maybeSetListValue, maybeSetValue, selectInput, setValue, textInput, toValuesDict, validationClass, validationMessage)
 
+import Debug exposing (toString)
 import Dict
-import Helpers.Store exposing (Status(Loading))
+import Helpers.Store exposing (Status(..))
 import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)

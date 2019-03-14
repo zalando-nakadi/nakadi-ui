@@ -9,7 +9,7 @@ import Routing.Models
     exposing
         ( PageLoader
         , ParsedUrl
-        , Route(NotFoundRoute)
+        , Route(..)
         , RouteConfig
         , routeToUrl
         , routingConfig

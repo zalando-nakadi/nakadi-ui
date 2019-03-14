@@ -20,7 +20,7 @@ import Pages.Partition.Models
         , initialPageSize
         , isPartitionEmpty
         )
-import Routing.Models exposing (Route(PartitionRoute))
+import Routing.Models exposing (Route(..))
 import Stores.Cursor
 import Stores.CursorDistance
 import Stores.Events exposing (fetchEvents)
@@ -340,7 +340,7 @@ update message model =
                 InputSize value ->
                     let
                         size =
-                            value |> String.toInt |> Result.withDefault initialModel.size
+                            value |> String.toInt |> Maybe.withDefault initialModel.size
                     in
                     ( { model | size = size }, dispatch LoadPartitions )
 

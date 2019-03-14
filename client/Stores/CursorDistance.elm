@@ -46,7 +46,7 @@ config params =
         eventType =
             Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-    { getKey = \index item -> toString index
+    { getKey = \index item -> String.fromInt index
     , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/cursor-distances"
     , decoder = collectionDecoder
     , headers = []

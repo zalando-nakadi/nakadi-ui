@@ -51,7 +51,7 @@ queryToUrl query =
     queryMaybeToUrl <|
         Dict.fromList
             [ ( Constants.filter, query.filter )
-            , ( Constants.page, query.page |> Maybe.map toString )
+            , ( Constants.page, query.page |> Maybe.map String.fromInt )
             , ( Constants.sortBy, query.sortBy )
-            , ( Constants.reverse, query.sortReverse |> Maybe.map toString )
+            , ( Constants.reverse, query.sortReverse |> Maybe.map Debug.toString )
             ]

@@ -239,7 +239,7 @@ daysToRetentionTimeJson values =
     values
         |> getValue FieldRetentionTime
         |> String.toInt
-        |> Result.withDefault defaultRetentionDays
+        |> Maybe.withDefault defaultRetentionDays
         |> (*) Constants.msInDay
         |> Json.int
 

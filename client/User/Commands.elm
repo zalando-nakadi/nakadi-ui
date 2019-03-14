@@ -3,10 +3,10 @@ module User.Commands exposing (fetchAll, logout, logoutIfExpired, memberDecoder,
 import Config
 import Constants exposing (emptyString)
 import Helpers.Http exposing (postString)
-import Http exposing (Error(BadStatus))
+import Http exposing (Error(..))
 import Json.Decode as Decode exposing (..)
 import Json.Decode.Pipeline exposing (decode, optional, required)
-import User.Messages exposing (Msg(FetchAllDone))
+import User.Messages exposing (Msg(..))
 import User.Models exposing (Settings, User)
 
 

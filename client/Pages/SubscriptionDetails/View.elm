@@ -282,7 +282,7 @@ renderPartition model eventTypeName partition =
         events =
             case partition.unconsumed_events of
                 Just events ->
-                    toString events ++ lag
+                    String.fromInt events ++ lag
 
                 Nothing ->
                     "-"
@@ -379,7 +379,7 @@ deletePopup model subscription appsInfoUrl =
             div []
                 [ div [ class "dc-overlay" ] []
                 , div [ class "dc-dialog" ]
-                    [ div [ class "dc-dialog__content", style [ ( "min-width", "600px" ) ] ]
+                    [ div [ class "dc-dialog__content", style "min-width" "600px" ]
                         [ div [ class "dc-dialog__body" ]
                             [ div [ class "dc-dialog__close" ]
                                 [ i

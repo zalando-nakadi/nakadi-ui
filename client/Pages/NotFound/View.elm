@@ -4,10 +4,10 @@ import Helpers.Panel exposing (page, panel)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Messages exposing (Msg(RoutingMsg))
+import Messages exposing (Msg(..))
 import Models exposing (AppModel)
-import Routing.Messages exposing (Msg(Redirect))
-import Routing.Models exposing (Route(HomeRoute))
+import Routing.Messages exposing (Msg(..))
+import Routing.Models exposing (Route(..))
 import Types exposing (AppHtml)
 
 

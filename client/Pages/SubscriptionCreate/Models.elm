@@ -4,7 +4,7 @@ import Constants exposing (emptyString)
 import Dict
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
-import Helpers.Store exposing (ErrorMessage, Status(Unknown))
+import Helpers.Store exposing (ErrorMessage, Status(..))
 import Http
 import MultiSearch.Models
 import Stores.Subscription

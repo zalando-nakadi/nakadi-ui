@@ -4,7 +4,7 @@ import Dict
 import Expect
 import Helpers.JsonEditor exposing (JsonValue(..), jsonValueToPrettyString, jsonValueToString, stringToJsonValue)
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
-import Helpers.Pagination exposing (Buttons(Current, More, Next, Page, Previous), paginationButtons)
+import Helpers.Pagination exposing (Buttons(..), paginationButtons)
 import Helpers.String exposing (periodToString, pseudoIntSort, splitFound)
 import Test exposing (Test, describe, test)
 

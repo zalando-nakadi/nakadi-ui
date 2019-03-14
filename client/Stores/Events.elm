@@ -25,7 +25,7 @@ url typeName maxCount =
         ++ "event-types/"
         ++ typeName
         ++ "/events?stream_limit="
-        ++ toString maxCount
+        ++ String.fromInt maxCount
         ++ "&batch_limit=1&stream_keep_alive_limit=1&batch_flush_timeout=1"
 
 

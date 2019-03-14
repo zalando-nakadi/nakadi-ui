@@ -2,6 +2,7 @@ module Pages.SubscriptionCreate.Update exposing (authorizationFromSubscription, 
 
 import Config
 import Constants exposing (emptyString)
+import Debug exposing (toString)
 import Dict
 import Dom
 import Helpers.AccessEditor as AccessEditor
@@ -14,7 +15,7 @@ import Json.Decode
 import Json.Encode as Json
 import List.Extra
 import MultiSearch.Messages
-import MultiSearch.Models exposing (Config, SearchItem(SearchItemEventType))
+import MultiSearch.Models exposing (Config, SearchItem(..))
 import MultiSearch.Update
 import Pages.SubscriptionCreate.Messages exposing (..)
 import Pages.SubscriptionCreate.Models exposing (..)

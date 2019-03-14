@@ -1,7 +1,8 @@
 module Helpers.AccessEditor exposing (Config, Model, Msg(..), accessTable, addRowControls, changePermission, checkboxReadOnly, checkboxWrite, filterOut, findRecord, flatten, hasPermission, initialModel, mergePermissions, recordName, rowReadOnly, rowWrite, sameRecord, typeRow, unflatten, update, view, viewReadOnly)
 
 import Constants exposing (emptyString)
-import Helpers.UI as UI exposing (bold, link, man, mono, newline, none)
+import Debug exposing (toString)
+import Helpers.UI as UI exposing (none)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)

@@ -143,7 +143,7 @@ deleteQueryPopup model query =
             div []
                 [ div [ class "dc-overlay" ] []
                 , div [ class "dc-dialog" ]
-                    [ div [ class "dc-dialog__content", style [ ( "min-width", "600px" ) ] ]
+                    [ div [ class "dc-dialog__content", style "min-width" "600px" ]
                         [ div [ class "dc-dialog__body" ]
                             [ div [ class "dc-dialog__close" ]
                                 [ i

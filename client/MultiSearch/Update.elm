@@ -6,7 +6,7 @@ import Dom.Scroll
 import Helpers.Store as Store
 import Helpers.StoreLocal as StoreLocal
 import Helpers.Task exposing (dispatch)
-import Keyboard.Extra exposing (Key(ArrowDown, ArrowUp, Enter, Escape, PageDown, PageUp))
+import Keyboard.Extra exposing (Key(..))
 import Models exposing (AppModel)
 import MultiSearch.Messages exposing (..)
 import MultiSearch.Models exposing (..)

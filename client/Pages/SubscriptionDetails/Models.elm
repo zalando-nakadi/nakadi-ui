@@ -2,7 +2,7 @@ module Pages.SubscriptionDetails.Models exposing (Model, Tabs(..), UrlParams, Ur
 
 import Constants exposing (emptyString)
 import Dict exposing (get)
-import Helpers.Store exposing (ErrorMessage, Status(Unknown))
+import Helpers.Store exposing (ErrorMessage, Status(..))
 import Helpers.String exposing (getMaybeBool, justOrCrash, queryMaybeToUrl)
 import Stores.SubscriptionCursors
 import Stores.SubscriptionStats
@@ -80,7 +80,7 @@ queryToUrl : UrlQuery -> String
 queryToUrl query =
     queryMaybeToUrl <|
         Dict.fromList
-            [ ( "tab", query.tab |> Maybe.map toString )
+            [ ( "tab", query.tab |> Maybe.map Debug.toString )
             ]
 
 

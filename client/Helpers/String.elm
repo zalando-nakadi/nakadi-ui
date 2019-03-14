@@ -59,7 +59,7 @@ splitFound whatStr whereStr =
 
 pluralCount : Int -> String -> String
 pluralCount count label =
-    toString count
+    String.fromInt count
         ++ " "
         ++ label
         ++ (if count == 1 then
@@ -76,7 +76,7 @@ pluralCount count label =
 
 toPx : Int -> String
 toPx n =
-    toString n ++ "px"
+    String.fromInt n ++ "px"
 
 
 
@@ -135,7 +135,7 @@ toKeyValuePair : String -> Maybe ( String, String )
 toKeyValuePair segment =
     case String.split "=" segment of
         [ key, value ] ->
-            Maybe.map2 (,) (Http.decodeUri key) (Http.decodeUri value)
+            Maybe.map2 (\a b -> ( a, b )) (Http.decodeUri key) (Http.decodeUri value)
 
         _ ->
             Nothing
@@ -194,10 +194,7 @@ stringToBool str =
 getMaybeInt : String -> Dict.Dict String String -> Maybe Int
 getMaybeInt name dict =
     Dict.get name dict
-        |> Maybe.andThen
-            (\val ->
-                String.toInt val |> Result.toMaybe
-            )
+        |> Maybe.andThen String.toInt
 
 
 
@@ -224,10 +221,10 @@ periodToString ms =
                 emptyString
 
             else if n > 1 then
-                toString n ++ " " ++ name ++ "s"
+                String.fromInt n ++ " " ++ name ++ "s"
 
             else
-                toString n ++ " " ++ name
+                String.fromInt n ++ " " ++ name
 
         msSecond =
             1000
@@ -248,7 +245,7 @@ periodToString ms =
             plural days "day"
 
         daysRem =
-            Basics.rem ms msDay
+            remainderBy msDay ms
 
         hours =
             daysRem // msHour
@@ -257,7 +254,7 @@ periodToString ms =
             plural hours "hour"
 
         hoursRem =
-            Basics.rem daysRem msHour
+            remainderBy msHour daysRem
 
         minutes =
             hoursRem // msMinute
@@ -266,7 +263,7 @@ periodToString ms =
             plural minutes "minute"
 
         minutesRem =
-            Basics.rem hoursRem msMinute
+            remainderBy msMinute hoursRem
 
         seconds =
             minutesRem // msSecond
@@ -275,7 +272,7 @@ periodToString ms =
             plural seconds "second"
 
         secondsRem =
-            Basics.rem minutesRem msSecond
+            remainderBy msSecond minutesRem
 
         milliseconds =
             secondsRem
@@ -296,7 +293,7 @@ periodToShortString ms =
                 emptyString
 
             else
-                toString n ++ name
+                String.fromInt n ++ name
 
         msSecond =
             1000
@@ -317,7 +314,7 @@ periodToShortString ms =
             format days "d"
 
         daysRem =
-            Basics.rem ms msDay
+            remainderBy msDay ms
 
         hours =
             daysRem // msHour
@@ -326,7 +323,7 @@ periodToShortString ms =
             format hours "h"
 
         hoursRem =
-            Basics.rem daysRem msHour
+            remainderBy msHour daysRem
 
         minutes =
             hoursRem // msMinute
@@ -335,7 +332,7 @@ periodToShortString ms =
             format minutes "m"
 
         minutesRem =
-            Basics.rem hoursRem msMinute
+            remainderBy msMinute hoursRem
 
         seconds =
             minutesRem // msSecond
@@ -344,7 +341,7 @@ periodToShortString ms =
             format seconds "s"
 
         secondsRem =
-            Basics.rem minutesRem msSecond
+            remainderBy msSecond minutesRem
 
         milliseconds =
             secondsRem
@@ -369,13 +366,13 @@ pseudoIntSort list =
 compareAsInt : String -> String -> Order
 compareAsInt a b =
     case String.toInt a of
-        Ok int1 ->
+        Just int1 ->
             case String.toInt b of
-                Ok int2 ->
+                Just int2 ->
                     compare int1 int2
 
-                Err e ->
+                Nothing ->
                     compare a b
 
-        Err e ->
+        Nothing ->
             compare a b

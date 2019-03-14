@@ -8,7 +8,7 @@ import Html.Attributes exposing (class)
 import Models exposing (AppModel)
 import Pages.EventTypeDetails.Models
 import Pages.EventTypeList.Messages exposing (Msg(..))
-import Routing.Models exposing (Route(EventTypeDetailsRoute))
+import Routing.Models exposing (Route(..))
 
 
 view : AppModel -> Html Msg

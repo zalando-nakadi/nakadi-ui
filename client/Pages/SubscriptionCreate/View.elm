@@ -4,7 +4,7 @@ import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Http exposing (httpErrorToString)
 import Helpers.Panel
-import Helpers.Store as Store exposing (Status(Loading))
+import Helpers.Store as Store exposing (Status(..))
 import Helpers.UI exposing (none)
 import Html exposing (..)
 import Html.Attributes exposing (..)

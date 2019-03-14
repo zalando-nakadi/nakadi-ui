@@ -13,7 +13,7 @@ import Html.Lazy
 import Json.Decode as Decode
 import List.Extra
 import Models exposing (AppModel)
-import Pages.EventTypeDetails.Models exposing (Tabs(PartitionsTab))
+import Pages.EventTypeDetails.Models exposing (Tabs(..))
 import Pages.EventTypeList.Models
 import Pages.Partition.Help as Help
 import Pages.Partition.Messages exposing (..)
@@ -123,7 +123,7 @@ eventsView partitionPage =
                 [ div [ class "dc-link", onClick ShowAll ]
                     [ text <|
                         "Show "
-                            ++ toString (filteredListLength - tolerantPageSize)
+                            ++ String.fromInt (filteredListLength - tolerantPageSize)
                             ++ " more events"
                     ]
                 ]
@@ -161,9 +161,9 @@ eventsView partitionPage =
 
         status =
             "Showing "
-                ++ toString filteredListLength
+                ++ String.fromInt filteredListLength
                 ++ " of "
-                ++ toString (List.length events)
+                ++ String.fromInt (List.length events)
                 ++ " from "
                 ++ first
                 ++ " to "
@@ -178,7 +178,7 @@ eventsView partitionPage =
             , div [ class "dc-row" ]
                 [ searchInput InputFilter "Filter events. Example: \"eid\":\"555-49-54\"" filterKey
                 , select
-                    [ value (toString partitionPage.oldFirst)
+                    [ value (Debug.toString partitionPage.oldFirst)
                     , onInput (\v -> OldFirst (v == "True"))
                     , class "dc-select"
                     ]
@@ -188,7 +188,7 @@ eventsView partitionPage =
                 , button
                     [ onClick Download
                     , class "dc-btn"
-                    , style [ ( "height", "3.6rem" ) ]
+                    , style "height" "3.6rem"
                     , title "Download loaded and filtered set of events as a JSON file."
                     ]
                     [ text "Download" ]
@@ -270,15 +270,15 @@ pager partitionPage =
             , class "dc-input"
             , value partitionPage.offset
             , title offsetHint
-            , style [ ( "width", "250px" ) ]
+            , style "width" "250px"
             ]
             []
-        , span [ style [ ( "margin-left", "-20px" ) ] ]
+        , span [ style "margin-left" "-20px" ]
             [ helpIcon "Offset" Help.offset Helpers.UI.BottomRight
             ]
         , select
             [ onInput InputSize
-            , value (toString partitionPage.size)
+            , value (String.fromInt partitionPage.size)
             , class "dc-select"
             , title "Page size"
             ]
@@ -314,7 +314,7 @@ navigation partitionPage =
         total =
             maybeDistance
                 |> Maybe.map ((+) 1)
-                |> Maybe.map toString
+                |> Maybe.map String.fromInt
                 |> Maybe.withDefault "Loading..."
 
         percentage size =
@@ -334,7 +334,7 @@ navigation partitionPage =
         loadedStart =
             start
                 |> percentage
-                |> toString
+                |> String.fromFloat
 
         loaded =
             partitionPage.eventsStore.response
@@ -343,18 +343,18 @@ navigation partitionPage =
         loadedWidth =
             loaded
                 |> percentage
-                |> toString
+                |> String.fromFloat
 
         titleText =
             "Total "
                 ++ total
                 ++ " events in this partition. Loaded "
-                ++ toString loaded
+                ++ String.fromInt loaded
                 ++ " ("
                 ++ loadedWidth
                 ++ "%)"
                 ++ " starting from "
-                ++ toString start
+                ++ String.fromInt start
                 ++ " ("
                 ++ loadedStart
                 ++ "%)"
@@ -382,10 +382,8 @@ navigation partitionPage =
             ]
             []
         , div
-            [ style
-                [ ( "left", loadedStart ++ "%" )
-                , ( "width", loadedWidth ++ "%" )
-                ]
+            [ style "left" (loadedStart ++ "%")
+            , style "width" (loadedWidth ++ "%")
             , class "event-list__navigator-bar-loaded"
             , title titleText
             ]
@@ -418,7 +416,7 @@ viewEventRow selected event =
                 [ span [ class "dc--text-less-important dc--text-success dc--text-small" ]
                     [ text ("Offset: " ++ offset)
                     , text (String.repeat 10 UI.nbsp)
-                    , text ("Length: " ++ (length |> toString))
+                    , text ("Length: " ++ (length |> String.fromInt))
                     ]
                 , code
                     [ class "dc-list__title dc--no-wrap" ]
@@ -438,7 +436,7 @@ viewEventDetails maybeSelectedEvent formatted jsonEditorState =
 
                 Err error ->
                     div []
-                        [ Helpers.Panel.errorMessage "Json parsing error" (toString error)
+                        [ Helpers.Panel.errorMessage "Json parsing error" (Debug.toString error)
                         , text jsonString
                         ]
     in
@@ -448,7 +446,7 @@ viewEventDetails maybeSelectedEvent formatted jsonEditorState =
 
         Just event ->
             div
-                [ class "dc-column  dc-card", style [ ( "margin-right", "2.4rem" ) ] ]
+                [ class "dc-column  dc-card", style "margin-right" "2.4rem" ]
                 [ div [ class "dc-dialog__close" ]
                     [ i [ class "dc-icon dc-icon--close dc-icon--interactive", onClick UnSelectEvent, title "Close" ]
                         []

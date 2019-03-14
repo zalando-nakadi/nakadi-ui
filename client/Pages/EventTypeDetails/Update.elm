@@ -11,8 +11,8 @@ import Pages.EventTypeDetails.Messages exposing (Msg(..))
 import Pages.EventTypeDetails.Models exposing (Model, Tabs(..), initialModel)
 import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
 import Pages.EventTypeDetails.QueryTab exposing (deleteQuery, loadQuery)
-import RemoteData exposing (RemoteData(Failure, Loading, NotAsked), isFailure, isSuccess)
-import Routing.Models exposing (Route(EventTypeDetailsRoute))
+import RemoteData exposing (RemoteData(..), isFailure, isSuccess)
+import Routing.Models exposing (Route(..))
 import Stores.Consumer
 import Stores.Cursor
 import Stores.CursorDistance

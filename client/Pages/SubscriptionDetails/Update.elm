@@ -11,7 +11,7 @@ import Json.Encode
 import Keyboard.Extra
 import Pages.SubscriptionDetails.Messages exposing (Msg(..))
 import Pages.SubscriptionDetails.Models exposing (Model, Tabs(..), initialModel)
-import Routing.Models exposing (Route(SubscriptionDetailsRoute))
+import Routing.Models exposing (Route(..))
 import Stores.Cursor
 import Stores.SubscriptionCursors exposing (fetchCursors)
 import Stores.SubscriptionStats exposing (config, fetchStats)

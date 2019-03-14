@@ -2,7 +2,7 @@ module Pages.SubscriptionList.Update exposing (modelToRoute, routeToModel, updat
 
 import Pages.SubscriptionList.Messages exposing (Msg(..))
 import Pages.SubscriptionList.Models exposing (..)
-import Routing.Models exposing (Route(SubscriptionListRoute))
+import Routing.Models exposing (Route(..))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Route )

@@ -5,7 +5,7 @@ import Constants exposing (emptyString)
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Panel
-import Helpers.Store as Store exposing (Status(Loading))
+import Helpers.Store as Store exposing (Status(..))
 import Helpers.UI exposing (PopupPosition(..), externalLink, none, onChange)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -246,7 +246,7 @@ viewForm model setup =
                 Help.defaultStatistic
                 Optional
                 partitionNumberEditing
-                (List.range 1 Config.maxPartitionNumber |> List.map toString)
+                (List.range 1 Config.maxPartitionNumber |> List.map String.fromInt)
             , textInput formModel
                 FieldOrderingKeyFields
                 OnInput

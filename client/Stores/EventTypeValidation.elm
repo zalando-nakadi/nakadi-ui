@@ -32,7 +32,7 @@ config params =
         eventType =
             Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-    { getKey = \index issue -> issue.group ++ ":" ++ toString index
+    { getKey = \index issue -> issue.group ++ ":" ++ String.fromInt index
     , url = Config.urlValidationApi ++ eventType
     , decoder = collectionDecoder
     , headers = []

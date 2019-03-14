@@ -41,7 +41,7 @@ Example:
 
              Err error ->
                  div [class "error"]
-                     [ text "Json parsing error" (toString error)
+                     [ text "Json parsing error" (Debug.toString error)
                      , text json
                      ]
 
@@ -318,10 +318,10 @@ jsonValueToHtml json =
             span [ class "json-string" ] [ text ("\"" ++ str ++ "\"") ]
 
         ValueFloat number ->
-            span [ class "json-float" ] [ text (toString number) ]
+            span [ class "json-float" ] [ text (String.fromFloat number) ]
 
         ValueInt number ->
-            span [ class "json-int" ] [ text (toString number) ]
+            span [ class "json-int" ] [ text (String.fromInt number) ]
 
         ValueBool bool ->
             span [ class "json-bool" ]
@@ -362,10 +362,10 @@ jsonValueToCollapsibleHtml collapsedDict path json =
 
                 itemsText =
                     if count == 1 then
-                        toString count ++ " item"
+                        "1 item"
 
                     else
-                        toString count ++ " items"
+                        String.fromInt count ++ " items"
             in
             span [ class "json-placeholder" ] [ text itemsText ]
 
@@ -399,7 +399,7 @@ jsonValueToCollapsibleHtml collapsedDict path json =
         renderArrayItem array index value =
             let
                 nextPath =
-                    path ++ "[" ++ toString index ++ "]"
+                    path ++ "[" ++ String.fromInt index ++ "]"
             in
             renderListItem nextPath array index "" value
 
@@ -480,10 +480,10 @@ jsonValueToCollapsibleHtml collapsedDict path json =
             span [ class "json-string" ] [ text ("\"" ++ str ++ "\"") ]
 
         ValueFloat number ->
-            span [ class "json-float" ] [ text (toString number) ]
+            span [ class "json-float" ] [ text (String.fromFloat number) ]
 
         ValueInt number ->
-            span [ class "json-int" ] [ text (toString number) ]
+            span [ class "json-int" ] [ text (String.fromInt number) ]
 
         ValueBool bool ->
             span [ class "json-bool" ]

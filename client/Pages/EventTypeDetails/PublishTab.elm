@@ -122,7 +122,7 @@ Example:
         , p [ class "dc--text-less-important" ] [ text "Expectd JSON array of events. Example: [{\"order_id\": \"1052\"}, {\"order_id\": \"8364\"}]" ]
         , div []
             [ pre
-                [ class "ace-edit", style [ ( "height", "400px" ) ] ]
+                [ class "ace-edit", style "height" "400px" ]
                 [ node "ace-editor"
                     [ value model.editEvent
                     , onChange EditEvent
@@ -149,7 +149,7 @@ eventsTemplate date =
             format isoDateTimeFormat date
 
         eid =
-            toString (9000 - Date.millisecond date)
+            String.fromInt (9000 - Date.millisecond date)
     in
     """
 [
