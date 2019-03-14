@@ -9,7 +9,7 @@ import Models exposing (AppModel)
 import Pages.Partition.Messages exposing (..)
 import Pages.Partition.Models exposing (Model, isPartitionEmpty, getOldestNewestOffsets)
 import Pages.Partition.Help as Help
-import Routing.Helpers exposing (link)
+import Routing.Helpers exposing (internalLink)
 import Routing.Models exposing (Route(..))
 import Pages.EventTypeDetails.Models exposing (Tabs(PartitionsTab))
 import Helpers.Panel exposing (loadingStatus, infoMessage)
@@ -37,12 +37,12 @@ view model =
             [ div [ class "dc-row" ]
                 [ ul [ class "dc-breadcrumb" ]
                     [ li [ class "dc-breadcrumb__item" ]
-                        [ link
+                        [ internalLink "Event Types"
                             (EventTypeListRoute Pages.EventTypeList.Models.emptyQuery)
-                            "Event Types"
+
                         ]
                     , li [ class "dc-breadcrumb__item" ]
-                        [ link
+                        [ internalLink name
                             (EventTypeDetailsRoute { name = name }
                                 { tab = Just PartitionsTab
                                 , formatted = Nothing
@@ -50,7 +50,6 @@ view model =
                                 , version = Nothing
                                 }
                             )
-                            name
                         ]
                     , li [ class "dc-breadcrumb__item" ]
                         [ span [] [ text ("partition #" ++ partition) ]

@@ -24,14 +24,18 @@ routeToUrl =
 
 {-| Create Html link to internal page using Route type
 -}
-link : Route -> String -> Html msg
-link route name =
+internalHtmlLink : Route -> List (Html msg) -> Html msg
+internalHtmlLink route content =
     a
-        [ href (routeToUrl route)
-        , class "dc-link"
+        [ class "dc-link"
+        , href (routeToUrl route)
         ]
-        [ text name ]
+        content
 
+
+internalLink : String -> Route -> Html msg
+internalLink name route =
+    internalHtmlLink route [ text name ]
 
 locationToRoute : Location -> Route
 locationToRoute location =

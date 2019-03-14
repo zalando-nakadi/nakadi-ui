@@ -36,7 +36,7 @@ import Pages.EventTypeDetails.EffectiveSchema exposing (toEffective)
 import Pages.EventTypeList.Models
 import Pages.Partition.Models
 import Routing.Models exposing (routeToUrl, Route(..))
-import Routing.Helpers exposing (link)
+import Routing.Helpers exposing (internalLink)
 import Config
 import Constants
 import Helpers.String exposing (pluralCount)
@@ -50,7 +50,6 @@ import Helpers.UI
         , PopupPosition(..)
         , refreshButton
         , grid
-        , internalLink
         , externalLink
         , onSelect
         , none
@@ -140,7 +139,7 @@ detailsLayout typeName eventType model =
                 [ div [ class "dc-row dc-row--collapse" ]
                     [ ul [ class "dc-breadcrumb" ]
                         [ li [ class "dc-breadcrumb__item" ]
-                            [ link (EventTypeListRoute Pages.EventTypeList.Models.emptyQuery) "Event Types"
+                            [ internalLink "Event Types" (EventTypeListRoute Pages.EventTypeList.Models.emptyQuery)
                             ]
                         , li [ class "dc-breadcrumb__item" ]
                             [ span [] [ text (typeName), helpIcon "Event type name" Help.eventType BottomRight ]

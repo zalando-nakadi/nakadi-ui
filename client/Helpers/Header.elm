@@ -7,6 +7,7 @@ import Types exposing (AppHtml)
 import Models exposing (AppModel)
 import User.View
 import Routing.Models exposing (..)
+import Routing.Helpers exposing (internalHtmlLink, internalLink)
 import MultiSearch.View
 import Pages.EventTypeList.Models
 import Pages.SubscriptionList.Models
@@ -23,7 +24,7 @@ navHeader model =
 logo : AppHtml
 logo =
     div [ class "header__link" ]
-        [ UI.internalHtmlLink HomeRoute
+        [ internalHtmlLink HomeRoute
             [ div [ class "header__logo" ] [] ]
         ]
 
@@ -44,7 +45,7 @@ navLinks model =
 tab : Route -> String -> AppHtml
 tab route name =
     span [ class "header__link" ]
-        [ UI.internalLink name route ]
+        [ internalLink name route ]
 
 
 rightPanel : AppModel -> List (AppHtml)

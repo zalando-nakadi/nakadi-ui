@@ -49,6 +49,7 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
+    "ace-builds": "^1.4.3",
     "babel-loader": "^8.0.5",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "0.28.5",

@@ -8,14 +8,13 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Helpers.UI exposing (..)
-import Helpers.Panel exposing (renderError, warningMessage)
+import Helpers.Panel exposing (renderError)
 import Helpers.Store exposing (errorToViewRecord)
-import RemoteData exposing (WebData, isLoading)
+import RemoteData exposing (WebData)
 import Http
 import Config
 import User.Models exposing (Settings)
 import String.Extra exposing (replace)
-import Helpers.Ace as Ace
 
 
 queryTab : Settings -> Model -> Html Msg
@@ -25,6 +24,7 @@ queryTab setting pageState =
             pageState.loadQueryResponse
             (queryTabHeader setting pageState)
         ]
+
 queryTabHeader : Settings -> Model -> Query -> Html Msg
 queryTabHeader settings model query =
     let
@@ -91,15 +91,13 @@ queryHelp =
 sqlView : String -> Html msg
 sqlView sql =
     pre [ class "sql-view" ]
-        [ Ace.toHtml
-            [ Ace.value sql
-            , Ace.mode "sql"
-            , Ace.theme "dawn"
-            , Ace.tabSize 4
-            , Ace.useSoftTabs False
-            , Ace.extensions [ "language_tools" ]
-            , Ace.readOnly True
-            ]
+        [
+            node "ace-editor"
+              [ value sql
+              , attribute "theme" "ace/theme/dawn"
+              , attribute "mode" "ace/mode/sql"
+              , readonly True
+              ]
             []
         ]
 

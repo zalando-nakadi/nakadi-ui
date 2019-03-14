@@ -137,4 +137,4 @@ class Response {
   }
 }
 
-module.exports = ElmExpress
+module.exports = ElmExpress.create

@@ -6,7 +6,6 @@ import Html.Events exposing (..)
 import Maybe exposing (withDefault)
 import Json.Decode as Json
 import Constants exposing (emptyString, starOn, starOff)
-import Routing.Models exposing (Route, routeToUrl)
 import Helpers.StoreLocal as StoreLocal
 import Helpers.String
 import Config
@@ -113,10 +112,14 @@ grid columns rows =
 
 {-| Create 'onselect' event listener attribute for select HTML node
 -}
-onSelect : (String -> msg) -> Html.Attribute msg
-onSelect msg =
+onChange : (String -> msg) -> Html.Attribute msg
+onChange msg =
     on "change" (Json.map msg <| Json.at [ "target", "value" ] Json.string)
 
+
+onSelect : (String -> msg) -> Html.Attribute msg
+onSelect =
+    onChange
 
 onKeyUp : (Int -> msg) -> Attribute msg
 onKeyUp tagger =
@@ -274,20 +277,6 @@ linkHtmlToUser usersInfoUrl name content =
 linkToUser : String -> String -> Html msg
 linkToUser usersInfoUrl name =
     linkHtmlToApp usersInfoUrl name [ text name ]
-
-
-internalHtmlLink : Route -> List (Html msg) -> Html msg
-internalHtmlLink route content =
-    a
-        [ class "dc-link"
-        , href (routeToUrl route)
-        ]
-        content
-
-
-internalLink : String -> Route -> Html msg
-internalLink name route =
-    internalHtmlLink route [ text name ]
 
 
 externalHtmlLink : String -> List (Html msg) -> Html msg
