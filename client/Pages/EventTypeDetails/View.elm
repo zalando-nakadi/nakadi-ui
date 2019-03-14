@@ -16,8 +16,6 @@ import Stores.EventType
         ( EventType
         , EventTypeStatistics
         , EventTypeOptions
-        , categories
-        , compatibilityModes
         , cleanupPolicies
         )
 import Stores.Partition
@@ -40,22 +38,7 @@ import Routing.Helpers exposing (internalLink)
 import Config
 import Constants
 import Helpers.String exposing (pluralCount)
-import Helpers.UI
-    exposing
-        ( linkToApp
-        , linkToAppOrUser
-        , starIcon
-        , tabs
-        , helpIcon
-        , PopupPosition(..)
-        , refreshButton
-        , grid
-        , externalLink
-        , onSelect
-        , none
-        , newline
-        , popup
-        )
+import Helpers.UI exposing (PopupPosition(..), externalLink, grid, helpIcon, linkToApp, linkToAppOrUser, none, onChange, popup, refreshButton, starIcon, tabs)
 
 
 view : AppModel -> Html Msg
@@ -450,7 +433,7 @@ schemaTab jsonEditorState schemasStore selectedVersion formatted effective event
                 span []
                     [ label [ class "schema-tab__label" ] [ text "Displayed version: " ]
                     , select
-                        [ onSelect SchemaVersionChange
+                        [ onChange SchemaVersionChange
                         , class "schema-tab__value dc-select"
                         ]
                         schemasOptions

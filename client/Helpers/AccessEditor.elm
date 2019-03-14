@@ -345,7 +345,7 @@ addRowControls config model =
         div [ class "dc-column" ]
             [ div [ class "dc-row" ]
                 [ select
-                    [ UI.onSelect AddKeyChange
+                    [ UI.onChange AddKeyChange
                     , value model.key
                     , class "dc-select access-editor__add-key"
                     ]

@@ -104,7 +104,6 @@ class AceEditor extends HTMLElement {
     if (this.editor) {
       editor = this.editor
     } else {
-      // container.appendChild(text);
       container.textContent = this.value
       editor = window.ace.edit(container)
       this.dispatchEvent(new CustomEvent('editor-ready', {bubbles: true, composed: true, detail: editor}))
@@ -132,7 +131,7 @@ class AceEditor extends HTMLElement {
       enableSnippets: true,
       enableLiveAutocompletion: true
     })
-    const StatusBar = window.ace.require("ace/ext/statusbar").StatusBar;
+    const StatusBar = window.ace.require('ace/ext/statusbar').StatusBar
     // create a simple selection status indicator
     new StatusBar(editor, this.statusBar)
 
@@ -147,14 +146,12 @@ class AceEditor extends HTMLElement {
     // Could be buggy as editor was also added to Light DOM;
     const observer = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
-        // console.log("observation", mutation.type, arguments, mutations, editor, text);
         if (mutation.type === 'characterData') {
           element.value = text.data
         }
       })
     })
     text && observer.observe(text, {characterData: true})
-    // container.appendChild(text);
     this._attached = true
   }
 

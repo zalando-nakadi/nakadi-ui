@@ -6,7 +6,7 @@ import Html.Events exposing (..)
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
 import Pages.EventTypeCreate.Query exposing (viewQueryForm)
-import Helpers.UI exposing (PopupPosition(..), externalLink, none, onChange, onSelect)
+import Helpers.UI exposing (PopupPosition(..), externalLink, none, onChange)
 import Pages.EventTypeDetails.Help as Help
 import Models exposing (AppModel)
 import Helpers.Panel

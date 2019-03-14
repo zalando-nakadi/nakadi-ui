@@ -110,16 +110,10 @@ grid columns rows =
         ]
 
 
-{-| Create 'onselect' event listener attribute for select HTML node
--}
 onChange : (String -> msg) -> Html.Attribute msg
 onChange msg =
     on "change" (Json.map msg <| Json.at [ "target", "value" ] Json.string)
 
-
-onSelect : (String -> msg) -> Html.Attribute msg
-onSelect =
-    onChange
 
 onKeyUp : (Int -> msg) -> Attribute msg
 onKeyUp tagger =
