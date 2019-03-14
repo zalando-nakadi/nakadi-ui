@@ -1,10 +1,12 @@
-module Tests.Tests exposing (..)
+module Tests.Tests exposing (all)
 
 import Test exposing (Test, describe)
+import Tests.EventTypeStore
+import Tests.Helpers
 import Tests.Routes
 import Tests.Update
-import Tests.Helpers
-import Tests.EventTypeStore
+
+
 all : Test
 all =
     describe "Main Test Suite"

@@ -1,13 +1,13 @@
-module Stores.CursorDistance exposing (..)
+module Stores.CursorDistance exposing (CursorDistance, CursorDistanceQuery, Model, Msg, collectionDecoder, config, cursorDistanceDecoder, cursorDistanceQueryEncoder, fetchDistance, initialModel, update)
 
-import Helpers.Store
 import Config
-import Json.Decode exposing (int, string, float, Decoder, field, list, nullable)
-import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Json.Encode
-import Dict
-import Http
 import Constants exposing (emptyString)
+import Dict
+import Helpers.Store
+import Http
+import Json.Decode exposing (Decoder, int, list)
+import Json.Decode.Pipeline exposing (decode, required)
+import Json.Encode
 import Stores.Cursor exposing (Cursor, cursorEncoder)
 
 
@@ -44,13 +44,13 @@ config : Dict.Dict String String -> Helpers.Store.Config CursorDistance
 config params =
     let
         eventType =
-            (Dict.get Constants.eventTypeName params) |> Maybe.withDefault emptyString
+            Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-        { getKey = (\index item -> toString index)
-        , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/cursor-distances"
-        , decoder = collectionDecoder
-        , headers = []
-        }
+    { getKey = \index item -> toString index
+    , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/cursor-distances"
+    , decoder = collectionDecoder
+    , headers = []
+    }
 
 
 initialModel : Model
@@ -74,16 +74,16 @@ fetchDistance tagger name cursorDistanceQueryList =
                 |> List.map cursorDistanceQueryEncoder
                 |> Json.Encode.list
     in
-        Http.request
-            { method = "POST"
-            , headers = []
-            , url = conf.url
-            , body = Http.jsonBody body
-            , expect = Http.expectJson conf.decoder
-            , timeout = Nothing
-            , withCredentials = False
-            }
-            |> Http.send tagger
+    Http.request
+        { method = "POST"
+        , headers = []
+        , url = conf.url
+        , body = Http.jsonBody body
+        , expect = Http.expectJson conf.decoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> Http.send tagger
 
 
 

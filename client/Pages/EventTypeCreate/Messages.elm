@@ -1,9 +1,9 @@
-module Pages.EventTypeCreate.Messages exposing (..)
+module Pages.EventTypeCreate.Messages exposing (Msg(..))
 
+import Dom
+import Helpers.AccessEditor as AccessEditor
 import Http
 import Pages.EventTypeCreate.Models exposing (Field, Operation)
-import Helpers.AccessEditor as AccessEditor
-import Dom
 import Stores.Partition
 
 

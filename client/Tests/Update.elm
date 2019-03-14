@@ -1,13 +1,12 @@
-module Tests.Update exposing (..)
+module Tests.Update exposing (all, routingNavigateToTest, routingOnLocationChangeTest)
 
-import Test exposing (Test, describe, test)
 import Expect
 import Messages exposing (..)
-import Update
 import Models
-import Routing.Models exposing (..)
 import Routing.Messages exposing (Msg(..))
-import Routing.Models exposing (Model)
+import Routing.Models exposing (..)
+import Test exposing (Test, describe, test)
+import Update
 
 
 all : Test
@@ -38,7 +37,7 @@ routingNavigateToTest =
                 isNone =
                     cmd == Cmd.map RoutingMsg Cmd.none
             in
-                Expect.equal ( expectedModel, False ) ( resultModel, isNone )
+            Expect.equal ( expectedModel, False ) ( resultModel, isNone )
         )
 
 
@@ -72,5 +71,5 @@ routingOnLocationChangeTest =
                 ( model, cmd ) =
                     Update.update (RoutingMsg (OnLocationChange location)) testModel
             in
-                Expect.equal (expectedModel) (model)
+            Expect.equal expectedModel model
         )

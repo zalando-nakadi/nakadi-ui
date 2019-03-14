@@ -1,12 +1,12 @@
-module Tests.Helpers exposing (..)
+module Tests.Helpers exposing (all, jsonValueToPrettyStringTest, jsonValueToStringTest, paginationTest, parseJsonTest, periodToStringTest, prettyPrintJsonTest, pseudoIntSortTest, viewSplitFoundTest)
 
-import Test exposing (Test, describe, test)
-import Expect
-import Helpers.String exposing (splitFound, periodToString, pseudoIntSort)
-import Helpers.Pagination exposing (paginationButtons, Buttons(Page, More, Current, Previous, Next))
-import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
-import Helpers.JsonEditor exposing (JsonValue(..), stringToJsonValue, jsonValueToString, jsonValueToPrettyString)
 import Dict
+import Expect
+import Helpers.JsonEditor exposing (JsonValue(..), jsonValueToPrettyString, jsonValueToString, stringToJsonValue)
+import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
+import Helpers.Pagination exposing (Buttons(Current, More, Next, Page, Previous), paginationButtons)
+import Helpers.String exposing (periodToString, pseudoIntSort, splitFound)
+import Test exposing (Test, describe, test)
 
 
 all : Test
@@ -142,13 +142,13 @@ all =
             "{\"a\":1,\"c\":2,\"b\":3,\"keystring\":\"astring\",\"keyint\":123,\"keyobj\":{\"subkeyint\":1,\"subarraykey\":[1,\"str\",3.14,null,true, false, [{}] ]}}"
             (Ok
                 (ValueObject
-                    ([ ( "a", ValueInt 1 )
-                     , ( "c", ValueInt 2 )
-                     , ( "b", ValueInt 3 )
-                     , ( "keystring", ValueString "astring" )
-                     , ( "keyint", ValueInt 123 )
-                     , ( "keyobj"
-                       , ValueObject
+                    [ ( "a", ValueInt 1 )
+                    , ( "c", ValueInt 2 )
+                    , ( "b", ValueInt 3 )
+                    , ( "keystring", ValueString "astring" )
+                    , ( "keyint", ValueInt 123 )
+                    , ( "keyobj"
+                      , ValueObject
                             [ ( "subkeyint", ValueInt 1 )
                             , ( "subarraykey"
                               , ValueArray
@@ -162,20 +162,19 @@ all =
                                     ]
                               )
                             ]
-                       )
-                     ]
-                    )
+                      )
+                    ]
                 )
             )
         , jsonValueToStringTest
             (ValueObject
-                ([ ( "a", ValueInt 1 )
-                 , ( "c", ValueInt 2 )
-                 , ( "b", ValueInt 3 )
-                 , ( "keys\"tring", ValueString "astr\"ing" )
-                 , ( "keyint", ValueInt 123 )
-                 , ( "keyobj"
-                   , ValueObject
+                [ ( "a", ValueInt 1 )
+                , ( "c", ValueInt 2 )
+                , ( "b", ValueInt 3 )
+                , ( "keys\"tring", ValueString "astr\"ing" )
+                , ( "keyint", ValueInt 123 )
+                , ( "keyobj"
+                  , ValueObject
                         [ ( "subkeyint", ValueInt 1 )
                         , ( "subarraykey"
                           , ValueArray
@@ -189,22 +188,21 @@ all =
                                 ]
                           )
                         ]
-                   )
-                 ]
-                )
+                  )
+                ]
             )
             "{\"a\":1,\"c\":2,\"b\":3,\"keys\\\"tring\":\"astr\\\"ing\",\"keyint\":123,\"keyobj\":{\"subkeyint\":1,\"subarraykey\":[1,\"str\",3.14,null,true,false,[{}]]}}"
         , jsonValueToPrettyStringTest
             (ValueObject
-                ([ ( "a", ValueInt 1 )
-                 , ( "c", ValueInt 2 )
-                 , ( "b", ValueInt 3 )
-                 , ( "keystring", ValueString "astring" )
-                 , ( "keyint", ValueInt 123 )
-                 , ( "emptyObj", ValueObject [] )
-                 , ( "emptyArr", ValueArray [] )
-                 , ( "keyobj"
-                   , ValueObject
+                [ ( "a", ValueInt 1 )
+                , ( "c", ValueInt 2 )
+                , ( "b", ValueInt 3 )
+                , ( "keystring", ValueString "astring" )
+                , ( "keyint", ValueInt 123 )
+                , ( "emptyObj", ValueObject [] )
+                , ( "emptyArr", ValueArray [] )
+                , ( "keyobj"
+                  , ValueObject
                         [ ( "subkeyint", ValueInt 1 )
                         , ( "subarraykey"
                           , ValueArray
@@ -219,17 +217,16 @@ all =
                                 ]
                           )
                         ]
-                   )
-                 , ( "keyint2", ValueInt 123 )
-                 ]
-                )
+                  )
+                , ( "keyint2", ValueInt 123 )
+                ]
             )
             "{\n    \"a\": 1,\n    \"c\": 2,\n    \"b\": 3,\n    \"keystring\": \"astring\",\n    \"keyint\": 123,\n    \"emptyObj\": {},\n    \"emptyArr\": [],\n    \"keyobj\": {\n        \"subkeyint\": 1,\n        \"subarraykey\": [\n            1,\n            \"str\",\n            3.14,\n            null,\n            true,\n            false,\n            [\n                {}\n            ],\n            {\n                \"key\": []\n            }\n        ]\n    },\n    \"keyint2\": 123\n}"
         , periodToStringTest 0 ""
         , periodToStringTest 1000 "1 second"
         , periodToStringTest ((24 * 60 * 60 * 1000) + 2000) "1 day 2 seconds"
-        , pseudoIntSortTest ["1","10","2"]  ["1","2","10"]
-        , pseudoIntSortTest ["1","10","b","2", "a"]  ["1","2","10","a","b"]
+        , pseudoIntSortTest [ "1", "10", "2" ] [ "1", "2", "10" ]
+        , pseudoIntSortTest [ "1", "10", "b", "2", "a" ] [ "1", "2", "10", "a", "b" ]
         ]
 
 

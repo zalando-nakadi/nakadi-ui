@@ -1,8 +1,8 @@
-module MultiSearch.Models exposing (..)
+module MultiSearch.Models exposing (Config, Model, SearchItem(..), initialModel, maxResults)
 
+import Constants exposing (emptyString)
 import Stores.EventType exposing (EventType)
 import Stores.Subscription exposing (Subscription)
-import Constants exposing (emptyString)
 
 
 type SearchItem
@@ -38,6 +38,6 @@ type alias Config =
     , dropdownHeight : Int
     , inputId : String
     , dropdownId : String
-    , hint: String
-    , placeholder: String
+    , hint : String
+    , placeholder : String
     }

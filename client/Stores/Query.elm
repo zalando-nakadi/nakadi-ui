@@ -1,12 +1,12 @@
-module Stores.Query exposing (..)
-import Json.Decode exposing (Decoder,string)
+module Stores.Query exposing (Query, queryDecoder)
+
+import Json.Decode exposing (Decoder, string)
 import Json.Decode.Pipeline exposing (decode, required)
 
 
 type alias Query =
-    {
-     id : String,
-     sql : String
+    { id : String
+    , sql : String
     }
 
 

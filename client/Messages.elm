@@ -1,18 +1,18 @@
-module Messages exposing (..)
+module Messages exposing (Msg(..))
 
-import Pages.EventTypeList.Messages
-import Pages.EventTypeDetails.Messages
-import Pages.EventTypeCreate.Messages
-import Pages.Partition.Messages
-import Pages.SubscriptionList.Messages
-import Pages.SubscriptionDetails.Messages
-import Pages.SubscriptionCreate.Messages
-import User.Messages
-import Routing.Messages
+import Helpers.StoreLocal
 import MultiSearch.Messages
+import Pages.EventTypeCreate.Messages
+import Pages.EventTypeDetails.Messages
+import Pages.EventTypeList.Messages
+import Pages.Partition.Messages
+import Pages.SubscriptionCreate.Messages
+import Pages.SubscriptionDetails.Messages
+import Pages.SubscriptionList.Messages
+import Routing.Messages
 import Stores.EventType
 import Stores.Subscription
-import Helpers.StoreLocal
+import User.Messages
 
 
 type Msg

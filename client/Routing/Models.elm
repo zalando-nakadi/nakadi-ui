@@ -1,13 +1,13 @@
-module Routing.Models exposing (..)
+module Routing.Models exposing (Model, PageLoader, ParsedUrl, Route(..), RouteConfig, initialModel, routeToTitle, routeToUrl, routingConfig)
 
-import Pages.EventTypeList.Models as EventTypeList
-import Pages.EventTypeDetails.Models as EventTypeDetails
-import Pages.Partition.Models as Partition
-import Pages.SubscriptionList.Models as SubscriptionList
-import Pages.SubscriptionDetails.Models as SubscriptionDetails
+import Constants exposing (emptyString)
 import Helpers.String exposing (Params)
 import Http
-import Constants exposing (emptyString)
+import Pages.EventTypeDetails.Models as EventTypeDetails
+import Pages.EventTypeList.Models as EventTypeList
+import Pages.Partition.Models as Partition
+import Pages.SubscriptionDetails.Models as SubscriptionDetails
+import Pages.SubscriptionList.Models as SubscriptionList
 
 
 type alias Model =
@@ -111,34 +111,34 @@ routeToUrl route =
             "#types" ++ EventTypeList.queryToUrl query
 
         EventTypeDetailsRoute params query ->
-            "#types/" ++ (Http.encodeUri params.name) ++ EventTypeDetails.queryToUrl query
+            "#types/" ++ Http.encodeUri params.name ++ EventTypeDetails.queryToUrl query
 
         EventTypeCreateRoute ->
             "#createtype"
 
         EventTypeUpdateRoute params ->
-            "#types/" ++ (Http.encodeUri params.name) ++ "/update"
+            "#types/" ++ Http.encodeUri params.name ++ "/update"
 
         EventTypeCloneRoute params ->
-            "#types/" ++ (Http.encodeUri params.name) ++ "/clone"
+            "#types/" ++ Http.encodeUri params.name ++ "/clone"
 
         PartitionRoute params query ->
-            "#types/" ++ (Http.encodeUri params.name) ++ "/partitions/" ++ (Http.encodeUri params.partition) ++ Partition.queryToUrl query
+            "#types/" ++ Http.encodeUri params.name ++ "/partitions/" ++ Http.encodeUri params.partition ++ Partition.queryToUrl query
 
         SubscriptionListRoute query ->
             "#subscriptions" ++ SubscriptionList.queryToUrl query
 
         SubscriptionDetailsRoute params query ->
-            "#subscriptions/" ++ (Http.encodeUri params.id) ++ SubscriptionDetails.queryToUrl query
+            "#subscriptions/" ++ Http.encodeUri params.id ++ SubscriptionDetails.queryToUrl query
 
         SubscriptionCreateRoute ->
             "#createsubscription"
 
         SubscriptionUpdateRoute params ->
-            "#subscriptions/" ++ (Http.encodeUri params.id) ++ "/update"
+            "#subscriptions/" ++ Http.encodeUri params.id ++ "/update"
 
         SubscriptionCloneRoute params ->
-            "#subscriptions/" ++ (Http.encodeUri params.id) ++ "/clone"
+            "#subscriptions/" ++ Http.encodeUri params.id ++ "/clone"
 
         QueryCreateRoute ->
             "#createquery"
@@ -147,53 +147,54 @@ routeToUrl route =
 routeToTitle : Route -> String
 routeToTitle route =
     "Nakadi UI"
-        ++ case route of
-            HomeRoute ->
-                ""
+        ++ (case route of
+                HomeRoute ->
+                    ""
 
-            NotFoundRoute ->
-                " - 404 Notfound"
+                NotFoundRoute ->
+                    " - 404 Notfound"
 
-            EventTypeListRoute query ->
-                " - Event Types"
+                EventTypeListRoute query ->
+                    " - Event Types"
 
-            EventTypeDetailsRoute params query ->
-                " - Event Type - " ++ params.name
+                EventTypeDetailsRoute params query ->
+                    " - Event Type - " ++ params.name
 
-            EventTypeCreateRoute ->
-                " - Create Event Type"
+                EventTypeCreateRoute ->
+                    " - Create Event Type"
 
-            EventTypeUpdateRoute params ->
-                " - Update Event Type - " ++ params.name
+                EventTypeUpdateRoute params ->
+                    " - Update Event Type - " ++ params.name
 
-            EventTypeCloneRoute params ->
-                " - Clone Event Type - " ++ params.name
+                EventTypeCloneRoute params ->
+                    " - Clone Event Type - " ++ params.name
 
-            PartitionRoute params query ->
-                case query.selected of
-                    Nothing ->
-                        " - Events - " ++ params.name ++ " # " ++ params.partition
+                PartitionRoute params query ->
+                    case query.selected of
+                        Nothing ->
+                            " - Events - " ++ params.name ++ " # " ++ params.partition
 
-                    Just offset ->
-                        " - Event - " ++ offset ++ " in " ++ params.name
+                        Just offset ->
+                            " - Event - " ++ offset ++ " in " ++ params.name
 
-            SubscriptionListRoute query ->
-                " - Subscriptions"
+                SubscriptionListRoute query ->
+                    " - Subscriptions"
 
-            SubscriptionDetailsRoute params query ->
-                " - Subscription - " ++ params.id
+                SubscriptionDetailsRoute params query ->
+                    " - Subscription - " ++ params.id
 
-            SubscriptionCreateRoute ->
-                " - Create Subscription"
+                SubscriptionCreateRoute ->
+                    " - Create Subscription"
 
-            SubscriptionUpdateRoute params ->
-                " - Update Subscription - " ++ params.id
+                SubscriptionUpdateRoute params ->
+                    " - Update Subscription - " ++ params.id
 
-            SubscriptionCloneRoute params ->
-                " - Clone Subscription - " ++ params.id
+                SubscriptionCloneRoute params ->
+                    " - Clone Subscription - " ++ params.id
 
-            QueryCreateRoute ->
-                " - Create SQL Query"
+                QueryCreateRoute ->
+                    " - Create SQL Query"
+           )
 
 
 initialModel : Model

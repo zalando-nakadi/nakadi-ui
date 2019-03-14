@@ -1,13 +1,13 @@
-module Stores.StarredEventTypes exposing (..)
+module Stores.StarredEventTypes exposing (config, update)
 
+import Dict
 import Helpers.Store as Store
 import Helpers.StoreLocal as StoreLocal
-import Dict
 
 
 config : Dict.Dict String String -> Store.Config String
 config params =
-    { getKey = (\index name -> name)
+    { getKey = \index name -> name
     , url = "elm:localStorage?key=starred.eventTypes"
     , decoder = StoreLocal.collectionDecoder
     , headers = []

@@ -1,33 +1,32 @@
-module Pages.EventTypeCreate.View exposing (..)
+module Pages.EventTypeCreate.View exposing (FormSetup, accessEditor, schemaEditor, view, viewForm, viewFormClone, viewFormCreate, viewFormUpdate)
 
+import Config
+import Constants exposing (emptyString)
+import Helpers.AccessEditor as AccessEditor
+import Helpers.Forms exposing (..)
+import Helpers.Panel
+import Helpers.Store as Store exposing (Status(Loading))
+import Helpers.UI exposing (PopupPosition(..), externalLink, none, onChange)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Models exposing (AppModel)
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
 import Pages.EventTypeCreate.Query exposing (viewQueryForm)
-import Helpers.UI exposing (PopupPosition(..), externalLink, none, onChange)
 import Pages.EventTypeDetails.Help as Help
-import Models exposing (AppModel)
-import Helpers.Panel
-import Helpers.Store exposing (Status(Loading))
-import Constants exposing (emptyString)
-import Helpers.Store as Store
 import Stores.EventType
     exposing
         ( EventType
-        , categories
-        , allCategories
-        , compatibilityModes
-        , allModes
-        , partitionStrategies
         , allAudiences
-        , cleanupPolicies
+        , allCategories
         , allCleanupPolicies
+        , allModes
+        , categories
+        , cleanupPolicies
+        , compatibilityModes
+        , partitionStrategies
         )
-import Helpers.AccessEditor as AccessEditor
-import Config
-import Helpers.Forms exposing (..)
 
 
 view : AppModel -> Html Msg
@@ -51,22 +50,22 @@ view model =
             div [ class "form-create__form dc-card dc-row dc-row--align--center" ]
                 [ form ]
     in
-        Helpers.Panel.loadingStatus model.eventTypeStore <|
-            case formModel.operation of
-                Create ->
-                    container <|
-                        viewFormCreate model
+    Helpers.Panel.loadingStatus model.eventTypeStore <|
+        case formModel.operation of
+            Create ->
+                container <|
+                    viewFormCreate model
 
-                Update name ->
-                    findEventType name viewFormUpdate
+            Update name ->
+                findEventType name viewFormUpdate
 
-                Clone name ->
-                    Helpers.Panel.loadingStatus formModel.partitionsStore <|
-                        findEventType name viewFormClone
+            Clone name ->
+                Helpers.Panel.loadingStatus formModel.partitionsStore <|
+                    findEventType name viewFormClone
 
-                CreateQuery ->
-                    container <|
-                        viewQueryForm model
+            CreateQuery ->
+                container <|
+                    viewQueryForm model
 
 
 viewFormCreate : AppModel -> Html Msg
@@ -87,15 +86,17 @@ viewFormUpdate : AppModel -> EventType -> Html Msg
 viewFormUpdate model originalEventType =
     let
         originalMode =
-            (originalEventType.compatibility_mode |> Maybe.withDefault emptyString)
+            originalEventType.compatibility_mode |> Maybe.withDefault emptyString
 
         compatibilityModeOptions =
             if originalMode == compatibilityModes.none then
                 allModes
+
             else if originalMode == compatibilityModes.forward then
                 [ compatibilityModes.forward
                 , compatibilityModes.compatible
                 ]
+
             else
                 [ compatibilityModes.compatible ]
 
@@ -105,6 +106,7 @@ viewFormUpdate model originalEventType =
                     == partitionStrategies.random
             then
                 Enabled
+
             else
                 Disabled
 
@@ -113,22 +115,23 @@ viewFormUpdate model originalEventType =
                 [ categories.undefined
                 , categories.business
                 ]
+
             else
                 [ originalEventType.category ]
 
         cleanupPoliciesOptions =
             [ originalEventType.cleanup_policy ]
     in
-        viewForm model
-            { nameEditing = Disabled
-            , formTitle = "Update Event Type"
-            , successMessage = "Event Type Updated!"
-            , categoriesOptions = categoriesOptions
-            , compatibilityModeOptions = compatibilityModeOptions
-            , cleanupPoliciesOptions = cleanupPoliciesOptions
-            , partitionStrategyEditing = partitionStrategyEditing
-            , partitionNumberEditing = Disabled
-            }
+    viewForm model
+        { nameEditing = Disabled
+        , formTitle = "Update Event Type"
+        , successMessage = "Event Type Updated!"
+        , categoriesOptions = categoriesOptions
+        , compatibilityModeOptions = compatibilityModeOptions
+        , cleanupPoliciesOptions = cleanupPoliciesOptions
+        , partitionStrategyEditing = partitionStrategyEditing
+        , partitionNumberEditing = Disabled
+        }
 
 
 viewFormClone : AppModel -> EventType -> Html Msg
@@ -175,145 +178,147 @@ viewForm model setup =
         supportUrl =
             model.userStore.user.settings.supportUrl
     in
-        div [ class "dc-column form-create__form-container" ]
-            [ div []
-                [ h4 [ class "dc-h4 dc--text-center" ] [ text formTitle ]
-                , textInput formModel
-                    FieldName
+    div [ class "dc-column form-create__form-container" ]
+        [ div []
+            [ h4 [ class "dc-h4 dc--text-center" ] [ text formTitle ]
+            , textInput formModel
+                FieldName
+                OnInput
+                "Event Type Name"
+                "Example: bazar.price-updater.price_changed"
+                "Should be several words (with '_', '-') separated by dot."
+                Help.eventType
+                Required
+                nameEditing
+            , textInput formModel
+                FieldOwningApplication
+                OnInput
+                "Owning Application"
+                "Example: stups_price-updater"
+                "App name registered in YourTurn with 'stups_' prefix"
+                Help.owningApplication
+                Required
+                Enabled
+            , selectInput formModel
+                FieldCategory
+                OnInput
+                "Category"
+                ""
+                Help.category
+                Optional
+                Enabled
+                categoriesOptions
+            , div [ class "dc-row form-create__input-row" ]
+                [ selectInput formModel
+                    FieldPartitionStrategy
                     OnInput
-                    "Event Type Name"
-                    "Example: bazar.price-updater.price_changed"
-                    "Should be several words (with '_', '-') separated by dot."
-                    Help.eventType
-                    Required
-                    nameEditing
-                , textInput formModel
-                    FieldOwningApplication
-                    OnInput
-                    "Owning Application"
-                    "Example: stups_price-updater"
-                    "App name registered in YourTurn with 'stups_' prefix"
-                    Help.owningApplication
-                    Required
-                    Enabled
-                , selectInput formModel
-                    FieldCategory
-                    OnInput
-                    "Category"
+                    "Partition Strategy"
                     ""
-                    Help.category
+                    Help.partitionStrategy
                     Optional
-                    Enabled
-                    categoriesOptions
-                , div [ class "dc-row form-create__input-row" ]
-                    [ selectInput formModel
-                        FieldPartitionStrategy
-                        OnInput
-                        "Partition Strategy"
-                        ""
-                        Help.partitionStrategy
-                        Optional
-                        partitionStrategyEditing
-                        [ partitionStrategies.random
-                        , partitionStrategies.hash
-                        , partitionStrategies.user_defined
-                        ]
-                    , div
-                        [ class "dc-column" ]
-                        [ (if (getValue FieldPartitionStrategy formModel.values) == partitionStrategies.hash then
-                            textInput formModel
-                                FieldPartitionKeyFields
-                                OnInput
-                                "Partition Key Fields"
-                                "Example: order.user_id, order.item_id"
-                                "Comma-separated list of keys."
-                                Help.partitionKeyFields
-                                Required
-                                partitionStrategyEditing
-                           else
-                            none
-                          )
-                        ]
+                    partitionStrategyEditing
+                    [ partitionStrategies.random
+                    , partitionStrategies.hash
+                    , partitionStrategies.user_defined
                     ]
-                , selectInput formModel
-                    FieldPartitionsNumber
-                    OnInput
-                    "Number of Partitions"
-                    ""
-                    Help.defaultStatistic
-                    Optional
-                    partitionNumberEditing
-                    (List.range 1 Config.maxPartitionNumber |> List.map toString)
-                , textInput formModel
-                    FieldOrderingKeyFields
-                    OnInput
-                    "Ordering Key Fields"
-                    "Example: order.day, order.index"
-                    "Comma-separated list of keys."
-                    Help.orderingKeyFields
-                    Optional
-                    Enabled
-                , selectInput formModel
-                    FieldAudience
-                    OnInput
-                    "Audience"
-                    ""
-                    Help.audience
-                    Required
-                    Enabled
-                    ("" :: allAudiences)
-                , selectInput formModel
-                    FieldCleanupPolicy
-                    OnInput
-                    "Cleanup policy"
-                    ""
-                    Help.cleanupPolicy
-                    Optional
-                    Enabled
-                    cleanupPoliciesOptions
-                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.compact then
-                    p [ class "dc-p" ]
-                        [ text "Log compacted event types MUST NOT contain personal identifiable"
-                        , text " information in accordance to GDPR. If you plan to store user"
-                        , text " data permanently in Log compacted event types, then please contact "
-                        , (externalLink "support" supportUrl)
-                        , text " to get a custom GDPR compliant solution built for your use case."
-                        ]
-                  else
-                    none
-                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.delete then
-                    selectInput formModel
-                        FieldRetentionTime
-                        OnInput
-                        "Retention Time (Days)"
-                        ""
-                        Help.options
-                        Optional
-                        Enabled
-                        [ "2", "3", "4" ]
-                  else
-                    none
-                , selectInput formModel
-                    FieldCompatibilityMode
-                    OnInput
-                    "Schema Compatibility Mode"
-                    ""
-                    Help.compatibilityMode
-                    Optional
-                    Enabled
-                    compatibilityModeOptions
-                , schemaEditor formModel
-                , hr [ class "dc-divider" ] []
-                , accessEditor appsInfoUrl usersInfoUrl formModel
+                , div
+                    [ class "dc-column" ]
+                    [ if getValue FieldPartitionStrategy formModel.values == partitionStrategies.hash then
+                        textInput formModel
+                            FieldPartitionKeyFields
+                            OnInput
+                            "Partition Key Fields"
+                            "Example: order.user_id, order.item_id"
+                            "Comma-separated list of keys."
+                            Help.partitionKeyFields
+                            Required
+                            partitionStrategyEditing
+
+                      else
+                        none
+                    ]
                 ]
-            , hr [ class "dc-divider" ]
-                []
-            , div
-                [ class "dc-toast__content dc-toast__content--success" ]
-                [ text successMessage ]
-                |> Helpers.Panel.loadingStatus formModel
-            , buttonPanel formTitle Submit Reset FieldName formModel
+            , selectInput formModel
+                FieldPartitionsNumber
+                OnInput
+                "Number of Partitions"
+                ""
+                Help.defaultStatistic
+                Optional
+                partitionNumberEditing
+                (List.range 1 Config.maxPartitionNumber |> List.map toString)
+            , textInput formModel
+                FieldOrderingKeyFields
+                OnInput
+                "Ordering Key Fields"
+                "Example: order.day, order.index"
+                "Comma-separated list of keys."
+                Help.orderingKeyFields
+                Optional
+                Enabled
+            , selectInput formModel
+                FieldAudience
+                OnInput
+                "Audience"
+                ""
+                Help.audience
+                Required
+                Enabled
+                ("" :: allAudiences)
+            , selectInput formModel
+                FieldCleanupPolicy
+                OnInput
+                "Cleanup policy"
+                ""
+                Help.cleanupPolicy
+                Optional
+                Enabled
+                cleanupPoliciesOptions
+            , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.compact then
+                p [ class "dc-p" ]
+                    [ text "Log compacted event types MUST NOT contain personal identifiable"
+                    , text " information in accordance to GDPR. If you plan to store user"
+                    , text " data permanently in Log compacted event types, then please contact "
+                    , externalLink "support" supportUrl
+                    , text " to get a custom GDPR compliant solution built for your use case."
+                    ]
+
+              else
+                none
+            , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.delete then
+                selectInput formModel
+                    FieldRetentionTime
+                    OnInput
+                    "Retention Time (Days)"
+                    ""
+                    Help.options
+                    Optional
+                    Enabled
+                    [ "2", "3", "4" ]
+
+              else
+                none
+            , selectInput formModel
+                FieldCompatibilityMode
+                OnInput
+                "Schema Compatibility Mode"
+                ""
+                Help.compatibilityMode
+                Optional
+                Enabled
+                compatibilityModeOptions
+            , schemaEditor formModel
+            , hr [ class "dc-divider" ] []
+            , accessEditor appsInfoUrl usersInfoUrl formModel
             ]
+        , hr [ class "dc-divider" ]
+            []
+        , div
+            [ class "dc-toast__content dc-toast__content--success" ]
+            [ text successMessage ]
+            |> Helpers.Panel.loadingStatus formModel
+        , buttonPanel formTitle Submit Reset FieldName formModel
+        ]
 
 
 accessEditor : String -> String -> Model -> Html Msg
@@ -347,13 +352,12 @@ schemaEditor formModel =
                 ]
             , pre
                 [ class "ace-edit" ]
-                [
-                    node "ace-editor"
-                         [ value (getValue FieldSchema formModel.values)
-                         , onChange (OnInput FieldSchema)
-                         , attribute "theme" "ace/theme/dawn"
-                         , attribute "mode" "ace/mode/json"
-                         ]
-                         []
+                [ node "ace-editor"
+                    [ value (getValue FieldSchema formModel.values)
+                    , onChange (OnInput FieldSchema)
+                    , attribute "theme" "ace/theme/dawn"
+                    , attribute "mode" "ace/mode/json"
+                    ]
+                    []
                 ]
             ]

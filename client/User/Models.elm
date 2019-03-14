@@ -1,4 +1,4 @@
-module User.Models exposing (..)
+module User.Models exposing (Model, Settings, Status(..), User, initialModel, initialSettings, initialUser)
 
 import Constants exposing (emptyString)
 

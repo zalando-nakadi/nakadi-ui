@@ -1,11 +1,11 @@
-module Tests.Routes exposing (..)
+module Tests.Routes exposing (all, parseLocationTest, routeTest)
 
-import Test exposing (Test, describe, test)
 import Expect
+import Messages exposing (..)
+import Pages.EventTypeDetails.Models exposing (Tabs(..))
 import Routing.Helpers exposing (locationToRoute, routeToUrl)
 import Routing.Models exposing (Route(..))
-import Pages.EventTypeDetails.Models exposing (Tabs(..))
-import Messages exposing (..)
+import Test exposing (Test, describe, test)
 
 
 all : Test
@@ -76,5 +76,5 @@ parseLocationTest url expectedRoute =
                 route =
                     locationToRoute location
             in
-                Expect.equal route expectedRoute
+            Expect.equal route expectedRoute
         )

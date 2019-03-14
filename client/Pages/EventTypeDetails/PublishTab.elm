@@ -1,23 +1,21 @@
-module Pages.EventTypeDetails.PublishTab exposing (..)
+module Pages.EventTypeDetails.PublishTab exposing (Model, Msg(..), eventsTemplate, initialModel, publishTab, sendEvent, showRemoteDataStatus, update)
 
+import Config
+import Constants exposing (isoDateTimeFormat)
+import Date exposing (Date)
+import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
+import Helpers.Panel exposing (renderError, warningMessage)
+import Helpers.Store exposing (errorToViewRecord)
 import Helpers.UI exposing (onChange)
-import RemoteData
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Helpers.Panel exposing (renderError, warningMessage)
-import Helpers.Store exposing (errorToViewRecord)
-import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
-import RemoteData exposing (WebData, isLoading)
 import Http
 import Json.Decode
-import Config
+import RemoteData exposing (RemoteData(..), WebData, isLoading)
 import Result
-import Date exposing (Date)
 import Strftime exposing (format)
 import String.Extra
-import Constants exposing (isoDateTimeFormat)
-import RemoteData exposing (WebData, RemoteData(..))
 import Task
 
 
@@ -63,7 +61,7 @@ update message model name =
                 editEvent =
                     eventsTemplate date
             in
-                ( { model | editEvent = editEvent }, Cmd.none )
+            ( { model | editEvent = editEvent }, Cmd.none )
 
         SetPublishTemplate ->
             ( model, Date.now |> Task.perform SetPublishTemplateWithTime )
@@ -73,11 +71,12 @@ publishTab : Model -> Html Msg
 publishTab model =
     let
         jsonParsed =
-            (Json.Decode.decodeString Json.Decode.value model.editEvent)
+            Json.Decode.decodeString Json.Decode.value model.editEvent
 
         jsonError =
             if String.isEmpty model.editEvent then
                 ""
+
             else
                 case jsonParsed of
                     Ok _ ->
@@ -87,13 +86,14 @@ publishTab model =
                         err
 
         isDisabled =
-            (isLoading model.sendEventResponse)
+            isLoading model.sendEventResponse
                 || (Result.toMaybe jsonParsed == Nothing)
-                || (String.isEmpty model.editEvent)
+                || String.isEmpty model.editEvent
 
         classDisabled =
             if isDisabled then
                 "dc-btn--disabled"
+
             else
                 ""
 
@@ -111,35 +111,35 @@ Example:
 ]
 """
     in
-        div [ class "dc-card" ]
-            [ div []
-                [ button
-                    [ class "dc-btn dc-btn--small"
-                    , onClick SetPublishTemplate
-                    ]
-                    [ text "Insert template" ]
+    div [ class "dc-card" ]
+        [ div []
+            [ button
+                [ class "dc-btn dc-btn--small"
+                , onClick SetPublishTemplate
                 ]
-            , p [ class "dc--text-less-important" ] [ text "Expectd JSON array of events. Example: [{\"order_id\": \"1052\"}, {\"order_id\": \"8364\"}]" ]
-            , div []
-                [ pre
-                    [ class "ace-edit", style [ ( "height", "400px" ) ] ]
-                    [  node "ace-editor"
-                       [ value model.editEvent
-                       , onChange EditEvent
-                       , attribute "theme" "ace/theme/dawn"
-                       , attribute "mode" "ace/mode/json"
-                       ]
-                       []
+                [ text "Insert template" ]
+            ]
+        , p [ class "dc--text-less-important" ] [ text "Expectd JSON array of events. Example: [{\"order_id\": \"1052\"}, {\"order_id\": \"8364\"}]" ]
+        , div []
+            [ pre
+                [ class "ace-edit", style [ ( "height", "400px" ) ] ]
+                [ node "ace-editor"
+                    [ value model.editEvent
+                    , onChange EditEvent
+                    , attribute "theme" "ace/theme/dawn"
+                    , attribute "mode" "ace/mode/json"
                     ]
-                ]
-            , div [ class "dc--text-error" ] [ text jsonError ]
-            , showRemoteDataStatus model.sendEventResponse
-            , div []
-                [ button [ onClick SendEvent, disabled isDisabled, class ("dc-btn dc-btn--primary " ++ classDisabled) ] [ text "Send" ]
-                , span [ class "dc--island-100" ] []
-                , button [ onClick SendEventReset, class "dc-btn " ] [ text "Reset" ]
+                    []
                 ]
             ]
+        , div [ class "dc--text-error" ] [ text jsonError ]
+        , showRemoteDataStatus model.sendEventResponse
+        , div []
+            [ button [ onClick SendEvent, disabled isDisabled, class ("dc-btn dc-btn--primary " ++ classDisabled) ] [ text "Send" ]
+            , span [ class "dc--island-100" ] []
+            , button [ onClick SendEventReset, class "dc-btn " ] [ text "Reset" ]
+            ]
+        ]
 
 
 eventsTemplate : Date -> String
@@ -149,9 +149,9 @@ eventsTemplate date =
             format isoDateTimeFormat date
 
         eid =
-            toString (9000 - (Date.millisecond date))
+            toString (9000 - Date.millisecond date)
     in
-        """
+    """
 [
     {
         "metadata": {
@@ -162,18 +162,18 @@ eventsTemplate date =
     }
 ]
 """
-            |> String.Extra.replace "{timeStr}" timeStr
-            |> String.Extra.replace "{eid}" eid
+        |> String.Extra.replace "{timeStr}" timeStr
+        |> String.Extra.replace "{eid}" eid
 
 
 sendEvent : (WebData String -> msg) -> String -> String -> Cmd msg
 sendEvent tagger name event =
-    case (Json.Decode.decodeString Json.Decode.value event) of
+    case Json.Decode.decodeString Json.Decode.value event of
         Ok val ->
             Http.request
                 { method = "POST"
                 , headers = []
-                , url = Config.urlNakadiApi ++ "event-types/" ++ (Http.encodeUri name) ++ "/events"
+                , url = Config.urlNakadiApi ++ "event-types/" ++ Http.encodeUri name ++ "/events"
                 , body = Http.jsonBody val
                 , expect = Http.expectString
                 , timeout = Nothing
@@ -197,7 +197,8 @@ showRemoteDataStatus state =
 
         Success resp ->
             if String.isEmpty resp then
-                div [ class "dc--text-success flash-msg" ] [ text ("Event(s) succsessfuly published!") ]
+                div [ class "dc--text-success flash-msg" ] [ text "Event(s) succsessfuly published!" ]
+
             else
                 warningMessage
                     "Unexpected server response"

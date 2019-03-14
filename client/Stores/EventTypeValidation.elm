@@ -1,11 +1,11 @@
-module Stores.EventTypeValidation exposing (..)
+module Stores.EventTypeValidation exposing (EventTypeValidationIssue, Model, Msg, collectionDecoder, config, initialModel, memberDecoder, update)
 
-import Helpers.Store
 import Config
-import Json.Decode exposing (int, string, float, Decoder, list, nullable, field)
-import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Dict
 import Constants exposing (emptyString)
+import Dict
+import Helpers.Store
+import Json.Decode exposing (Decoder, field, float, int, list, nullable, string)
+import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
 
 
 type alias EventTypeValidationIssue =
@@ -30,13 +30,13 @@ config : Dict.Dict String String -> Helpers.Store.Config EventTypeValidationIssu
 config params =
     let
         eventType =
-            (Dict.get Constants.eventTypeName params) |> Maybe.withDefault emptyString
+            Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-        { getKey = (\index issue -> issue.group ++ ":" ++ (toString index))
-        , url = Config.urlValidationApi ++ eventType
-        , decoder = collectionDecoder
-        , headers = []
-        }
+    { getKey = \index issue -> issue.group ++ ":" ++ toString index
+    , url = Config.urlValidationApi ++ eventType
+    , decoder = collectionDecoder
+    , headers = []
+    }
 
 
 initialModel : Model

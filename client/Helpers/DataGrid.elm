@@ -1,16 +1,16 @@
-module Helpers.DataGrid exposing (..)
+module Helpers.DataGrid exposing (Column, Config, FilterType(..), SortType(..), ViewType(..), filtering, renderHeader, renderRow, sorting, view, viewLayout)
 
+import Constants
+import Helpers.Pagination exposing (listToPage)
+import Helpers.Panel exposing (infoMessage, loadingStatus)
+import Helpers.Store
+import Helpers.String exposing (toPx)
+import Helpers.UI exposing (highlightFound, linkHtmlToApp, refreshButton)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Helpers.Store
-import Helpers.Panel exposing (loadingStatus, infoMessage)
-import Helpers.UI exposing (refreshButton, highlightFound, linkHtmlToApp)
 import Routing.Helpers exposing (internalHtmlLink)
-import Helpers.Pagination exposing (listToPage)
-import Helpers.String exposing (toPx)
 import Routing.Models exposing (Route)
-import Constants
 
 
 type ViewType object msg
@@ -58,45 +58,45 @@ type alias Config object msg =
     }
 
 
-{-|
-Render the sortable, filtered, paged data grid.
+{-| Render the sortable, filtered, paged data grid.
 
 @example
-        DataGrid.view
-                { columns =
-                    [ { id = "star"
-                      , label = text " "
-                      , view = DataGrid.ViewCustom starRender
-                      , filter = DataGrid.FilterNone
-                      , sort = DataGrid.SortNone
-                      , width = Just 10
-                      }
-                    , { id = "name"
-                      , label = text "Event type name"
-                      , view = DataGrid.ViewInternalLink typeLink
-                      , filter = DataGrid.FilterString .name
-                      , sort = DataGrid.SortString .name
-                      , width = Just 2000
-                      }
-                    , { id = "updated_at"
-                      , label = text "Updated"
-                      , view = DataGrid.ViewMaybeString (.updated_at >> Maybe.map cleanDateTime)
-                      , filter = DataGrid.FilterMaybeString (.updated_at >> Maybe.map cleanDateTime)
-                      , sort = DataGrid.SortMaybeString (.updated_at >> Maybe.map cleanDateTime)
-                      , width = Nothing
-                      }
-                    ]
-                , pageSize = 20
-                , page = model.eventTypeListPage.page
-                , changePageTagger = PagingSetPage
-                , refreshTagger = Refresh
-                , filterChangeTagger = NameFilterChanged
-                , filter = model.eventTypeListPage.filter
-                , sortTagger = SortBy
-                , sortBy = model.eventTypeListPage.sortBy
-                , sortReverse = model.eventTypeListPage.sortReverse
-                }
-                model.eventTypeStore
+DataGrid.view
+{ columns =
+[ { id = "star"
+, label = text " "
+, view = DataGrid.ViewCustom starRender
+, filter = DataGrid.FilterNone
+, sort = DataGrid.SortNone
+, width = Just 10
+}
+, { id = "name"
+, label = text "Event type name"
+, view = DataGrid.ViewInternalLink typeLink
+, filter = DataGrid.FilterString .name
+, sort = DataGrid.SortString .name
+, width = Just 2000
+}
+, { id = "updated_at"
+, label = text "Updated"
+, view = DataGrid.ViewMaybeString (.updated_at >> Maybe.map cleanDateTime)
+, filter = DataGrid.FilterMaybeString (.updated_at >> Maybe.map cleanDateTime)
+, sort = DataGrid.SortMaybeString (.updated_at >> Maybe.map cleanDateTime)
+, width = Nothing
+}
+]
+, pageSize = 20
+, page = model.eventTypeListPage.page
+, changePageTagger = PagingSetPage
+, refreshTagger = Refresh
+, filterChangeTagger = NameFilterChanged
+, filter = model.eventTypeListPage.filter
+, sortTagger = SortBy
+, sortBy = model.eventTypeListPage.sortBy
+, sortReverse = model.eventTypeListPage.sortReverse
+}
+model.eventTypeStore
+
 -}
 view : Config object msg -> Helpers.Store.Model object -> Html msg
 view config model =
@@ -128,6 +128,7 @@ viewLayout config model =
         eventTypeTable =
             if List.isEmpty rows then
                 infoMessage "Empty result" "No records found" Nothing
+
             else
                 table [ class "dc-table" ]
                     [ renderHeader config
@@ -136,33 +137,33 @@ viewLayout config model =
                         rows
                     ]
     in
-        div []
-            [ div []
-                [ refreshButton config.refreshTagger
-                , div []
-                    [ div
-                        [ class "dc-search-form" ]
-                        [ input
-                            [ class "dc-input dc-search-form__input"
-                            , id "gridFilterSearch"
-                            , placeholder "Filter all..."
-                            , onInput config.filterChangeTagger
-                            , value config.filter
-                            ]
-                            []
-                        , button
-                            [ class "dc-btn dc-search-form__btn" ]
-                            [ i
-                                [ class "dc-icon dc-icon--search dc-icon--interactive" ]
-                                []
-                            ]
+    div []
+        [ div []
+            [ refreshButton config.refreshTagger
+            , div []
+                [ div
+                    [ class "dc-search-form" ]
+                    [ input
+                        [ class "dc-input dc-search-form__input"
+                        , id "gridFilterSearch"
+                        , placeholder "Filter all..."
+                        , onInput config.filterChangeTagger
+                        , value config.filter
                         ]
-                    , paging
+                        []
+                    , button
+                        [ class "dc-btn dc-search-form__btn" ]
+                        [ i
+                            [ class "dc-icon dc-icon--search dc-icon--interactive" ]
+                            []
+                        ]
                     ]
+                , paging
                 ]
-            , div [ class "grid__table-container" ] [ eventTypeTable ]
-            , div [ class "grid__paging-status" ] [ text status ]
             ]
+        , div [ class "grid__table-container" ] [ eventTypeTable ]
+        , div [ class "grid__paging-status" ] [ text status ]
+        ]
 
 
 filtering : Config obj msg -> obj -> Bool
@@ -189,16 +190,15 @@ filtering config rowData =
                         |> String.toLower
                         |> String.contains filter
     in
-        config.columns
-            |> List.filter filterCol
-            |> List.isEmpty
-            |> not
+    config.columns
+        |> List.filter filterCol
+        |> List.isEmpty
+        |> not
 
 
-{-|
-   Return comparator function to compare two given object(row) with respect of the grid config and
-   the selected column configuration.
-   If no column was selected, it returns Nothing to skip sorting (for the optimisation).
+{-| Return comparator function to compare two given object(row) with respect of the grid config and
+the selected column configuration.
+If no column was selected, it returns Nothing to skip sorting (for the optimisation).
 -}
 sorting : Config obj msg -> Maybe (Column obj msg) -> Maybe (obj -> obj -> Order)
 sorting config sortCol =
@@ -206,14 +206,17 @@ sorting config sortCol =
         reverse order =
             if order == EQ then
                 EQ
+
             else if order == GT then
                 LT
+
             else
                 GT
 
         setOrder order =
             if config.sortReverse then
                 reverse order
+
             else
                 order
 
@@ -233,7 +236,7 @@ sorting config sortCol =
                             (data1 |> getVal |> Maybe.withDefault Constants.emptyString)
                             (data2 |> getVal |> Maybe.withDefault Constants.emptyString)
     in
-        sortCol |> Maybe.map comparator
+    sortCol |> Maybe.map comparator
 
 
 renderHeader : Config obj msg -> Html msg
@@ -252,39 +255,43 @@ renderHeader config =
                 sortClass =
                     if config.sortBy /= Just col.id then
                         Constants.emptyString
+
                     else if config.sortReverse then
                         "dc-table__sorter--descending"
+
                     else
                         "dc-table__sorter--ascending"
 
                 sortMessage =
                     if config.sortBy == Just col.id then
                         config.sortTagger (Just col.id) (not config.sortReverse)
+
                     else
                         config.sortTagger (Just col.id) False
             in
-                if col.sort /= SortNone then
-                    th
-                        [ class "dc-table__th dc-table__th--sortable"
-                        , style colStyle
-                        , onClick sortMessage
-                        ]
-                        [ col.label
-                        , span [ class ("dc-table__sorter " ++ sortClass) ] []
-                        ]
-                else
-                    th
-                        [ class "dc-table__th", style colStyle ]
-                        [ col.label ]
+            if col.sort /= SortNone then
+                th
+                    [ class "dc-table__th dc-table__th--sortable"
+                    , style colStyle
+                    , onClick sortMessage
+                    ]
+                    [ col.label
+                    , span [ class ("dc-table__sorter " ++ sortClass) ] []
+                    ]
+
+            else
+                th
+                    [ class "dc-table__th", style colStyle ]
+                    [ col.label ]
     in
-        thead
-            [ class "dc-table__thead" ]
-            [ tr
-                [ class "dc-table__tr" ]
-                (config.columns
-                    |> List.map renderCol
-                )
-            ]
+    thead
+        [ class "dc-table__thead" ]
+        [ tr
+            [ class "dc-table__tr" ]
+            (config.columns
+                |> List.map renderCol
+            )
+        ]
 
 
 renderRow : Config object msg -> Int -> object -> Html msg
@@ -309,9 +316,9 @@ renderRow config index rowData =
                             ( name, route ) =
                                 getVal rowData
                         in
-                            [ internalHtmlLink route
-                                (highlightFound config.filter name)
-                            ]
+                        [ internalHtmlLink route
+                            (highlightFound config.filter name)
+                        ]
 
                     ViewAppLink appsInfoUrl getVal ->
                         case getVal rowData of
@@ -334,8 +341,8 @@ renderRow config index rowData =
                     ViewCustom getVal ->
                         getVal rowData
     in
-        tr
-            [ class "grid dc-table__tr dc-table__tr--tight dc-table__tr--interactive" ]
-            (config.columns
-                |> List.map renderCol
-            )
+    tr
+        [ class "grid dc-table__tr dc-table__tr--tight dc-table__tr--interactive" ]
+        (config.columns
+            |> List.map renderCol
+        )

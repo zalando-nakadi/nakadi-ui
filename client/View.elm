@@ -1,12 +1,13 @@
-module View exposing (..)
+module View exposing (mainLayout, view)
 
+import Helpers.Header exposing (navHeader)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Routing.View exposing (view)
-import Types exposing (AppHtml)
 import Models exposing (AppModel)
-import Helpers.Header exposing (navHeader)
+import Routing.View
+import Types exposing (AppHtml)
 import User.View
+
 
 view : AppModel -> AppHtml
 view model =
@@ -17,8 +18,7 @@ mainLayout : AppModel -> AppHtml
 mainLayout model =
     div [ class "app no-touch dc-page" ]
         [ navHeader model
-        , section [class "dc-container"]
+        , section [ class "dc-container" ]
             [ Routing.View.view model
             ]
         ]
-

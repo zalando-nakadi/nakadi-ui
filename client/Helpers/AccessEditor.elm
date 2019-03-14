@@ -1,11 +1,12 @@
-module Helpers.AccessEditor exposing (..)
+module Helpers.AccessEditor exposing (Config, Model, Msg(..), accessTable, addRowControls, changePermission, checkboxReadOnly, checkboxWrite, filterOut, findRecord, flatten, hasPermission, initialModel, mergePermissions, recordName, rowReadOnly, rowWrite, sameRecord, typeRow, unflatten, update, view, viewReadOnly)
 
-import Html exposing (..)
-import Html.Events exposing (..)
-import Html.Attributes exposing (..)
-import Helpers.UI as UI exposing (mono, man, newline, link, bold, none)
-import Stores.Authorization exposing (..)
 import Constants exposing (emptyString)
+import Helpers.UI as UI exposing (bold, link, man, mono, newline, none)
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
+import Stores.Authorization exposing (..)
+
 
 
 ------------------------------ MSG
@@ -108,14 +109,14 @@ update msg model =
                 newAuthorization =
                     record :: model.authorization |> List.sortBy .value
             in
-                ( { model | authorization = newAuthorization, value = emptyString }, Cmd.none )
+            ( { model | authorization = newAuthorization, value = emptyString }, Cmd.none )
 
         Remove record ->
             let
                 authorization =
                     model.authorization |> List.filter (\r -> r /= record)
             in
-                ( { model | authorization = authorization }, Cmd.none )
+            ( { model | authorization = authorization }, Cmd.none )
 
         ChangePermission key value accessType on ->
             let
@@ -123,7 +124,7 @@ update msg model =
                     model.authorization
                         |> changePermission key value accessType on
             in
-                ( { model | authorization = authorization }, Cmd.none )
+            ( { model | authorization = authorization }, Cmd.none )
 
 
 flatten : Authorization -> List AuthorizationAttribute
@@ -135,7 +136,7 @@ flatten authorization =
                     recordToAdd :: recordList
 
                 Just existingRecord ->
-                    [ mergePermissions existingRecord recordToAdd ] ++ (filterOut existingRecord recordList)
+                    [ mergePermissions existingRecord recordToAdd ] ++ filterOut existingRecord recordList
 
         defaultAll =
             [ { key = All
@@ -145,12 +146,12 @@ flatten authorization =
               }
             ]
     in
-        defaultAll
-            ++ authorization.readers
-            ++ authorization.writers
-            ++ authorization.admins
-            |> List.foldr addRecord defaultAll
-            |> List.sortBy .value
+    defaultAll
+        ++ authorization.readers
+        ++ authorization.writers
+        ++ authorization.admins
+        |> List.foldr addRecord defaultAll
+        |> List.sortBy .value
 
 
 unflatten : List AuthorizationAttribute -> Authorization
@@ -168,7 +169,7 @@ unflatten records =
             records
                 |> List.filter (\r -> r.permission.admin)
     in
-        Authorization readers writers admins
+    Authorization readers writers admins
 
 
 sameRecord : { rec | key : Key, value : String } -> AuthorizationAttribute -> Bool
@@ -186,7 +187,7 @@ findRecord record list =
 filterOut : { rec | key : Key, value : String } -> List AuthorizationAttribute -> List AuthorizationAttribute
 filterOut record list =
     list
-        |> List.filter ((sameRecord record) >> not)
+        |> List.filter (sameRecord record >> not)
 
 
 mergePermissions : AuthorizationAttribute -> AuthorizationAttribute -> AuthorizationAttribute
@@ -219,7 +220,7 @@ changePermission key value accessType on authorization =
                         Admin ->
                             { permission | admin = on }
             in
-                { record | permission = newPermission }
+            { record | permission = newPermission }
 
         ( foundList, rest ) =
             authorization |> List.partition (sameRecord { key = key, value = value })
@@ -229,12 +230,12 @@ changePermission key value accessType on authorization =
                 |> List.head
                 |> Maybe.map setPermission
     in
-        case maybeCurrentRecord of
-            Just record ->
-                record :: rest |> List.sortBy .value
+    case maybeCurrentRecord of
+        Just record ->
+            record :: rest |> List.sortBy .value
 
-            Nothing ->
-                authorization
+        Nothing ->
+            authorization
 
 
 
@@ -284,17 +285,19 @@ addRowControls config model =
         isDisabled =
             exists
                 || (model.value |> String.isEmpty)
-                || (not (model.read || model.write || model.admin))
+                || not (model.read || model.write || model.admin)
 
         error =
             if exists then
                 span [ class "dc--text-error" ] [ text "This name is already in the list." ]
+
             else
                 span [ class "dc--text-error" ] [ text UI.nbsp ]
 
         disabledClass =
             if isDisabled then
                 "dc-btn--disabled"
+
             else
                 emptyString
 
@@ -312,24 +315,24 @@ addRowControls config model =
         permissionCheckbox permission =
             let
                 cid =
-                    "add-permission-" ++ (toString permission)
+                    "add-permission-" ++ toString permission
             in
-                div [ class "dc-column--align-self--middle" ]
-                    [ input
-                        [ onCheck (AddPermissionChange permission)
-                        , class "dc-checkbox"
-                        , type_ "checkbox"
-                        , id cid
-                        , checked (isChecked permission)
-                        ]
-                        []
-                    , label
-                        [ class "dc-label dc-label--compact"
-                        , for cid
-                        , title (toString permission)
-                        ]
-                        [ text (toString permission) ]
+            div [ class "dc-column--align-self--middle" ]
+                [ input
+                    [ onCheck (AddPermissionChange permission)
+                    , class "dc-checkbox"
+                    , type_ "checkbox"
+                    , id cid
+                    , checked (isChecked permission)
                     ]
+                    []
+                , label
+                    [ class "dc-label dc-label--compact"
+                    , for cid
+                    , title (toString permission)
+                    ]
+                    [ text (toString permission) ]
+                ]
 
         placeholderText =
             case model.key of
@@ -342,38 +345,39 @@ addRowControls config model =
                 _ ->
                     "Value"
     in
-        div [ class "dc-column" ]
-            [ div [ class "dc-row" ]
-                [ select
-                    [ UI.onChange AddKeyChange
-                    , value model.key
-                    , class "dc-select access-editor__add-key"
-                    ]
-                    [ option [ value "user" ] [ text "User" ]
-                    , option [ value "service" ] [ text "Service" ]
-                    ]
-                , input
-                    [ onInput AddValueChange
-                    , class "dc-input access-editor__add-input"
-                    , placeholder placeholderText
-                    , value model.value
-                    ]
-                    []
-                , permissionCheckbox Read
-                , if config.showWrite then
-                    permissionCheckbox Write
-                  else
-                    none
-                , permissionCheckbox Admin
-                , button
-                    [ onClick Add
-                    , disabled isDisabled
-                    , class ("dc-btn access-editor__add-btn " ++ disabledClass)
-                    ]
-                    [ text "Add" ]
+    div [ class "dc-column" ]
+        [ div [ class "dc-row" ]
+            [ select
+                [ UI.onChange AddKeyChange
+                , value model.key
+                , class "dc-select access-editor__add-key"
                 ]
-            , error
+                [ option [ value "user" ] [ text "User" ]
+                , option [ value "service" ] [ text "Service" ]
+                ]
+            , input
+                [ onInput AddValueChange
+                , class "dc-input access-editor__add-input"
+                , placeholder placeholderText
+                , value model.value
+                ]
+                []
+            , permissionCheckbox Read
+            , if config.showWrite then
+                permissionCheckbox Write
+
+              else
+                none
+            , permissionCheckbox Admin
+            , button
+                [ onClick Add
+                , disabled isDisabled
+                , class ("dc-btn access-editor__add-btn " ++ disabledClass)
+                ]
+                [ text "Add" ]
             ]
+        , error
+        ]
 
 
 accessTable : Config -> (Config -> AuthorizationAttribute -> Html Msg) -> List AuthorizationAttribute -> Html Msg
@@ -389,30 +393,34 @@ accessTable config renderer records =
                         |> List.filter (only key)
                         |> List.map (renderer config)
             in
-                if rows |> List.isEmpty then
-                    []
-                else if key == All then
-                    rows
-                else
-                    (typeRow title) :: rows
+            if rows |> List.isEmpty then
+                []
+
+            else if key == All then
+                rows
+
+            else
+                typeRow title :: rows
 
         header =
             if config.showWrite then
                 [ "Name", "Read", "Write", "Admin", "" ]
+
             else
                 [ "Name", "Read", "Admin", "" ]
     in
-        UI.grid header
-            (List.concat
-                [ if config.showAnyToken then
-                    renderSection All emptyString
-                  else
-                    []
-                , renderSection User "Users:"
-                , renderSection Service "Services:"
-                , renderSection Unknown "Unknown types:"
-                ]
-            )
+    UI.grid header
+        (List.concat
+            [ if config.showAnyToken then
+                renderSection All emptyString
+
+              else
+                []
+            , renderSection User "Users:"
+            , renderSection Service "Services:"
+            , renderSection Unknown "Unknown types:"
+            ]
+        )
 
 
 typeRow : String -> Html Msg
@@ -431,6 +439,7 @@ rowWrite config record =
         , checkboxWrite Read record
         , if config.showWrite then
             checkboxWrite Write record
+
           else
             none
         , checkboxWrite Admin record
@@ -455,6 +464,7 @@ rowReadOnly config record =
         , checkboxReadOnly Read record
         , if config.showWrite then
             checkboxReadOnly Write record
+
           else
             none
         , checkboxReadOnly Admin record
@@ -484,12 +494,13 @@ checkboxReadOnly permissionType record =
         permissionName =
             toString permissionType
     in
-        td [ class "dc-table__td dc--text--center", attribute "data-col" permissionName ]
-            [ if hasPermission permissionType record then
-                i [ class "dc-icon dc-icon--check blue-check", title permissionName ] []
-              else
-                UI.none
-            ]
+    td [ class "dc-table__td dc--text--center", attribute "data-col" permissionName ]
+        [ if hasPermission permissionType record then
+            i [ class "dc-icon dc-icon--check blue-check", title permissionName ] []
+
+          else
+            UI.none
+        ]
 
 
 checkboxWrite : PermissionType -> AuthorizationAttribute -> Html Msg
@@ -499,7 +510,7 @@ checkboxWrite permissionType record =
             toString permissionType
 
         cid =
-            "accessEditor-" ++ (toString record.key) ++ "-" ++ record.value ++ "-" ++ permissionName
+            "accessEditor-" ++ toString record.key ++ "-" ++ record.value ++ "-" ++ permissionName
 
         msg =
             ChangePermission record.key record.value permissionType
@@ -507,20 +518,20 @@ checkboxWrite permissionType record =
         isChecked =
             hasPermission permissionType record
     in
-        td [ class "dc-table__td", attribute "data-col" permissionName ]
-            [ div []
-                [ input
-                    [ class "dc-checkbox"
-                    , type_ "checkbox"
-                    , id cid
-                    , checked isChecked
-                    , onCheck msg
-                    , title permissionName
-                    ]
-                    []
-                , label [ class "dc-label dc-label--compact", for cid ] [ text UI.nbsp ]
+    td [ class "dc-table__td", attribute "data-col" permissionName ]
+        [ div []
+            [ input
+                [ class "dc-checkbox"
+                , type_ "checkbox"
+                , id cid
+                , checked isChecked
+                , onCheck msg
+                , title permissionName
                 ]
+                []
+            , label [ class "dc-label dc-label--compact", for cid ] [ text UI.nbsp ]
             ]
+        ]
 
 
 hasPermission : PermissionType -> AuthorizationAttribute -> Bool

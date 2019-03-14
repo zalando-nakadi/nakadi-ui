@@ -1,11 +1,11 @@
-module Stores.SubscriptionCursors exposing (..)
+module Stores.SubscriptionCursors exposing (Model, Msg, collectionDecoder, config, fetchCursors, initialModel, update)
 
-import Helpers.Store
 import Config
-import Json.Decode exposing (field, list, Decoder)
-import Dict
-import Http
 import Constants exposing (emptyString)
+import Dict
+import Helpers.Store
+import Http
+import Json.Decode exposing (Decoder, field, list)
 import Stores.Cursor exposing (SubscriptionCursor, subscriptionCursorDecoder)
 
 
@@ -21,13 +21,13 @@ config : Dict.Dict String String -> Helpers.Store.Config SubscriptionCursor
 config params =
     let
         id =
-            (Dict.get Constants.id params) |> Maybe.withDefault emptyString
+            Dict.get Constants.id params |> Maybe.withDefault emptyString
     in
-        { getKey = (\index item -> item.event_type ++ "#" ++ item.partition)
-        , url = Config.urlNakadiApi ++ "subscriptions/" ++ id ++ "/cursors"
-        , decoder = collectionDecoder
-        , headers = []
-        }
+    { getKey = \index item -> item.event_type ++ "#" ++ item.partition
+    , url = Config.urlNakadiApi ++ "subscriptions/" ++ id ++ "/cursors"
+    , decoder = collectionDecoder
+    , headers = []
+    }
 
 
 initialModel : Model

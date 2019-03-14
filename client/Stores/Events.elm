@@ -1,21 +1,23 @@
-module Stores.Events exposing (..)
+module Stores.Events exposing (Event, EventsResponse, Model, batchToResult, eventDecoder, fetchEvents, initialModel, jsonStringsDecoder, url)
 
+import Config
+import Constants exposing (emptyString)
+import Helpers.Store exposing (ErrorMessage, Status)
 import Http
 import Json.Decode as Json exposing (..)
 import Json.Encode
-import Config
-import Helpers.Store exposing (Status, ErrorMessage)
-import Constants exposing (emptyString)
-import Stores.Cursor exposing (Cursor, cursorHeader, cursorDecoder)
+import Stores.Cursor exposing (Cursor, cursorDecoder, cursorHeader)
 
 
 {-|
+
     Consumer stream endpoint
      batch_limit=1 - is the best way how to get offset for every event,
      stream_keep_alive_limit=1 - finishes request if user asks more
                                     events than currently present in partition.
      batch_flush_timeout=1 - needed to prevent a 30 sec delay(default batch_flush_timeout)
                                     if an event received at the moment of the request.
+
 -}
 url : String -> Int -> String
 url typeName maxCount =
@@ -61,7 +63,7 @@ fetchEvents message typeName partition offset maxCount =
     Http.request
         { method = "GET"
         , headers = [ Http.header "X-Nakadi-Cursors" (cursorHeader partition offset) ]
-        , url = (url typeName maxCount)
+        , url = url typeName maxCount
         , body = Http.emptyBody
         , expect = batchToResult
         , timeout = Nothing
@@ -71,11 +73,13 @@ fetchEvents message typeName partition offset maxCount =
 
 
 {-|
+
     Parse the Nakadi event stream.
     It splits the received text in to lines containing batch
     (works only with batch_limit=1 with i.e. only one event in a batch)
     and decode them line by line. This way we can get offsets for all individual events.
     It ignores lines that cannot be parsed (like empty "keep-alive")
+
 -}
 batchToResult : Http.Expect EventsResponse
 batchToResult =
@@ -83,18 +87,20 @@ batchToResult =
         (\response ->
             response.body
                 |> String.split "\n"
-                |> List.filterMap ((Json.decodeString eventDecoder) >> Result.toMaybe)
+                |> List.filterMap (Json.decodeString eventDecoder >> Result.toMaybe)
                 |> List.reverse
                 |> Ok
         )
 
 
 {-|
+
     Parse and transform this json to Event structure.
     Example event:
     {"cursor":{"partition":"0","offset":"..."},  "events":[{...}]}
 
     This works only with batch_limit=1
+
 -}
 eventDecoder : Decoder Event
 eventDecoder =
@@ -104,7 +110,9 @@ eventDecoder =
 
 
 {-|
+
     Convert an event body back to a string
+
 -}
 jsonStringsDecoder : Decoder String
 jsonStringsDecoder =

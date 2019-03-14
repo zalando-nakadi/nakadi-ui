@@ -1,19 +1,19 @@
-module Routing.View exposing (..)
+module Routing.View exposing (view)
 
-import Routing.Models exposing (Route(..))
-import Models exposing (AppModel)
-import Types exposing (..)
-import Pages.Home.View
-import Pages.EventTypeList.View
-import Pages.EventTypeDetails.View
-import Pages.EventTypeCreate.View
-import Pages.Partition.View
-import Pages.SubscriptionList.View
-import Pages.SubscriptionDetails.View
-import Pages.SubscriptionCreate.View
-import Messages exposing (Msg(..))
-import Pages.NotFound.View
 import Html exposing (a, text)
+import Messages exposing (Msg(..))
+import Models exposing (AppModel)
+import Pages.EventTypeCreate.View
+import Pages.EventTypeDetails.View
+import Pages.EventTypeList.View
+import Pages.Home.View
+import Pages.NotFound.View
+import Pages.Partition.View
+import Pages.SubscriptionCreate.View
+import Pages.SubscriptionDetails.View
+import Pages.SubscriptionList.View
+import Routing.Models exposing (Route(..))
+import Types exposing (..)
 
 
 view : AppModel -> AppHtml
@@ -54,7 +54,7 @@ view model =
             Html.map SubscriptionListMsg <|
                 Pages.SubscriptionList.View.view model
 
-        SubscriptionDetailsRoute param query->
+        SubscriptionDetailsRoute param query ->
             Html.map SubscriptionDetailsMsg <|
                 Pages.SubscriptionDetails.View.view model
 

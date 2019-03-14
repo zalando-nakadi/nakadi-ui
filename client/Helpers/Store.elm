@@ -1,10 +1,10 @@
-module Helpers.Store exposing (..)
+module Helpers.Store exposing (Config, ErrorMessage, Id, Model, Msg(..), Status(..), cmdIfDone, decodeError, empty, errorDecoder, errorToViewRecord, fetchAll, get, has, initialModel, items, loadStore, onFetchErr, onFetchOk, onFetchReset, onFetchStart, responseToString, size, update)
 
+import Constants exposing (emptyString)
+import Dict
 import Http exposing (Error(..))
 import Json.Decode as Decode exposing (..)
-import Dict
 import User.Commands exposing (logoutIfExpired)
-import Constants exposing (emptyString)
 
 
 type alias Id =
@@ -55,16 +55,16 @@ fetchAll tagger config =
         headers =
             List.map (\( key, val ) -> Http.header key val) config.headers
     in
-        Http.request
-            { method = "GET"
-            , headers = headers
-            , url = config.url
-            , body = Http.emptyBody
-            , expect = Http.expectJson config.decoder
-            , timeout = Nothing
-            , withCredentials = False
-            }
-            |> Http.send tagger
+    Http.request
+        { method = "GET"
+        , headers = headers
+        , url = config.url
+        , body = Http.emptyBody
+        , expect = Http.expectJson config.decoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> Http.send tagger
 
 
 loadStore : Config entity -> List entity -> Model entity -> Model entity
@@ -82,7 +82,7 @@ loadStore config list store =
         newDict =
             Dict.fromList listSorted
     in
-        { store | dict = newDict }
+    { store | dict = newDict }
 
 
 empty : Model entity -> Model entity
@@ -130,7 +130,7 @@ update config message store =
                 storeLoaded =
                     loadStore (config store.params) decodedItems store
             in
-                ( onFetchOk storeLoaded, Cmd.none )
+            ( onFetchOk storeLoaded, Cmd.none )
 
         FetchAllDone (Err error) ->
             ( onFetchErr store error, logoutIfExpired error )
@@ -140,7 +140,7 @@ update config message store =
                 newParams =
                     Dict.fromList params
             in
-                update config FetchData { store | params = newParams }
+            update config FetchData { store | params = newParams }
 
 
 onFetchReset :
@@ -218,7 +218,7 @@ errorToViewRecord error =
                         "Bad response status"
                         (responseToString response)
             in
-                decodeError defaultMessage response.body
+            decodeError defaultMessage response.body
 
         BadPayload string response ->
             ErrorMessage
@@ -246,8 +246,8 @@ errorDecoder : ErrorMessage -> Decoder ErrorMessage
 errorDecoder defaultError =
     map4 ErrorMessage
         (succeed defaultError.code)
-        (oneOf [ (field "title" string), succeed defaultError.title ])
-        (oneOf [ (field "detail" string), (field "error_description" string), succeed defaultError.message ])
+        (oneOf [ field "title" string, succeed defaultError.title ])
+        (oneOf [ field "detail" string, field "error_description" string, succeed defaultError.message ])
         (succeed defaultError.details)
 
 

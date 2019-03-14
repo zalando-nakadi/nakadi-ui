@@ -1,10 +1,10 @@
-module User.Update exposing (..)
+module User.Update exposing (update)
 
+import Constants exposing (emptyString)
+import Helpers.Task exposing (dispatch)
+import User.Commands exposing (..)
 import User.Messages exposing (Msg(..))
 import User.Models exposing (..)
-import User.Commands exposing (..)
-import Helpers.Task exposing (dispatch)
-import Constants exposing (emptyString)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -38,19 +38,19 @@ update message userStore =
                             , Cmd.none
                             )
             in
-                ( model, cmd )
+            ( model, cmd )
 
         FetchAllDone (Err error) ->
             let
                 errorMsg =
-                    "Fail Loading User ! " ++ (toString error)
+                    "Fail Loading User ! " ++ toString error
             in
-                ( { initialModel
-                    | error = errorMsg
-                    , status = Error
-                  }
-                , Cmd.none
-                )
+            ( { initialModel
+                | error = errorMsg
+                , status = Error
+              }
+            , Cmd.none
+            )
 
         LoginDone ->
             ( userStore, Cmd.none )

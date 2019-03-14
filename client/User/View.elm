@@ -1,13 +1,13 @@
-module User.View exposing (..)
+module User.View exposing (currentLoginUrl, loginButton, requireAuth, userMenu, view)
 
+import Config
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Types exposing (AppHtml)
-import Models exposing (AppModel)
-import Config
 import Http
-import User.Models exposing (Status(..))
+import Models exposing (AppModel)
 import Routing.Models exposing (routeToUrl)
+import Types exposing (AppHtml)
+import User.Models exposing (Status(..))
 
 
 view : AppModel -> String -> Bool -> AppHtml
@@ -29,6 +29,7 @@ view model name showButton =
                             [ loginButton model
                             , p [] [ text "You will be redirected to Nakadi Identity Provider. " ]
                             ]
+
                          else
                             []
                         )
@@ -53,6 +54,7 @@ loginButton : AppModel -> AppHtml
 loginButton model =
     if model.userStore.status == LoggedIn then
         a [ class "login-btn dc-btn", href Config.urlLogout ] [ text ("Logout: " ++ model.userStore.user.name) ]
+
     else
         a [ class "login-btn dc-btn dc-btn--primary", href (currentLoginUrl model) ]
             [ text "Login" ]
@@ -60,7 +62,7 @@ loginButton model =
 
 currentLoginUrl : AppModel -> String
 currentLoginUrl model =
-    Config.urlLogin ++ "?returnTo=" ++ (Http.encodeUri (Config.urlBase ++ routeToUrl model.route))
+    Config.urlLogin ++ "?returnTo=" ++ Http.encodeUri (Config.urlBase ++ routeToUrl model.route)
 
 
 requireAuth : AppModel -> (AppModel -> AppHtml) -> AppHtml

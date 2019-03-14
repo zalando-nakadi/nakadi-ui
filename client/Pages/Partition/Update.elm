@@ -60,7 +60,7 @@ update message model =
                     ( model, postString CopyToClipboardDone "elm:copyToClipboard" str )
 
                 CopyToClipboardDone _ ->
-                    (model,Cmd.none)
+                    ( model, Cmd.none )
 
                 LoadPartitions ->
                     let
@@ -257,7 +257,6 @@ update message model =
 
                 NavigatorClicked pos width ->
                     let
-
                         total =
                             model.totalStore
                                 |> Store.get "0"
@@ -395,7 +394,7 @@ update message model =
                             Http.stringBody "" ("[" ++ rows ++ "]")
 
                         url =
-                            "elm:downloadAs?format=application/json&filename=" ++ (Http.encodeUri filename)
+                            "elm:downloadAs?format=application/json&filename=" ++ Http.encodeUri filename
 
                         startDownload =
                             Http.post url body Json.Decode.string

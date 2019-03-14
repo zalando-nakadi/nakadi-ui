@@ -1,11 +1,11 @@
-module Stores.EventTypeSchema exposing (..)
+module Stores.EventTypeSchema exposing (EventTypeSchema, Model, Msg, collectionDecoder, config, initialModel, memberDecoder, update)
 
-import Helpers.Store
 import Config
-import Json.Decode exposing (int, string, float, Decoder, list, nullable, field)
-import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Dict
 import Constants exposing (emptyString)
+import Dict
+import Helpers.Store
+import Json.Decode exposing (Decoder, field, float, int, list, nullable, string)
+import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
 
 
 type alias EventTypeSchema =
@@ -28,13 +28,13 @@ config : Dict.Dict String String -> Helpers.Store.Config EventTypeSchema
 config params =
     let
         eventType =
-            (Dict.get Constants.eventTypeName params) |> Maybe.withDefault emptyString
+            Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-        { getKey = (\index schema -> schema.version |> Maybe.withDefault emptyString)
-        , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/schemas"
-        , decoder = collectionDecoder
-        , headers = []
-        }
+    { getKey = \index schema -> schema.version |> Maybe.withDefault emptyString
+    , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/schemas"
+    , decoder = collectionDecoder
+    , headers = []
+    }
 
 
 initialModel : Model

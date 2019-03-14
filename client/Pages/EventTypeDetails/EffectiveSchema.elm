@@ -1,11 +1,10 @@
-module Pages.EventTypeDetails.EffectiveSchema exposing (..)
+module Pages.EventTypeDetails.EffectiveSchema exposing (enforceStrict, has, insertMetadata, showAdditional, toEffective, toStrict, wrapSchema)
 
 import Helpers.JsonEditor exposing (..)
 import Stores.EventType exposing (compatibilityModes)
 
 
-{-|
- Transform the user provided schema to the real effective schema.
+{-| Transform the user provided schema to the real effective schema.
 -}
 toEffective : Bool -> String -> Maybe String -> JsonValue -> JsonValue
 toEffective show category mode schema =
@@ -20,6 +19,7 @@ toEffective show category mode schema =
 
                 _ ->
                     schema
+
     else
         schema
 
@@ -28,15 +28,15 @@ toStrict : Maybe String -> JsonValue -> JsonValue
 toStrict mode schema =
     if mode == Just compatibilityModes.compatible then
         enforceStrict schema
+
     else
         showAdditional schema
 
 
-{-|
-   Convert a user provided schema to Data Effective schema
-   using the same algorithm as in Nakadi
-   https://nakadi.io/manual.html#event-type-schema-and-effective-schema
-   https://github.com/zalando/nakadi/blob/master/src/main/java/org/zalando/nakadi/validation/JsonSchemaEnrichment.java#L111
+{-| Convert a user provided schema to Data Effective schema
+using the same algorithm as in Nakadi
+<https://nakadi.io/manual.html#event-type-schema-and-effective-schema>
+<https://github.com/zalando/nakadi/blob/master/src/main/java/org/zalando/nakadi/validation/JsonSchemaEnrichment.java#L111>
 -}
 wrapSchema : JsonValue -> JsonValue
 wrapSchema schema =
@@ -91,16 +91,15 @@ wrapSchema schema =
                     schema
                         |> jsonValueSet "definitions" definitions
     in
-        dataCategoryJson
-            |> jsonValueSet "properties" properties
-            |> insertMetadata
-            |> trySetDefinitions
+    dataCategoryJson
+        |> jsonValueSet "properties" properties
+        |> insertMetadata
+        |> trySetDefinitions
 
 
-{-|
- Insert metadata field to the root properties level.
- https://nakadi.io/manual.html#definition_EventMetadata
- https://github.com/zalando/nakadi/blob/master/src/main/java/org/zalando/nakadi/validation/JsonSchemaEnrichment.java#L142
+{-| Insert metadata field to the root properties level.
+<https://nakadi.io/manual.html#definition_EventMetadata>
+<https://github.com/zalando/nakadi/blob/master/src/main/java/org/zalando/nakadi/validation/JsonSchemaEnrichment.java#L142>
 -}
 insertMetadata : JsonValue -> JsonValue
 insertMetadata schema =
@@ -191,22 +190,22 @@ insertMetadata schema =
         required =
             schema
                 |> jsonValueGet "required"
-                |> \obj ->
-                    case obj of
-                        Just (ValueArray list) ->
-                            ValueArray ((ValueString "metadata") :: list)
+                |> (\obj ->
+                        case obj of
+                            Just (ValueArray list) ->
+                                ValueArray (ValueString "metadata" :: list)
 
-                        _ ->
-                            ValueArray [ ValueString "metadata" ]
+                            _ ->
+                                ValueArray [ ValueString "metadata" ]
+                   )
     in
-        schema
-            |> jsonValueSet "properties" properties
-            |> jsonValueSet "required" required
+    schema
+        |> jsonValueSet "properties" properties
+        |> jsonValueSet "required" required
 
 
-{-|
-  Set additionalProperties:false for properties on every level.
-  https://github.com/zalando/nakadi/blob/master/src/main/java/org/zalando/nakadi/validation/JsonSchemaEnrichment.java#L43
+{-| Set additionalProperties:false for properties on every level.
+<https://github.com/zalando/nakadi/blob/master/src/main/java/org/zalando/nakadi/validation/JsonSchemaEnrichment.java#L43>
 -}
 enforceStrict : JsonValue -> JsonValue
 enforceStrict value =
@@ -216,6 +215,7 @@ enforceStrict value =
                 obj
                     |> List.filter (\( k, v ) -> k /= "additionalProperties")
                     |> (::) ( "additionalProperties", ValueBool False )
+
             else
                 obj
 
@@ -224,58 +224,63 @@ enforceStrict value =
                 obj
                     |> List.filter (\( k, v ) -> k /= "additionalItems")
                     |> (::) ( "additionalItems", ValueBool False )
+
             else
                 obj
     in
-        case value of
-            ValueObject obj ->
-                obj
-                    |> insertAdditionalProperties
-                    |> insertAdditionalItems
-                    |> List.map (\( k, v ) -> ( k, enforceStrict v ))
-                    |> ValueObject
+    case value of
+        ValueObject obj ->
+            obj
+                |> insertAdditionalProperties
+                |> insertAdditionalItems
+                |> List.map (\( k, v ) -> ( k, enforceStrict v ))
+                |> ValueObject
 
-            _ ->
-                value
+        _ ->
+            value
 
 
 {-|
+
     Set additionalProperties:true (if it was not set before) to
     explicitly show that properties can be extended.
+
 -}
 showAdditional : JsonValue -> JsonValue
 showAdditional value =
     let
         insertAdditionalProperties obj =
             if
-                (has "properties" obj)
+                has "properties" obj
                     && not (has "additionalProperties" obj)
             then
                 obj
                     |> (::) ( "additionalProperties", ValueBool True )
+
             else
                 obj
 
         insertAdditionalItems obj =
             if
-                (has "items" obj)
+                has "items" obj
                     && not (has "additionalItems" obj)
             then
                 obj
                     |> (::) ( "additionalItems", ValueBool True )
+
             else
                 obj
     in
-        case value of
-            ValueObject obj ->
-                obj
-                    |> insertAdditionalProperties
-                    |> insertAdditionalItems
-                    |> List.map (\( k, v ) -> ( k, showAdditional v ))
-                    |> ValueObject
+    case value of
+        ValueObject obj ->
+            obj
+                |> insertAdditionalProperties
+                |> insertAdditionalItems
+                |> List.map (\( k, v ) -> ( k, showAdditional v ))
+                |> ValueObject
 
-            _ ->
-                value
+        _ ->
+            value
 
 
 has : String -> List ( String, JsonValue ) -> Bool

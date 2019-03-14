@@ -1,28 +1,27 @@
-module Pages.EventTypeDetails.Update exposing (..)
+module Pages.EventTypeDetails.Update exposing (callDelete, loadSubStoreMsg, modelToRoute, routeToModel, update)
 
-import Pages.EventTypeDetails.Messages exposing (Msg(..))
-import Pages.EventTypeDetails.Models exposing (Model, initialModel, Tabs(..))
-import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
-import Pages.EventTypeDetails.QueryTab exposing (loadQuery, deleteQuery)
-import Routing.Models exposing (Route(EventTypeDetailsRoute))
-import Helpers.Task exposing (dispatch)
-import Helpers.JsonEditor
+import Config
+import Constants
 import Helpers.Http exposing (postString)
+import Helpers.JsonEditor
 import Helpers.Store as Store
-import Stores.Partition
-import Stores.Publisher
+import Helpers.Task exposing (dispatch)
+import Http
+import Pages.EventTypeDetails.Messages exposing (Msg(..))
+import Pages.EventTypeDetails.Models exposing (Model, Tabs(..), initialModel)
+import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
+import Pages.EventTypeDetails.QueryTab exposing (deleteQuery, loadQuery)
+import RemoteData exposing (RemoteData(Failure, Loading, NotAsked), isFailure, isSuccess)
+import Routing.Models exposing (Route(EventTypeDetailsRoute))
 import Stores.Consumer
 import Stores.Cursor
 import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
+import Stores.Partition
+import Stores.Publisher
 import User.Commands exposing (logoutIfExpired)
-import Constants
-import Http
-import Config
-import RemoteData exposing (isFailure, isSuccess, RemoteData(Loading, Failure, NotAsked))
 import User.Models exposing (Settings)
-import Pages.EventTypeDetails.PublishTab
 
 
 update : Settings -> Msg -> Model -> ( Model, Cmd Msg, Route )
@@ -41,13 +40,14 @@ update settings message model =
                         cmd =
                             if updatedModel.name == model.name then
                                 Cmd.none
+
                             else
                                 Cmd.batch
                                     [ dispatch CloseDeletePopup
                                     , dispatch Reload
                                     ]
                     in
-                        ( updatedModel, cmd )
+                    ( updatedModel, cmd )
 
                 Reload ->
                     ( model
@@ -103,7 +103,7 @@ update settings message model =
                         ( newSubModel, newSubMsg ) =
                             Helpers.JsonEditor.update subMsg model.jsonEditor
                     in
-                        ( { model | jsonEditor = newSubModel }, Cmd.map JsonEditorMsg newSubMsg )
+                    ( { model | jsonEditor = newSubModel }, Cmd.map JsonEditorMsg newSubMsg )
 
                 PartitionsStoreMsg subMsg ->
                     let
@@ -118,19 +118,19 @@ update settings message model =
                                 _ ->
                                     Cmd.none
                     in
-                        ( { model | partitionsStore = subModel }
-                        , Cmd.batch
-                            [ Cmd.map PartitionsStoreMsg msCmd
-                            , cmd
-                            ]
-                        )
+                    ( { model | partitionsStore = subModel }
+                    , Cmd.batch
+                        [ Cmd.map PartitionsStoreMsg msCmd
+                        , cmd
+                        ]
+                    )
 
                 EventTypeSchemasStoreMsg subMsg ->
                     let
                         ( subModel, msCmd ) =
                             Stores.EventTypeSchema.update subMsg model.eventTypeSchemasStore
                     in
-                        ( { model | eventTypeSchemasStore = subModel }, Cmd.map EventTypeSchemasStoreMsg msCmd )
+                    ( { model | eventTypeSchemasStore = subModel }, Cmd.map EventTypeSchemasStoreMsg msCmd )
 
                 LoadQuery id ->
                     let
@@ -143,24 +143,27 @@ update settings message model =
                             ( { model | loadQueryResponse = Failure Http.NetworkError }
                             , if model.tab == QueryTab then
                                 dispatch (TabChange SchemaTab)
+
                               else
                                 Cmd.none
                             )
                     in
-                        if settings.showNakadiSql then
-                            startLoadingQuery
-                        else
-                            switchTab
+                    if settings.showNakadiSql then
+                        startLoadingQuery
+
+                    else
+                        switchTab
 
                 LoadQueryResponse resp ->
                     let
                         switchTabOnFailure =
                             if isFailure resp && model.tab == QueryTab then
                                 dispatch (TabChange SchemaTab)
+
                             else
                                 Cmd.none
                     in
-                        ( { model | loadQueryResponse = resp }, switchTabOnFailure )
+                    ( { model | loadQueryResponse = resp }, switchTabOnFailure )
 
                 LoadPublishers ->
                     ( model, dispatch (PublishersStoreMsg (loadSubStoreMsg model.name)) )
@@ -170,7 +173,7 @@ update settings message model =
                         ( newSubModel, newSubMsg ) =
                             Stores.Publisher.update subMsg model.publishersStore
                     in
-                        ( { model | publishersStore = newSubModel }, Cmd.map PublishersStoreMsg newSubMsg )
+                    ( { model | publishersStore = newSubModel }, Cmd.map PublishersStoreMsg newSubMsg )
 
                 LoadConsumers ->
                     ( model, dispatch (ConsumersStoreMsg (loadSubStoreMsg model.name)) )
@@ -180,7 +183,7 @@ update settings message model =
                         ( newSubModel, newSubMsg ) =
                             Stores.Consumer.update subMsg model.consumersStore
                     in
-                        ( { model | consumersStore = newSubModel }, Cmd.map ConsumersStoreMsg newSubMsg )
+                    ( { model | consumersStore = newSubModel }, Cmd.map ConsumersStoreMsg newSubMsg )
 
                 LoadTotals ->
                     let
@@ -206,14 +209,14 @@ update settings message model =
                                 |> List.map partitionToDistanceQuery
                                 |> Stores.CursorDistance.fetchDistance TotalsLoaded model.name
                     in
-                        ( { model | totalsStore = totalsStore }, cmd )
+                    ( { model | totalsStore = totalsStore }, cmd )
 
                 TotalsLoaded result ->
                     case result of
                         Ok distanceResponse ->
                             let
                                 config =
-                                    { getKey = (\index item -> item.initial_cursor.partition)
+                                    { getKey = \index item -> item.initial_cursor.partition
                                     , url = Constants.emptyString
                                     , decoder = Stores.CursorDistance.collectionDecoder
                                     , headers = []
@@ -222,7 +225,7 @@ update settings message model =
                                 store =
                                     Store.loadStore config distanceResponse model.totalsStore
                             in
-                                ( { model | totalsStore = Store.onFetchOk store }, Cmd.none )
+                            ( { model | totalsStore = Store.onFetchOk store }, Cmd.none )
 
                         Err error ->
                             ( { model | totalsStore = Store.onFetchErr model.totalsStore error }
@@ -234,14 +237,14 @@ update settings message model =
                         ( newSubModel, newSubMsg ) =
                             Stores.EventTypeValidation.update subMsg model.validationIssuesStore
                     in
-                        ( { model | validationIssuesStore = newSubModel }, Cmd.map ValidationStoreMsg newSubMsg )
+                    ( { model | validationIssuesStore = newSubModel }, Cmd.map ValidationStoreMsg newSubMsg )
 
                 PublishTabMsg subMsg ->
                     let
                         ( newSubModel, newSubMsg ) =
                             Pages.EventTypeDetails.PublishTab.update subMsg model.publishTab model.name
                     in
-                        ( { model | publishTab = newSubModel }, Cmd.map PublishTabMsg newSubMsg )
+                    ( { model | publishTab = newSubModel }, Cmd.map PublishTabMsg newSubMsg )
 
                 OpenDeletePopup ->
                     let
@@ -251,7 +254,7 @@ update settings message model =
                         openedDeletePopup =
                             { newDeletePopup | isOpen = True }
                     in
-                        ( { model | deletePopup = openedDeletePopup }, dispatch LoadConsumers )
+                    ( { model | deletePopup = openedDeletePopup }, dispatch LoadConsumers )
 
                 CloseDeletePopup ->
                     ( { model | deletePopup = initialModel.deletePopup }, Cmd.none )
@@ -261,7 +264,7 @@ update settings message model =
                         newPopup =
                             { deletePopup | deleteCheckbox = not deletePopup.deleteCheckbox }
                     in
-                        ( { model | deletePopup = newPopup }, Cmd.none )
+                    ( { model | deletePopup = newPopup }, Cmd.none )
 
                 Delete ->
                     ( { model | deletePopup = Store.onFetchStart deletePopup }, callDelete model.name )
@@ -305,10 +308,11 @@ update settings message model =
                                     [ dispatch CloseDeleteQueryPopup
                                     , dispatch (LoadQuery model.name)
                                     ]
+
                             else
                                 Cmd.none
                     in
-                        ( { model | deleteQueryResponse = response }, cmd )
+                    ( { model | deleteQueryResponse = response }, cmd )
 
                 OutOnEventTypeDeleted ->
                     ( model, Cmd.none )
@@ -325,7 +329,7 @@ update settings message model =
                 OutRemoveFromFavorite typeName ->
                     ( model, Cmd.none )
     in
-        ( newModel, cmd, modelToRoute newModel )
+    ( newModel, cmd, modelToRoute newModel )
 
 
 modelToRoute : Model -> Route
@@ -335,16 +339,19 @@ modelToRoute model =
         { formatted =
             if model.formatted then
                 Nothing
+
             else
                 Just model.formatted
         , effective =
             if model.effective then
                 Just model.effective
+
             else
                 Nothing
         , tab =
             if model.tab == SchemaTab then
                 Nothing
+
             else
                 Just model.tab
         , version = model.version
@@ -372,7 +379,7 @@ callDelete name =
     Http.request
         { method = "DELETE"
         , headers = []
-        , url = Config.urlNakadiApi ++ "event-types/" ++ (Http.encodeUri name)
+        , url = Config.urlNakadiApi ++ "event-types/" ++ Http.encodeUri name
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing
