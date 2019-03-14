@@ -1,8 +1,8 @@
-module MultiSearch.Messages exposing (..)
+module MultiSearch.Messages exposing (Msg(..))
 
+import Char exposing (..)
 import MultiSearch.Models exposing (SearchItem)
 import Routing.Models exposing (Route)
-import Char exposing (..)
 
 
 type Msg

@@ -1,15 +1,15 @@
-module Stores.Subscription exposing (..)
+module Stores.Subscription exposing (Links, Model, Msg(..), Page, Subscription, addPageToStore, fetchNext, initialModel, linksDecoder, memberDecoder, pageDecoder, startUrl, update)
 
-import Helpers.Store as Store
 import Config
+import Constants
+import Dict
+import Helpers.Store as Store
+import Helpers.Task exposing (dispatch)
+import Http
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
-import Dict
-import Constants
-import User.Commands exposing (logoutIfExpired)
-import Http
-import Helpers.Task exposing (dispatch)
 import Stores.Authorization exposing (Authorization)
+import User.Commands exposing (logoutIfExpired)
 
 
 type alias Subscription =
@@ -66,12 +66,12 @@ update message store =
                 newStore =
                     addPageToStore store page.items
             in
-                case page.links.next of
-                    Just url ->
-                        ( newStore, fetchNext url )
+            case page.links.next of
+                Just url ->
+                    ( newStore, fetchNext url )
 
-                    Nothing ->
-                        ( Store.onFetchOk newStore, dispatch OutFetchAllDone )
+                Nothing ->
+                    ( Store.onFetchOk newStore, dispatch OutFetchAllDone )
 
         FetchDone (Err error) ->
             ( Store.onFetchErr store error, logoutIfExpired error )
@@ -89,16 +89,16 @@ addPageToStore store list =
                 |> Dict.fromList
                 |> Dict.union store.dict
     in
-        { store | dict = newDict }
+    { store | dict = newDict }
 
 
 fetchNext : String -> Cmd Msg
 fetchNext next =
     let
         url =
-            (String.dropRight 1 Config.urlNakadiApi) ++ next
+            String.dropRight 1 Config.urlNakadiApi ++ next
     in
-        Http.get url pageDecoder |> Http.send FetchDone
+    Http.get url pageDecoder |> Http.send FetchDone
 
 
 

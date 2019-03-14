@@ -1,30 +1,30 @@
-module Pages.SubscriptionCreate.Update exposing (..)
+module Pages.SubscriptionCreate.Update exposing (authorizationFromSubscription, checkConsumerGroupFormat, checkCursors, checkEventTypesExist, cloneSubscription, formToRequestBody, isNotEmpty, post, put, searchConfig, searchEvenType, stringToJsonList, stringToList, update, updateSubscription, validate)
 
+import Config
+import Constants exposing (emptyString)
+import Dict
+import Dom
+import Helpers.AccessEditor as AccessEditor
+import Helpers.Forms exposing (..)
+import Helpers.Http exposing (getString)
+import Helpers.Store as Store
+import Helpers.Task exposing (dispatch)
+import Http
+import Json.Decode
+import Json.Encode as Json
+import List.Extra
+import MultiSearch.Messages
+import MultiSearch.Models exposing (Config, SearchItem(SearchItemEventType))
+import MultiSearch.Update
 import Pages.SubscriptionCreate.Messages exposing (..)
 import Pages.SubscriptionCreate.Models exposing (..)
-import Http
-import Dict
-import Json.Encode as Json
-import Helpers.Store as Store
-import Helpers.Http exposing (getString)
-import Config
-import Helpers.Task exposing (dispatch)
-import Json.Decode
+import Regex
+import Stores.Authorization exposing (Authorization, userAuthorization)
+import Stores.Cursor
 import Stores.EventType
 import Stores.Subscription
 import Stores.SubscriptionCursors
-import Stores.Cursor
-import Dom
 import Task
-import Regex
-import Constants exposing (emptyString)
-import MultiSearch.Messages
-import MultiSearch.Update
-import MultiSearch.Models exposing (SearchItem(SearchItemEventType), Config)
-import List.Extra
-import Helpers.AccessEditor as AccessEditor
-import Stores.Authorization exposing (Authorization, userAuthorization)
-import Helpers.Forms exposing (..)
 import User.Models exposing (User)
 
 
@@ -48,7 +48,7 @@ update message model eventTypeStore subscriptionStore user =
                 values =
                     setValue field value model.values
             in
-                ( { model | values = values }, dispatch Validate )
+            ( { model | values = values }, dispatch Validate )
 
         Validate ->
             ( validate model eventTypeStore, Cmd.none )
@@ -67,9 +67,8 @@ update message model eventTypeStore subscriptionStore user =
         Reset ->
             let
                 focus =
-                    (Dom.focus "subscriptionCreateFormFieldConsumerGroup"
+                    Dom.focus "subscriptionCreateFormFieldConsumerGroup"
                         |> Task.attempt FocusResult
-                    )
 
                 authorization maybeId =
                     authorizationFromSubscription maybeId subscriptionStore user.id
@@ -78,7 +77,7 @@ update message model eventTypeStore subscriptionStore user =
                     dispatch (AccessEditorMsg (AccessEditor.Set (authorization maybeId)))
 
                 loadCursorsCmd id =
-                    dispatch (CursorsStoreMsg (((Store.SetParams [ ( Constants.id, id ) ]))))
+                    dispatch (CursorsStoreMsg (Store.SetParams [ ( Constants.id, id ) ]))
 
                 ( newModel, cmds ) =
                     case model.operation of
@@ -100,7 +99,7 @@ update message model eventTypeStore subscriptionStore user =
                               ]
                             )
             in
-                ( newModel, Cmd.batch cmds )
+            ( newModel, Cmd.batch cmds )
 
         FocusResult result ->
             ( model, Cmd.none )
@@ -110,7 +109,7 @@ update message model eventTypeStore subscriptionStore user =
                 values =
                     setValue FieldEventTypes emptyString model.values
             in
-                ( { model | values = values }, dispatch Validate )
+            ( { model | values = values }, dispatch Validate )
 
         FormatEventTypes ->
             let
@@ -123,7 +122,7 @@ update message model eventTypeStore subscriptionStore user =
                 values =
                     setValue FieldEventTypes types model.values
             in
-                ( { model | values = values }, dispatch Validate )
+            ( { model | values = values }, dispatch Validate )
 
         SubmitResponse result ->
             case result of
@@ -138,32 +137,33 @@ update message model eventTypeStore subscriptionStore user =
                 ( subModel, cmd ) =
                     MultiSearch.Update.update (searchConfig eventTypeStore) subMsg model.addEventTypeWidget
             in
-                case subMsg of
-                    MultiSearch.Messages.Selected (SearchItemEventType eventType starred) ->
-                        let
-                            eventTypes =
-                                model.values
-                                    |> getValue FieldEventTypes
-                                    |> String.trim
+            case subMsg of
+                MultiSearch.Messages.Selected (SearchItemEventType eventType starred) ->
+                    let
+                        eventTypes =
+                            model.values
+                                |> getValue FieldEventTypes
+                                |> String.trim
 
-                            updatedEventTypes =
-                                if eventTypes |> String.isEmpty then
-                                    eventType.name
-                                else
-                                    eventTypes ++ "\n" ++ eventType.name
-                        in
-                            ( model
-                            , Cmd.batch
-                                [ dispatch (AddEventTypeWidgetMsg MultiSearch.Messages.ClearInput)
-                                , dispatch (OnInput FieldEventTypes updatedEventTypes)
-                                ]
-                            )
+                        updatedEventTypes =
+                            if eventTypes |> String.isEmpty then
+                                eventType.name
 
-                    _ ->
-                        ( { model | addEventTypeWidget = subModel }, Cmd.map AddEventTypeWidgetMsg cmd )
+                            else
+                                eventTypes ++ "\n" ++ eventType.name
+                    in
+                    ( model
+                    , Cmd.batch
+                        [ dispatch (AddEventTypeWidgetMsg MultiSearch.Messages.ClearInput)
+                        , dispatch (OnInput FieldEventTypes updatedEventTypes)
+                        ]
+                    )
+
+                _ ->
+                    ( { model | addEventTypeWidget = subModel }, Cmd.map AddEventTypeWidgetMsg cmd )
 
         FileSelected id _ ->
-                    ( model, getString FileLoaded ("elm:loadFileFromInput?id=" ++ id))
+            ( model, getString FileLoaded ("elm:loadFileFromInput?id=" ++ id) )
 
         FileLoaded result ->
             case result of
@@ -178,7 +178,7 @@ update message model eventTypeStore subscriptionStore user =
                 ( newSubModel, newSubMsg ) =
                     AccessEditor.update subMsg model.accessEditor
             in
-                ( { model | accessEditor = newSubModel }, Cmd.map AccessEditorMsg newSubMsg )
+            ( { model | accessEditor = newSubModel }, Cmd.map AccessEditorMsg newSubMsg )
 
         OnRouteChange operation ->
             ( { model | operation = operation }, dispatch Reset )
@@ -202,12 +202,13 @@ update message model eventTypeStore subscriptionStore user =
                     if subModel.status == Store.Loaded then
                         model.values
                             |> setValue FieldCursors cursors
+
                     else
                         model.values
             in
-                ( { model | cursorsStore = subModel, values = values }
-                , Cmd.map CursorsStoreMsg msCmd
-                )
+            ( { model | cursorsStore = subModel, values = values }
+            , Cmd.map CursorsStoreMsg msCmd
+            )
 
 
 validate : Model -> Stores.EventType.Model -> Model
@@ -221,13 +222,14 @@ validate model eventTypeStore =
                 |> isNotEmpty FieldEventTypes model
                 |> isNotEmpty FieldOwningApplication model
     in
-        { model | validationErrors = errors }
+    { model | validationErrors = errors }
 
 
 isNotEmpty : Field -> Model -> ErrorsDict -> ErrorsDict
 isNotEmpty field model dict =
     if String.isEmpty (String.trim (getValue field model.values)) then
         Dict.insert (toString field) "This field is required" dict
+
     else
         dict
 
@@ -241,10 +243,11 @@ checkConsumerGroupFormat model dict =
         pattern =
             Regex.regex "^[-0-9a-zA-Z_]*$"
     in
-        if Regex.contains pattern name then
-            dict
-        else
-            Dict.insert (toString FieldConsumerGroup) "Wrong format." dict
+    if Regex.contains pattern name then
+        dict
+
+    else
+        Dict.insert (toString FieldConsumerGroup) "Wrong format." dict
 
 
 checkEventTypesExist : Model -> Stores.EventType.Model -> ErrorsDict -> ErrorsDict
@@ -257,10 +260,11 @@ checkEventTypesExist model eventTypeStore dict =
                 |> List.filter (\name -> not (Store.has name eventTypeStore))
                 |> String.join ", "
     in
-        if String.isEmpty notFoundTypes then
-            dict
-        else
-            Dict.insert (toString FieldEventTypes) ("Event Type(s) not found: " ++ notFoundTypes) dict
+    if String.isEmpty notFoundTypes then
+        dict
+
+    else
+        Dict.insert (toString FieldEventTypes) ("Event Type(s) not found: " ++ notFoundTypes) dict
 
 
 checkCursors : Model -> ErrorsDict -> ErrorsDict
@@ -279,6 +283,7 @@ checkCursors model dict =
         errorMessage =
             if String.isEmpty cursors then
                 "This field is required if \"Read From\" field is set to \"cursors\""
+
             else
                 case decodedCursors of
                     Err error ->
@@ -287,13 +292,14 @@ checkCursors model dict =
                     Ok parsedCursors ->
                         emptyString
     in
-        if
-            (getValue FieldReadFrom model.values == readFrom.cursors)
-                && not (String.isEmpty errorMessage)
-        then
-            Dict.insert (toString FieldCursors) errorMessage dict
-        else
-            dict
+    if
+        (getValue FieldReadFrom model.values == readFrom.cursors)
+            && not (String.isEmpty errorMessage)
+    then
+        Dict.insert (toString FieldCursors) errorMessage dict
+
+    else
+        dict
 
 
 formToRequestBody : Model -> Json.Value
@@ -334,6 +340,7 @@ formToRequestBody model =
         enrichment =
             if getValue FieldReadFrom model.values /= readFrom.cursors then
                 []
+
             else
                 [ ( "initial_cursors", cursors ) ]
 
@@ -346,10 +353,11 @@ formToRequestBody model =
         consumerGroup =
             if String.isEmpty consumerGroupValue then
                 []
+
             else
                 [ ( "consumer_group", Json.string consumerGroupValue ) ]
     in
-        Json.object (List.concat [ consumerGroup, fields, enrichment ])
+    Json.object (List.concat [ consumerGroup, fields, enrichment ])
 
 
 post : Json.Value -> Cmd Msg
@@ -407,10 +415,11 @@ searchEvenType eventTypeStore filter =
                 |> List.filter (\et -> String.contains filter (String.toLower et.name))
                 |> List.map (\et -> SearchItemEventType et False)
     in
-        if String.isEmpty filter then
-            []
-        else
-            results
+    if String.isEmpty filter then
+        []
+
+    else
+        results
 
 
 updateSubscription : Stores.Subscription.Model -> String -> Model -> Model
@@ -427,7 +436,7 @@ updateSubscription subscriptionStore id model =
                 Nothing ->
                     initialModel.values
     in
-        { initialModel | values = values, cursorsStore = model.cursorsStore, operation = model.operation }
+    { initialModel | values = values, cursorsStore = model.cursorsStore, operation = model.operation }
 
 
 cloneSubscription : Stores.Subscription.Model -> String -> Model -> Model
@@ -444,7 +453,7 @@ cloneSubscription subscriptionStore id model =
                 Nothing ->
                     initialModel.values
     in
-        { initialModel | values = values, cursorsStore = model.cursorsStore, operation = model.operation }
+    { initialModel | values = values, cursorsStore = model.cursorsStore, operation = model.operation }
 
 
 authorizationFromSubscription : Maybe String -> Stores.Subscription.Model -> String -> Authorization

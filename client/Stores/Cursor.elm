@@ -1,4 +1,4 @@
-module Stores.Cursor exposing (..)
+module Stores.Cursor exposing (Cursor, SubscriptionCursor, cursorDecoder, cursorEncoder, cursorHeader, subscriptionCursorDecoder, subscriptionCursorEncoder)
 
 import Json.Decode as Json exposing (..)
 import Json.Decode.Pipeline exposing (decode, required)

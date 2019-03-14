@@ -1,8 +1,8 @@
 module Routing.Update exposing (makeCmdForNewRoute, update)
 
 import Constants exposing (emptyString)
-import Helpers.Task exposing (dispatch)
 import Helpers.Http exposing (postString)
+import Helpers.Task exposing (dispatch)
 import Models exposing (AppModel)
 import Routing.Helpers exposing (locationToRoute, routeToUrl)
 import Routing.Messages exposing (Msg(..))
@@ -61,7 +61,6 @@ makeCmdForNewRoute oldRoute newRoute =
 
         cmdPushHistory route =
             postString (always (RouteChanged route)) "elm:pushState" (routeToUrl route)
-
 
         cmdReplaceHistory route =
             postString (always (RouteChanged route)) "elm:replaceState" (routeToUrl route)

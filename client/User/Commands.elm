@@ -1,13 +1,13 @@
-module User.Commands exposing (..)
+module User.Commands exposing (fetchAll, logout, logoutIfExpired, memberDecoder, settingsDecoder)
 
+import Config
+import Constants exposing (emptyString)
+import Helpers.Http exposing (postString)
 import Http exposing (Error(BadStatus))
 import Json.Decode as Decode exposing (..)
+import Json.Decode.Pipeline exposing (decode, optional, required)
 import User.Messages exposing (Msg(FetchAllDone))
-import Config
-import User.Models exposing (User, Settings)
-import Helpers.Http exposing (postString)
-import Constants exposing (emptyString)
-import Json.Decode.Pipeline exposing (decode, required, optional)
+import User.Models exposing (Settings, User)
 
 
 fetchAll : Cmd User.Messages.Msg
@@ -41,21 +41,22 @@ settingsDecoder =
         |> optional "showNakadiSql" bool False
         |> optional "queryMonitoringUrl" string emptyString
 
-{-| Redirect  browser to logout
-    This function never actually returns
-    but to be a function in Elm it must accept some dummy argument
+
+{-| Redirect browser to logout
+This function never actually returns
+but to be a function in Elm it must accept some dummy argument
 -}
 logout : a -> Cmd msg
 logout dummy =
-   postString (\r->Debug.crash "Logout performed") "elm:forceReLogin" Config.urlLogout
+    postString (\r -> Debug.crash "Logout performed") "elm:forceReLogin" Config.urlLogout
 
 
 {-| Check the response from the server and if return is not recoverable
-    (like expired credentials) redirect browser to logout.
-     This way it's cleaning all cached data and redirects the user back to the login page.
-     Normally, invalid access token checked on Nakadi UI server and it sends code 401
-     But if proxy works with Nakadi directly (without checking the access token) then
-     Nakadi sends code 400 with the special body content
+(like expired credentials) redirect browser to logout.
+This way it's cleaning all cached data and redirects the user back to the login page.
+Normally, invalid access token checked on Nakadi UI server and it sends code 401
+But if proxy works with Nakadi directly (without checking the access token) then
+Nakadi sends code 400 with the special body content
 -}
 logoutIfExpired : Http.Error -> Cmd msg
 logoutIfExpired error =
@@ -68,6 +69,7 @@ logoutIfExpired error =
                 400 ->
                     if response.body |> String.contains "\"Access Token not valid\"" then
                         logout "dummy"
+
                     else
                         Cmd.none
 

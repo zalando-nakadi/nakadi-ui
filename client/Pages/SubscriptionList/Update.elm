@@ -1,4 +1,4 @@
-module Pages.SubscriptionList.Update exposing (..)
+module Pages.SubscriptionList.Update exposing (modelToRoute, routeToModel, update)
 
 import Pages.SubscriptionList.Messages exposing (Msg(..))
 import Pages.SubscriptionList.Models exposing (..)
@@ -41,9 +41,9 @@ update message model =
                         newModel =
                             routeToModel route model
                     in
-                        ( newModel, Cmd.none )
+                    ( newModel, Cmd.none )
     in
-        ( newModel, cmd, modelToRoute newModel )
+    ( newModel, cmd, modelToRoute newModel )
 
 
 routeToModel : Route -> Model -> Model
@@ -71,17 +71,20 @@ modelToRoute model =
         { filter =
             if String.isEmpty model.filter then
                 Nothing
+
             else
                 Just model.filter
         , page =
             if model.page == 0 then
                 Nothing
+
             else
                 Just model.page
         , sortBy = model.sortBy
         , sortReverse =
             if model.sortReverse then
                 Just True
+
             else
                 Nothing
         }

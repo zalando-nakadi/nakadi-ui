@@ -1,9 +1,9 @@
-module Helpers.Pagination exposing (..)
+module Helpers.Pagination exposing (Buttons(..), listToPage, paginationButtons, renderButtons)
 
-import Html exposing (..)
-import Html.Events exposing (onClick, onInput)
-import Html.Attributes exposing (..)
 import Constants exposing (emptyString)
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onClick, onInput)
 
 
 type Buttons
@@ -14,8 +14,7 @@ type Buttons
     | Next (Maybe Int)
 
 
-{-|
-Create pagination widget, current page(list of rows), and the status string
+{-| Create pagination widget, current page(list of rows), and the status string
 from given list of elements
 -}
 listToPage :
@@ -26,10 +25,11 @@ listToPage :
     -> Int
     -> Int
     -> List item
-    -> { paging : Html msg
-       , status : String
-       , rows : List (Html msg)
-       }
+    ->
+        { paging : Html msg
+        , status : String
+        , rows : List (Html msg)
+        }
 listToPage tagger maybeFilter maybeComparator rowRenderer pageIndex pageSize list =
     let
         total =
@@ -82,6 +82,7 @@ listToPage tagger maybeFilter maybeComparator rowRenderer pageIndex pageSize lis
         recordsStatus =
             if filteredListSize == 0 then
                 "No records "
+
             else
                 "Records: "
                     ++ toString firstVisibleIndex
@@ -89,12 +90,13 @@ listToPage tagger maybeFilter maybeComparator rowRenderer pageIndex pageSize lis
                     ++ toString lastVisibleIndex
                     ++ (if total == filteredListSize then
                             emptyString
+
                         else
-                            " Filtered: " ++ (toString filteredListSize)
+                            " Filtered: " ++ toString filteredListSize
                        )
 
         status =
-            recordsStatus ++ " Total: " ++ (toString total)
+            recordsStatus ++ " Total: " ++ toString total
 
         marginPagesLeft =
             3
@@ -106,10 +108,10 @@ listToPage tagger maybeFilter maybeComparator rowRenderer pageIndex pageSize lis
             paginationButtons filteredPages page marginPagesLeft marginPagesRight
                 |> renderButtons tagger
     in
-        { paging = paging
-        , status = status
-        , rows = rows
-        }
+    { paging = paging
+    , status = status
+    , rows = rows
+    }
 
 
 paginationButtons : Int -> Int -> Int -> Int -> List Buttons
@@ -125,6 +127,7 @@ paginationButtons total current marginLeftCount marginRightCount =
             Previous <|
                 if current > 0 then
                     Just (current - 1)
+
                 else
                     Nothing
 
@@ -132,6 +135,7 @@ paginationButtons total current marginLeftCount marginRightCount =
             Next <|
                 if current < last then
                     Just (current + 1)
+
                 else
                     Nothing
 
@@ -168,6 +172,7 @@ paginationButtons total current marginLeftCount marginRightCount =
         toPage index =
             if index == current then
                 Current index
+
             else
                 Page index
 
@@ -183,14 +188,17 @@ paginationButtons total current marginLeftCount marginRightCount =
         pagesButtons =
             if isLessThenMaxPages then
                 buttonRange 0 last
+
             else if isCloseToLeft then
                 List.concat [ buttonRange 0 maxLeft, rightStub ]
+
             else if isCloseToRight then
                 List.concat [ leftStub, buttonRange (last - maxRight) last ]
+
             else
                 List.concat [ leftStub, buttonRange (current - marginLeftCount) (current + marginRightCount), rightStub ]
     in
-        List.concat [ [ prev ], pagesButtons, [ next ] ]
+    List.concat [ [ prev ], pagesButtons, [ next ] ]
 
 
 renderButtons : (Int -> msg) -> List Buttons -> Html msg
@@ -241,4 +249,4 @@ renderButtons tagger list =
         buttons =
             List.map toButton list
     in
-        span [ class "pagination dc-pagination" ] buttons
+    span [ class "pagination dc-pagination" ] buttons

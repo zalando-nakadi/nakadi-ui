@@ -1,14 +1,14 @@
-module MultiSearch.View exposing (..)
+module MultiSearch.View exposing (onKeyDown, renderResultItem, renderSuggestions, view)
 
+import Constants exposing (emptyString)
+import Helpers.String exposing (splitFound, toPx)
+import Helpers.UI exposing (highlightFound, none)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as Json
 import MultiSearch.Messages exposing (..)
 import MultiSearch.Models exposing (..)
-import Json.Decode as Json
-import Helpers.String exposing (splitFound, toPx)
-import Constants exposing (emptyString)
-import Helpers.UI exposing (highlightFound, none)
 
 
 view : Config -> Model -> Html Msg
@@ -22,6 +22,7 @@ view config model =
                         [ class "dc-icon dc-icon--search dc-icon--interactive" ]
                         []
                     ]
+
             else
                 button
                     [ class "dc-btn dc-search-form__btn"
@@ -32,31 +33,30 @@ view config model =
                         []
                     ]
     in
-        div
-            [ class "multi-search dc-search-form" ]
-            [ input
-                [ id config.inputId
-                , value model.filter
-                , onInput FilterChanged
-                , onKeyDown
-                , class "dc-input dc-search-form__input"
-                , placeholder config.placeholder
-                ]
-                []
-            , inputButton
-            , ul
-                [ id config.dropdownId
-                , class "multi-search__dropdown dc-list dc-suggest"
-                , style [ ( "max-height", config.dropdownHeight |> toPx ) ]
-                ]
-                (renderSuggestions config model.filter model.filtered model.selected model.showAll)
+    div
+        [ class "multi-search dc-search-form" ]
+        [ input
+            [ id config.inputId
+            , value model.filter
+            , onInput FilterChanged
+            , onKeyDown
+            , class "dc-input dc-search-form__input"
+            , placeholder config.placeholder
             ]
+            []
+        , inputButton
+        , ul
+            [ id config.dropdownId
+            , class "multi-search__dropdown dc-list dc-suggest"
+            , style [ ( "max-height", config.dropdownHeight |> toPx ) ]
+            ]
+            (renderSuggestions config model.filter model.filtered model.selected model.showAll)
+        ]
 
 
-{-|
-   VirtualDom in elm can't conditionally  preventDefault
-   https://github.com/elm-lang/html/issues/66
-   so page down will scroll whole page and scroll search results together :(
+{-| VirtualDom in elm can't conditionally preventDefault
+<https://github.com/elm-lang/html/issues/66>
+so page down will scroll whole page and scroll search results together :(
 -}
 onKeyDown : Attribute Msg
 onKeyDown =
@@ -71,11 +71,13 @@ renderSuggestions config filter list selected showAll =
             [ class "multi-search__hint dc-suggest__item dc-link" ]
             [ text config.hint ]
         ]
+
     else
         let
             truncatedList =
                 if showAll then
                     list
+
                 else
                     list |> List.take maxResults
 
@@ -94,7 +96,8 @@ renderSuggestions config filter list selected showAll =
 
             moreText =
                 if moreCount > 1 then
-                    "Show " ++ (toString moreCount) ++ " more results"
+                    "Show " ++ toString moreCount ++ " more results"
+
                 else
                     "Show one more result"
 
@@ -106,16 +109,18 @@ renderSuggestions config filter list selected showAll =
                         ]
                         [ text moreText ]
                     ]
+
                 else
                     []
         in
-            if List.isEmpty rows then
-                [ li
-                    [ class "multi-search__hint dc-suggest__item dc-link" ]
-                    [ text ("Nothing found for: " ++ filter) ]
-                ]
-            else
-                List.concat [ rows, moreLink ]
+        if List.isEmpty rows then
+            [ li
+                [ class "multi-search__hint dc-suggest__item dc-link" ]
+                [ text ("Nothing found for: " ++ filter) ]
+            ]
+
+        else
+            List.concat [ rows, moreLink ]
 
 
 renderResultItem : Config -> String -> Int -> Int -> SearchItem -> Html Msg
@@ -124,12 +129,14 @@ renderResultItem config filter selected listIndex searchItem =
         isSelected =
             if selected == listIndex then
                 " multi-search__item--selected"
+
             else
                 emptyString
 
         renderStar starred =
             if starred then
                 text Constants.starOn
+
             else
                 none
 
@@ -165,16 +172,16 @@ renderResultItem config filter selected listIndex searchItem =
                         [ class "multi-search__item-subfield" ]
                         (List.concat
                             [ [ span [ class "multi-search__item-subfield-label" ] [ text " app:" ] ]
-                            , (highlightFound filter subscription.owning_application)
+                            , highlightFound filter subscription.owning_application
                             , [ span [ class "multi-search__item-subfield-label" ] [ text " group:" ] ]
-                            , (highlightFound filter subscription.consumer_group)
+                            , highlightFound filter subscription.consumer_group
                             ]
                         )
                     ]
     in
-        li
-            [ class ("multi-search__item dc-suggest__item dc-link" ++ isSelected)
-            , style [ ( "height", config.itemHeight |> toPx ) ]
-            , onClick <| Selected searchItem
-            ]
-            resultItem
+    li
+        [ class ("multi-search__item dc-suggest__item dc-link" ++ isSelected)
+        , style [ ( "height", config.itemHeight |> toPx ) ]
+        , onClick <| Selected searchItem
+        ]
+        resultItem

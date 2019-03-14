@@ -1,8 +1,8 @@
-module Helpers.Panel exposing (..)
+module Helpers.Panel exposing (errorMessage, infoMessage, loadingProgress, loadingStatus, none, page, panel, renderError, simplePanel, submitStatus, successMessage, warningMessage)
 
+import Helpers.Store exposing (ErrorMessage, Status(..))
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Helpers.Store exposing (Status(..), ErrorMessage)
 
 
 none : Html msg
@@ -54,6 +54,7 @@ errorMessage titleText message =
                     [ text (String.left 100 message)
                     , if String.length message > 100 then
                         b [ title message ] [ text "... more" ]
+
                       else
                         none
                     ]
@@ -201,25 +202,25 @@ renderError error =
                 _ ->
                     "error"
     in
-        div [ class ("dc-msg dc-msg--" ++ levelClass) ]
-            [ div [ class "dc-msg__inner" ]
-                [ div [ class "dc-msg__icon-frame" ]
-                    [ i [ class ("dc-icon dc-msg__icon dc-icon--" ++ levelClass) ]
-                        []
-                    ]
-                , div [ class "dc-msg__bd" ]
-                    [ h1 [ class "dc-msg__title" ]
-                        [ text error.title ]
-                    , p [ class "dc-msg__text" ]
-                        [ text error.message
-                        , div [ tabindex 0, class "more-btn" ]
-                            [ pre [ class "more-details dc-card" ]
-                                [ text ("Status code: " ++ toString error.code ++ "\n")
-                                , text error.details
-                                ]
-                            , div [ tabindex 0, class "more-close" ] [ text "Less" ]
+    div [ class ("dc-msg dc-msg--" ++ levelClass) ]
+        [ div [ class "dc-msg__inner" ]
+            [ div [ class "dc-msg__icon-frame" ]
+                [ i [ class ("dc-icon dc-msg__icon dc-icon--" ++ levelClass) ]
+                    []
+                ]
+            , div [ class "dc-msg__bd" ]
+                [ h1 [ class "dc-msg__title" ]
+                    [ text error.title ]
+                , p [ class "dc-msg__text" ]
+                    [ text error.message
+                    , div [ tabindex 0, class "more-btn" ]
+                        [ pre [ class "more-details dc-card" ]
+                            [ text ("Status code: " ++ toString error.code ++ "\n")
+                            , text error.details
                             ]
+                        , div [ tabindex 0, class "more-close" ] [ text "Less" ]
                         ]
                     ]
                 ]
             ]
+        ]

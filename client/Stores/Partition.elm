@@ -1,13 +1,13 @@
-module Stores.Partition exposing (..)
+module Stores.Partition exposing (Model, Msg, Partition, collectionDecoder, config, fetchPartitions, initialModel, memberDecoder, sortPartitionsList, update)
 
-import Helpers.Store
 import Config
-import Json.Decode exposing (int, string, float, Decoder, list, nullable)
-import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Dict
-import Http
 import Constants exposing (emptyString)
+import Dict
+import Helpers.Store
 import Helpers.String exposing (compareAsInt)
+import Http
+import Json.Decode exposing (Decoder, float, int, list, nullable, string)
+import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
 
 
 type alias Partition =
@@ -29,13 +29,13 @@ config : Dict.Dict String String -> Helpers.Store.Config Partition
 config params =
     let
         eventType =
-            (Dict.get Constants.eventTypeName params) |> Maybe.withDefault emptyString
+            Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-        { getKey = (\index item -> item.partition)
-        , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/partitions"
-        , decoder = collectionDecoder
-        , headers = []
-        }
+    { getKey = \index item -> item.partition
+    , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/partitions"
+    , decoder = collectionDecoder
+    , headers = []
+    }
 
 
 initialModel : Model

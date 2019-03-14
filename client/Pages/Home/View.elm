@@ -1,21 +1,21 @@
-module Pages.Home.View exposing (..)
+module Pages.Home.View exposing (card, getStatus, lastUpdatedSubscriptions, lastUpdatedTypes, starredSubscriptions, starredTypesList, view)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Types exposing (AppHtml)
-import Models exposing (AppModel)
+import Config
+import Constants
 import Helpers.Store exposing (Status(..))
-import Helpers.UI as UI
-import Routing.Models exposing (Route(..))
-import Routing.Helpers exposing (internalLink)
-import Pages.EventTypeList.Models
-import Pages.EventTypeDetails.Models
-import Pages.SubscriptionList.Models
-import Messages exposing (Msg(StarredEventTypesStoreMsg, StarredSubscriptionsStoreMsg))
 import Helpers.StoreLocal exposing (Msg(Add, Remove))
 import Helpers.String exposing (formatDateTime)
-import Constants
-import Config
+import Helpers.UI as UI
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Messages exposing (Msg(StarredEventTypesStoreMsg, StarredSubscriptionsStoreMsg))
+import Models exposing (AppModel)
+import Pages.EventTypeDetails.Models
+import Pages.EventTypeList.Models
+import Pages.SubscriptionList.Models
+import Routing.Helpers exposing (internalLink)
+import Routing.Models exposing (Route(..))
+import Types exposing (AppHtml)
 
 
 view : AppModel -> AppHtml
@@ -114,16 +114,17 @@ starredTypesList model =
                 |> Helpers.Store.items
                 |> List.map row
     in
-        if isEmpty then
-            [ text "No starred Events Types yet"
-            , br [] []
-            , internalLink "Search for Event Types" <|
-                EventTypeListRoute Pages.EventTypeList.Models.emptyQuery
-            ]
-        else
-            [ ul [ class "home__list-with-star dc-list dc-list--is-scrollable" ]
-                rows
-            ]
+    if isEmpty then
+        [ text "No starred Events Types yet"
+        , br [] []
+        , internalLink "Search for Event Types" <|
+            EventTypeListRoute Pages.EventTypeList.Models.emptyQuery
+        ]
+
+    else
+        [ ul [ class "home__list-with-star dc-list dc-list--is-scrollable" ]
+            rows
+        ]
 
 
 starredSubscriptions : AppModel -> List (Html Messages.Msg)
@@ -151,16 +152,17 @@ starredSubscriptions model =
                 |> Helpers.Store.items
                 |> List.map row
     in
-        if isEmpty then
-            [ text "No starred Subscriptions yet"
-            , br [] []
-            , internalLink "Search for Subscription" <|
-                SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery
-            ]
-        else
-            [ ul [ class "home__list-with-star dc-list dc-list--is-scrollable" ]
-                rows
-            ]
+    if isEmpty then
+        [ text "No starred Subscriptions yet"
+        , br [] []
+        , internalLink "Search for Subscription" <|
+            SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery
+        ]
+
+    else
+        [ ul [ class "home__list-with-star dc-list dc-list--is-scrollable" ]
+            rows
+        ]
 
 
 lastUpdatedTypes : AppModel -> List (Html msg)

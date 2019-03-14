@@ -1,12 +1,12 @@
-module Stores.Consumer exposing (..)
+module Stores.Consumer exposing (Consumer, Model, Msg, collectionDecoder, config, fetchConsumers, initialModel, memberDecoder, update)
 
-import Helpers.Store
 import Config
-import Json.Decode exposing (field, int, string, float, Decoder, list, nullable)
-import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Dict
-import Http
 import Constants exposing (emptyString)
+import Dict
+import Helpers.Store
+import Http
+import Json.Decode exposing (Decoder, field, float, int, list, nullable, string)
+import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
 
 
 type alias Consumer =
@@ -27,13 +27,13 @@ config : Dict.Dict String String -> Helpers.Store.Config Consumer
 config params =
     let
         eventType =
-            (Dict.get Constants.eventTypeName params) |> Maybe.withDefault emptyString
+            Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-        { getKey = (\index item -> item.name)
-        , url = Config.urlLogsApi ++ "event/" ++ eventType ++ "/consumers"
-        , decoder = collectionDecoder
-        , headers = []
-        }
+    { getKey = \index item -> item.name
+    , url = Config.urlLogsApi ++ "event/" ++ eventType ++ "/consumers"
+    , decoder = collectionDecoder
+    , headers = []
+    }
 
 
 initialModel : Model

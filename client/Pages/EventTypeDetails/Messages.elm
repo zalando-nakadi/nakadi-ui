@@ -1,19 +1,20 @@
-module Pages.EventTypeDetails.Messages exposing (..)
+module Pages.EventTypeDetails.Messages exposing (Msg(..))
 
-import Routing.Models exposing (Route(..))
-import Pages.EventTypeDetails.Models exposing (Tabs)
+import Helpers.Http exposing (HttpStringResult)
 import Helpers.JsonEditor
-import Stores.Publisher
+import Http
+import Pages.EventTypeDetails.Models exposing (Tabs)
+import Pages.EventTypeDetails.PublishTab
+import RemoteData exposing (WebData)
+import Routing.Models exposing (Route(..))
 import Stores.Consumer
 import Stores.CursorDistance
-import Stores.Partition
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
+import Stores.Partition
+import Stores.Publisher
 import Stores.Query
-import Http
-import RemoteData exposing (WebData)
-import Pages.EventTypeDetails.PublishTab
-import Helpers.Http exposing (HttpStringResult)
+
 
 type Msg
     = OnRouteChange Route

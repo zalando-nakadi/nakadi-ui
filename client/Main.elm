@@ -1,14 +1,14 @@
-module Main exposing (..)
+module Main exposing (init, locationToMessage, main, subs)
 
-import Navigation
-import Models
-import Update
-import View
-import Routing.Messages exposing (Msg(..))
-import Routing.Helpers exposing (locationToRoute)
-import Messages exposing (Msg(..))
-import User.Messages exposing (Msg(..))
 import Helpers.Task exposing (dispatch)
+import Messages exposing (Msg(..))
+import Models
+import Navigation
+import Routing.Helpers exposing (locationToRoute)
+import Routing.Messages exposing (Msg(..))
+import Update
+import User.Messages exposing (Msg(..))
+import View
 
 
 main : Program Never Models.AppModel Messages.Msg
@@ -38,7 +38,7 @@ init location =
         initRoute =
             locationToRoute location
     in
-        ( { model | newRoute = initRoute, route = initRoute }, loadUser )
+    ( { model | newRoute = initRoute, route = initRoute }, loadUser )
 
 
 subs : Models.AppModel -> Sub Messages.Msg

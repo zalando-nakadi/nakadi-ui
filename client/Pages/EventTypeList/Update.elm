@@ -1,4 +1,4 @@
-module Pages.EventTypeList.Update exposing (..)
+module Pages.EventTypeList.Update exposing (modelToRoute, routeToModel, update)
 
 import Pages.EventTypeList.Messages exposing (Msg(..))
 import Pages.EventTypeList.Models exposing (..)
@@ -35,7 +35,7 @@ update message model =
                         newModel =
                             routeToModel route model
                     in
-                        ( newModel, Cmd.none )
+                    ( newModel, Cmd.none )
 
                 OutAddToFavorite name ->
                     ( model, Cmd.none )
@@ -43,7 +43,7 @@ update message model =
                 OutRemoveFromFavorite name ->
                     ( model, Cmd.none )
     in
-        ( newModel, cmd, modelToRoute newModel )
+    ( newModel, cmd, modelToRoute newModel )
 
 
 routeToModel : Route -> Model -> Model
@@ -71,17 +71,20 @@ modelToRoute model =
         { filter =
             if String.isEmpty model.filter then
                 Nothing
+
             else
                 Just model.filter
         , page =
             if model.page == 0 then
                 Nothing
+
             else
                 Just model.page
         , sortBy = model.sortBy
         , sortReverse =
             if model.sortReverse then
                 Just True
+
             else
                 Nothing
         }

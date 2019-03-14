@@ -1,7 +1,7 @@
-module Pages.Partition.Help exposing (..)
+module Pages.Partition.Help exposing (offset)
 
-import Html exposing (..)
 import Helpers.UI exposing (..)
+import Html exposing (..)
 
 
 offset : List (Html msg)

@@ -1,39 +1,38 @@
-module Pages.SubscriptionDetails.View exposing (..)
+module Pages.SubscriptionDetails.View exposing (authTab, deletePopup, detailsLayout, infoDateToText, infoEmpty, infoField, infoListToText, linkToType, noAuthMessage, renderPartition, renderType, statsPanel, view)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import String.Extra exposing (replace)
-import Models exposing (AppModel)
-import Helpers.Store exposing (Id, Status(..), get)
-import Helpers.Panel exposing (warningMessage)
-import Helpers.UI
-    exposing
-        ( linkToApp
-        , starIcon
-        , helpIcon
-        , grid
-        , tabs
-        , refreshButton
-        , PopupPosition(..)
-        , none
-        )
-import Helpers.Panel exposing (loadingStatus)
-import Helpers.String exposing (formatDateTime, periodToShortString)
-import Pages.SubscriptionDetails.Models exposing (Model, Tabs(..))
-import Pages.SubscriptionDetails.Messages exposing (..)
-import Pages.SubscriptionDetails.Help as Help
-import Pages.SubscriptionList.Models
-import Pages.EventTypeDetails.Models as EventTypeDetailPage
-import Stores.Subscription exposing (Subscription)
-import Stores.SubscriptionStats
-import Stores.Partition
-import Pages.Partition.Models
-import Routing.Models exposing (routeToUrl, Route(..))
-import Routing.Helpers exposing (internalLink)
 import Config
 import Constants
 import Helpers.AccessEditor as AccessEditor
+import Helpers.Panel exposing (loadingStatus, warningMessage)
+import Helpers.Store exposing (Id, Status(..), get)
+import Helpers.String exposing (formatDateTime, periodToShortString)
+import Helpers.UI
+    exposing
+        ( PopupPosition(..)
+        , grid
+        , helpIcon
+        , linkToApp
+        , none
+        , refreshButton
+        , starIcon
+        , tabs
+        )
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
+import Models exposing (AppModel)
+import Pages.EventTypeDetails.Models as EventTypeDetailPage
+import Pages.Partition.Models
+import Pages.SubscriptionDetails.Help as Help
+import Pages.SubscriptionDetails.Messages exposing (..)
+import Pages.SubscriptionDetails.Models exposing (Model, Tabs(..))
+import Pages.SubscriptionList.Models
+import Routing.Helpers exposing (internalLink)
+import Routing.Models exposing (Route(..), routeToUrl)
+import Stores.Partition
+import Stores.Subscription exposing (Subscription)
+import Stores.SubscriptionStats
+import String.Extra exposing (replace)
 
 
 view : AppModel -> Html Msg
@@ -56,7 +55,7 @@ view model =
                         subscription
                         model
     in
-        Helpers.Panel.loadingStatus model.subscriptionStore mainView
+    Helpers.Panel.loadingStatus model.subscriptionStore mainView
 
 
 detailsLayout :
@@ -79,7 +78,7 @@ detailsLayout id subscription model =
             model.userStore.user.settings.usersInfoUrl
 
         tabOptions =
-            { onChange = (\tab -> TabChange tab)
+            { onChange = \tab -> TabChange tab
             , notSelectedView = Just (div [] [ text "No tab selected" ])
             , class = Just "dc-column"
             , containerClass = Nothing
@@ -88,94 +87,94 @@ detailsLayout id subscription model =
             , pageClass = Nothing
             }
     in
-        div []
-            [ noAuthMessage subscription
-            , div [ class "dc-card" ]
-                [ div [ class "dc-row dc-row--collapse" ]
-                    [ ul [ class "dc-breadcrumb" ]
-                        [ li [ class "dc-breadcrumb__item" ]
-                            [ internalLink "Subscriptions" (SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery)
-                            ]
-                        , li [ class "dc-breadcrumb__item" ]
-                            [ span [] [ text id, helpIcon "Subscription" Help.subscription BottomRight ]
-                            ]
+    div []
+        [ noAuthMessage subscription
+        , div [ class "dc-card" ]
+            [ div [ class "dc-row dc-row--collapse" ]
+                [ ul [ class "dc-breadcrumb" ]
+                    [ li [ class "dc-breadcrumb__item" ]
+                        [ internalLink "Subscriptions" (SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery)
                         ]
-                    , span [ class "toolbar" ]
-                        [ a
-                            [ title "Update Subscription"
-                            , class "icon-link dc-icon dc-icon--interactive"
-                            , href <|
-                                routeToUrl <|
-                                    SubscriptionUpdateRoute { id = subscription.id }
-                            ]
-                            [ i [ class "far fa-edit" ] [] ]
-                        , a
-                            [ title "Clone Subscription"
-                            , class "icon-link dc-icon dc-icon--interactive"
-                            , href <|
-                                routeToUrl <|
-                                    SubscriptionCloneRoute { id = subscription.id }
-                            ]
-                            [ i [ class "far fa-clone" ] [] ]
-                        , a
-                            [ title "View as raw JSON"
-                            , class "icon-link dc-icon dc-icon--interactive"
-                            , target "_blank"
-                            , href <| Config.urlNakadiApi ++ "subscriptions/" ++ subscription.id
-                            ]
-                            [ i [ class "far fa-file-code" ] [] ]
-                        , a
-                            [ title "Monitoring Graphs"
-                            , class "icon-link dc-icon dc-icon--interactive"
-                            , target "_blank"
-                            , href <| replace "{id}" subscription.id model.userStore.user.settings.subscriptionMonitoringUrl
-                            ]
-                            [ i [ class "fas fa-chart-line" ] [] ]
-                        , starIcon OutAddToFavorite OutRemoveFromFavorite starredStore id
-                        , span
-                            [ onClick OpenDeletePopup
-                            , class "icon-link dc-icon--trash dc-btn--destroy dc-icon dc-icon--interactive"
-                            , title "Delete Subscription"
-                            ]
-                            []
-                        ]
-                    , span [ class "flex-col--stretched" ] [ refreshButton OutRefreshSubscriptions ]
-                    ]
-                , div [ class "dc-row dc-row--collapse" ]
-                    [ div [ class "dc-column dc-column--shrink" ]
-                        [ div [ class "subscription-details__info-form" ]
-                            [ infoField "Owning application " Help.owningApplication BottomRight <|
-                                linkToApp appsInfoUrl subscription.owning_application
-                            , infoField "Consumer group " Help.consumerGroup BottomRight <|
-                                text subscription.consumer_group
-                            , infoField "Read from " Help.readFrom BottomRight <|
-                                text subscription.read_from
-                            , infoField "Created " Help.createdAt TopRight <|
-                                infoDateToText subscription.created_at
-                            , infoField "Event types " Help.eventTypes TopRight <|
-                                infoListToText subscription.event_types
-                            ]
-                        ]
-                    , div [ class "dc-column" ]
-                        [ tabs tabOptions
-                            (Just pageState.tab)
-                            [ ( StatsTab
-                              , "Stats"
-                              , statsPanel pageState
-                              )
-                            , ( AuthTab
-                              , "Authorization"
-                              , authTab
-                                    appsInfoUrl
-                                    usersInfoUrl
-                                    subscription
-                              )
-                            ]
+                    , li [ class "dc-breadcrumb__item" ]
+                        [ span [] [ text id, helpIcon "Subscription" Help.subscription BottomRight ]
                         ]
                     ]
-                , deletePopup model subscription appsInfoUrl
+                , span [ class "toolbar" ]
+                    [ a
+                        [ title "Update Subscription"
+                        , class "icon-link dc-icon dc-icon--interactive"
+                        , href <|
+                            routeToUrl <|
+                                SubscriptionUpdateRoute { id = subscription.id }
+                        ]
+                        [ i [ class "far fa-edit" ] [] ]
+                    , a
+                        [ title "Clone Subscription"
+                        , class "icon-link dc-icon dc-icon--interactive"
+                        , href <|
+                            routeToUrl <|
+                                SubscriptionCloneRoute { id = subscription.id }
+                        ]
+                        [ i [ class "far fa-clone" ] [] ]
+                    , a
+                        [ title "View as raw JSON"
+                        , class "icon-link dc-icon dc-icon--interactive"
+                        , target "_blank"
+                        , href <| Config.urlNakadiApi ++ "subscriptions/" ++ subscription.id
+                        ]
+                        [ i [ class "far fa-file-code" ] [] ]
+                    , a
+                        [ title "Monitoring Graphs"
+                        , class "icon-link dc-icon dc-icon--interactive"
+                        , target "_blank"
+                        , href <| replace "{id}" subscription.id model.userStore.user.settings.subscriptionMonitoringUrl
+                        ]
+                        [ i [ class "fas fa-chart-line" ] [] ]
+                    , starIcon OutAddToFavorite OutRemoveFromFavorite starredStore id
+                    , span
+                        [ onClick OpenDeletePopup
+                        , class "icon-link dc-icon--trash dc-btn--destroy dc-icon dc-icon--interactive"
+                        , title "Delete Subscription"
+                        ]
+                        []
+                    ]
+                , span [ class "flex-col--stretched" ] [ refreshButton OutRefreshSubscriptions ]
                 ]
+            , div [ class "dc-row dc-row--collapse" ]
+                [ div [ class "dc-column dc-column--shrink" ]
+                    [ div [ class "subscription-details__info-form" ]
+                        [ infoField "Owning application " Help.owningApplication BottomRight <|
+                            linkToApp appsInfoUrl subscription.owning_application
+                        , infoField "Consumer group " Help.consumerGroup BottomRight <|
+                            text subscription.consumer_group
+                        , infoField "Read from " Help.readFrom BottomRight <|
+                            text subscription.read_from
+                        , infoField "Created " Help.createdAt TopRight <|
+                            infoDateToText subscription.created_at
+                        , infoField "Event types " Help.eventTypes TopRight <|
+                            infoListToText subscription.event_types
+                        ]
+                    ]
+                , div [ class "dc-column" ]
+                    [ tabs tabOptions
+                        (Just pageState.tab)
+                        [ ( StatsTab
+                          , "Stats"
+                          , statsPanel pageState
+                          )
+                        , ( AuthTab
+                          , "Authorization"
+                          , authTab
+                                appsInfoUrl
+                                usersInfoUrl
+                                subscription
+                          )
+                        ]
+                    ]
+                ]
+            , deletePopup model subscription appsInfoUrl
             ]
+        ]
 
 
 infoField : String -> List (Html Msg) -> PopupPosition -> Html Msg -> Html Msg
@@ -203,6 +202,7 @@ infoListToText : List String -> Html Msg
 infoListToText info =
     if List.isEmpty info then
         infoEmpty
+
     else
         div [] <|
             List.map
@@ -239,22 +239,21 @@ statsPanel model =
                     |> List.concat
                 )
     in
-        div [ class "dc-card panel--expanded" ]
-            [ refreshButton Refresh
-            , h3 [ class "dc-h3" ]
-                [ text "Subscription stats"
-                , helpIcon "Subscription stats" Help.subscriptionStats BottomRight
-                ]
-            , Helpers.Panel.loadingStatus statsStore tableLayout
+    div [ class "dc-card panel--expanded" ]
+        [ refreshButton Refresh
+        , h3 [ class "dc-h3" ]
+            [ text "Subscription stats"
+            , helpIcon "Subscription stats" Help.subscriptionStats BottomRight
             ]
+        , Helpers.Panel.loadingStatus statsStore tableLayout
+        ]
 
 
 renderType : Model -> Stores.SubscriptionStats.SubscriptionStats -> List (Html Msg)
 renderType model stat =
-    (tr [ class "dc-table__tr" ]
+    tr [ class "dc-table__tr" ]
         [ td [ class "dc-table__td", colspan 5 ] [ linkToType stat.event_type ]
         ]
-    )
         :: (stat.partitions
                 |> Stores.Partition.sortPartitionsList
                 |> List.map (renderPartition model stat.event_type)
@@ -273,8 +272,10 @@ renderPartition model eventTypeName partition =
                     if lag == 0 then
                         if (partition.unconsumed_events |> Maybe.withDefault 0) == 0 then
                             ""
+
                         else
                             " (<1s)"
+
                     else
                         " (" ++ periodToShortString (lag * 1000) ++ ")"
 
@@ -287,7 +288,7 @@ renderPartition model eventTypeName partition =
                     "-"
 
         partitionKey =
-            (eventTypeName ++ "#" ++ partition.partition)
+            eventTypeName ++ "#" ++ partition.partition
 
         offset =
             model.cursorsStore
@@ -327,6 +328,7 @@ renderPartition model eventTypeName partition =
                             , button [ class "dc-btn dc-btn--small", onClick EditOffsetCancel ] [ text "Cancel" ]
                             ]
                         ]
+
             else
                 span []
                     [ span [] [ text offset, text " " ]
@@ -334,24 +336,24 @@ renderPartition model eventTypeName partition =
                         [ text "Change" ]
                     ]
     in
-        tr [ class "dc-table__tr" ]
-            [ td [ class "dc-table__td" ]
-                [ text partition.partition ]
-            , td
-                [ class "dc-table__td" ]
-                [ text (partition.state ++ " " ++ (partition.assignment_type |> Maybe.withDefault "")) ]
-            , td
-                [ class "dc-table__td" ]
-                [ text events ]
-            , td
-                [ class "dc-table__td" ]
-                [ text (partition.stream_id |> Maybe.withDefault "-") ]
-            , td
-                [ class "dc-table__td" ]
-                [ offsetEditor ]
-            , td [ class "dc-table__td" ]
-                [ linkToPartition partition.partition ]
-            ]
+    tr [ class "dc-table__tr" ]
+        [ td [ class "dc-table__td" ]
+            [ text partition.partition ]
+        , td
+            [ class "dc-table__td" ]
+            [ text (partition.state ++ " " ++ (partition.assignment_type |> Maybe.withDefault "")) ]
+        , td
+            [ class "dc-table__td" ]
+            [ text events ]
+        , td
+            [ class "dc-table__td" ]
+            [ text (partition.stream_id |> Maybe.withDefault "-") ]
+        , td
+            [ class "dc-table__td" ]
+            [ offsetEditor ]
+        , td [ class "dc-table__td" ]
+            [ linkToPartition partition.partition ]
+        ]
 
 
 deletePopup :
@@ -368,6 +370,7 @@ deletePopup model subscription appsInfoUrl =
                     , class "dc-btn dc-btn--destroy"
                     ]
                     [ text "Delete Subscription" ]
+
             else
                 button [ disabled True, class "dc-btn dc-btn--disabled" ]
                     [ text "Delete Subscription" ]
@@ -430,10 +433,11 @@ deletePopup model subscription appsInfoUrl =
                     ]
                 ]
     in
-        if model.subscriptionDetailsPage.deletePopup.isOpen then
-            dialog
-        else
-            none
+    if model.subscriptionDetailsPage.deletePopup.isOpen then
+        dialog
+
+    else
+        none
 
 
 authTab : String -> String -> Subscription -> Html Msg
@@ -465,10 +469,11 @@ noAuthMessage subscription =
         updateLink =
             internalLink "update subscription" (SubscriptionUpdateRoute { id = subscription.id })
     in
-        if subscription.authorization == Nothing then
-            warningMessage
-                "This Subscription is NOT protected!"
-                "It is open for modification, and statistics reading by everyone in the company."
-                (Just updateLink)
-        else
-            none
+    if subscription.authorization == Nothing then
+        warningMessage
+            "This Subscription is NOT protected!"
+            "It is open for modification, and statistics reading by everyone in the company."
+            (Just updateLink)
+
+    else
+        none

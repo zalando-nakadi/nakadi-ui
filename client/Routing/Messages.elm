@@ -1,9 +1,11 @@
-module Routing.Messages exposing (..)
+module Routing.Messages exposing (Msg(..))
 
-import Navigation exposing (Location)
-import Routing.Models exposing (Route)
 import Helpers.Http exposing (HttpStringResult)
+import Navigation exposing (Location)
 import Result
+import Routing.Models exposing (Route)
+
+
 type Msg
     = OnLocationChange Location
     | RouteChanged Route

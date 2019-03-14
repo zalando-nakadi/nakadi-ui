@@ -1,18 +1,18 @@
-module Models exposing (..)
+module Models exposing (AppModel, initialModel)
 
-import Pages.EventTypeList.Models
-import Pages.EventTypeDetails.Models
-import Pages.EventTypeCreate.Models
-import Pages.Partition.Models
-import Pages.SubscriptionList.Models
-import Pages.SubscriptionDetails.Models
-import Pages.SubscriptionCreate.Models
-import User.Models
+import Helpers.StoreLocal
 import MultiSearch.Models
+import Pages.EventTypeCreate.Models
+import Pages.EventTypeDetails.Models
+import Pages.EventTypeList.Models
+import Pages.Partition.Models
+import Pages.SubscriptionCreate.Models
+import Pages.SubscriptionDetails.Models
+import Pages.SubscriptionList.Models
+import Routing.Models
 import Stores.EventType
 import Stores.Subscription
-import Helpers.StoreLocal
-import Routing.Models
+import User.Models
 
 
 type alias AppModel =

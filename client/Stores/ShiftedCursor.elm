@@ -1,12 +1,12 @@
-module Stores.ShiftedCursor exposing (..)
+module Stores.ShiftedCursor exposing (Model, Msg, ShiftedCursor, collectionDecoder, config, fetchShiftedCursors, initialModel, shiftedCursorEncoder, update)
 
-import Helpers.Store
 import Config
-import Json.Decode exposing (int, string, float, Decoder, list, nullable)
-import Json.Encode
-import Dict
-import Http
 import Constants exposing (emptyString)
+import Dict
+import Helpers.Store
+import Http
+import Json.Decode exposing (Decoder, float, int, list, nullable, string)
+import Json.Encode
 import Stores.Cursor exposing (Cursor)
 
 
@@ -38,13 +38,13 @@ config : Dict.Dict String String -> Helpers.Store.Config Cursor
 config params =
     let
         eventType =
-            (Dict.get Constants.eventTypeName params) |> Maybe.withDefault emptyString
+            Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-        { getKey = (\index item -> toString index)
-        , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/shifted-cursors"
-        , decoder = collectionDecoder
-        , headers = []
-        }
+    { getKey = \index item -> toString index
+    , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/shifted-cursors"
+    , decoder = collectionDecoder
+    , headers = []
+    }
 
 
 initialModel : Model
@@ -66,16 +66,16 @@ fetchShiftedCursors tagger name shiftedCursor =
         body =
             Json.Encode.list [ shiftedCursorEncoder shiftedCursor ]
     in
-        Http.request
-            { method = "POST"
-            , headers = []
-            , url = conf.url
-            , body = Http.jsonBody body
-            , expect = Http.expectJson conf.decoder
-            , timeout = Nothing
-            , withCredentials = False
-            }
-            |> Http.send tagger
+    Http.request
+        { method = "POST"
+        , headers = []
+        , url = conf.url
+        , body = Http.jsonBody body
+        , expect = Http.expectJson conf.decoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> Http.send tagger
 
 
 

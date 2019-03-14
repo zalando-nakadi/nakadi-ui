@@ -1,4 +1,8 @@
-module Types exposing (..)
+module Types exposing (AppHtml)
+
 import Html
 import Messages
-type alias AppHtml = Html.Html Messages.Msg
+
+
+type alias AppHtml =
+    Html.Html Messages.Msg

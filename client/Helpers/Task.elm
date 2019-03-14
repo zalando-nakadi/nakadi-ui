@@ -1,8 +1,8 @@
-module Helpers.Task exposing (..)
+module Helpers.Task exposing (delay, dispatch)
 
-import Time
-import Task
 import Process
+import Task
+import Time
 
 
 delay : Time.Time -> msg -> Cmd msg
@@ -13,4 +13,3 @@ delay time msg =
 dispatch : msg -> Cmd msg
 dispatch msg =
     Task.perform identity (Task.succeed msg)
-

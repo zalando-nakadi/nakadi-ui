@@ -1,24 +1,24 @@
-module Helpers.Header exposing (..)
+module Helpers.Header exposing (buttonCreate, logo, navHeader, navLinks, rightPanel, tab)
 
+import Helpers.UI as UI
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Messages exposing (..)
-import Types exposing (AppHtml)
 import Models exposing (AppModel)
-import User.View
-import Routing.Models exposing (..)
-import Routing.Helpers exposing (internalHtmlLink, internalLink)
+import MultiSearch.Update
 import MultiSearch.View
 import Pages.EventTypeList.Models
 import Pages.SubscriptionList.Models
-import Helpers.UI as UI
-import MultiSearch.Update
+import Routing.Helpers exposing (internalHtmlLink, internalLink)
+import Routing.Models exposing (..)
+import Types exposing (AppHtml)
+import User.View
 
 
 navHeader : AppModel -> AppHtml
 navHeader model =
     header [ class "header" ]
-        ((navLinks model) ++ (rightPanel model))
+        (navLinks model ++ rightPanel model)
 
 
 logo : AppHtml
@@ -29,7 +29,7 @@ logo =
         ]
 
 
-navLinks : AppModel -> List (AppHtml)
+navLinks : AppModel -> List AppHtml
 navLinks model =
     [ div [ class "header__panel--menu" ]
         [ logo
@@ -48,7 +48,7 @@ tab route name =
         [ internalLink name route ]
 
 
-rightPanel : AppModel -> List (AppHtml)
+rightPanel : AppModel -> List AppHtml
 rightPanel model =
     [ div
         [ class "header__panel--right dc-row--align--middle" ]
@@ -65,32 +65,34 @@ buttonCreate showNakadiSql =
         className =
             if showNakadiSql then
                 "show-sql-feature dropdown-menu"
+
             else
                 "dropdown-menu"
     in
-        div [ class className ]
-            [ button [ class "dc-btn dc-btn--primary" ]
-                [ text "Create"
-                , span [ class "dc-btn-dropdown__arrow dc-btn-dropdown__arrow--down" ] []
-                ]
-            , div [ class "dropdown-menu__popup" ]
-                [ a
-                    [ class "dropdown-menu__item dc-link"
-                    , href (routeToUrl EventTypeCreateRoute)
-                    ]
-                    [ text "Event Type" ]
-                , if showNakadiSql then
-                    a
-                        [ class "dropdown-menu__item dc-link"
-                        , href (routeToUrl QueryCreateRoute)
-                        ]
-                        [ text "SQL Query" ]
-                  else
-                    UI.none
-                , a
-                    [ class "dropdown-menu__item dc-link"
-                    , href (routeToUrl SubscriptionCreateRoute)
-                    ]
-                    [ text "Subscription" ]
-                ]
+    div [ class className ]
+        [ button [ class "dc-btn dc-btn--primary" ]
+            [ text "Create"
+            , span [ class "dc-btn-dropdown__arrow dc-btn-dropdown__arrow--down" ] []
             ]
+        , div [ class "dropdown-menu__popup" ]
+            [ a
+                [ class "dropdown-menu__item dc-link"
+                , href (routeToUrl EventTypeCreateRoute)
+                ]
+                [ text "Event Type" ]
+            , if showNakadiSql then
+                a
+                    [ class "dropdown-menu__item dc-link"
+                    , href (routeToUrl QueryCreateRoute)
+                    ]
+                    [ text "SQL Query" ]
+
+              else
+                UI.none
+            , a
+                [ class "dropdown-menu__item dc-link"
+                , href (routeToUrl SubscriptionCreateRoute)
+                ]
+                [ text "Subscription" ]
+            ]
+        ]

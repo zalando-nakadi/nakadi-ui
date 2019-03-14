@@ -1,8 +1,8 @@
-port module Tests.Main exposing (..)
+port module Tests.Main exposing (emit, main)
 
-import Tests.Tests as Tests
-import Test.Runner.Node exposing (run)
 import Json.Encode exposing (Value)
+import Test.Runner.Node exposing (run)
+import Tests.Tests as Tests
 
 
 main =

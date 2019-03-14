@@ -1,14 +1,15 @@
-module Pages.Partition.Messages exposing (..)
+module Pages.Partition.Messages exposing (Msg(..))
 
+import Char exposing (KeyCode)
+import Helpers.Http exposing (HttpStringResult)
+import Helpers.JsonEditor as JsonEditor
+import Http
 import Routing.Models exposing (Route(..))
+import Stores.CursorDistance
 import Stores.Events exposing (Event, EventsResponse)
 import Stores.Partition exposing (Partition)
 import Stores.ShiftedCursor
-import Stores.CursorDistance
-import Http
-import Helpers.JsonEditor as JsonEditor
-import Char exposing (KeyCode)
-import Helpers.Http exposing (HttpStringResult)
+
 
 type Msg
     = OnRouteChange Route

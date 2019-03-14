@@ -1,4 +1,4 @@
-module Config exposing (..)
+module Config exposing (maxPartitionNumber, offsetStringLength, urlBase, urlLogin, urlLogout, urlLogsApi, urlManual, urlNakadiApi, urlNakadiSqlApi, urlUser, urlValidationApi)
 
 
 urlBase : String
@@ -9,6 +9,7 @@ urlBase =
 urlNakadiApi : String
 urlNakadiApi =
     urlBase ++ "api/nakadi/"
+
 
 urlNakadiSqlApi : String
 urlNakadiSqlApi =

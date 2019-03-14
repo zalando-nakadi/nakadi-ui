@@ -1,10 +1,10 @@
-module Tests.EventTypeStore exposing (..)
+module Tests.EventTypeStore exposing (all, jsonLoadTest, testJson)
 
-import Test exposing (Test, describe, test)
 import Expect
-import Stores.EventType exposing (..)
-import Stores.Authorization exposing (Key(..))
 import Json.Decode
+import Stores.Authorization exposing (Key(..))
+import Stores.EventType exposing (..)
+import Test exposing (Test, describe, test)
 
 
 testJson =
@@ -93,53 +93,53 @@ all =
     describe "Test MultiSearch"
         [ jsonLoadTest testJson
             (Ok
-                ([ { category = "business"
-                   , name = "eventlog.e68109_receive_wmo_item_arrived_on_yard"
-                   , owning_application = Just "eventlog-dispatcher-test"
-                   , schema =
+                [ { category = "business"
+                  , name = "eventlog.e68109_receive_wmo_item_arrived_on_yard"
+                  , owning_application = Just "eventlog-dispatcher-test"
+                  , schema =
                         { schema = ""
                         , version = Just "0.1.0"
                         , created_at = Just "2016-11-09T19:32:00.000Z"
                         }
-                   , enrichment_strategies = Just [ "metadata_enrichment" ]
-                   , partition_strategy = Just "hash"
-                   , compatibility_mode = Just "fixed"
-                   , partition_key_fields = Just [ "metadata.eid" ]
-                   , ordering_key_fields = Nothing
-                   , default_statistic =
+                  , enrichment_strategies = Just [ "metadata_enrichment" ]
+                  , partition_strategy = Just "hash"
+                  , compatibility_mode = Just "fixed"
+                  , partition_key_fields = Just [ "metadata.eid" ]
+                  , ordering_key_fields = Nothing
+                  , default_statistic =
                         Just
                             { messages_per_minute = 2400
                             , message_size = 20240
                             , read_parallelism = 4
                             , write_parallelism = 4
                             }
-                   , options = Just { retention_time = Just 123456789 }
-                   , created_at = Just "2016-11-09T19:32:00.000Z"
-                   , updated_at = Just "2016-11-09T19:32:00.000Z"
-                   , authorization = Nothing
-                   , cleanup_policy = "delete"
-                   , audience = Nothing
-                   }
-                 , { category = "business"
-                   , name = "eventlog.e6810a_generic_time_allocation"
-                   , owning_application = Just "eventlog-dispatcher-test"
-                   , schema =
+                  , options = Just { retention_time = Just 123456789 }
+                  , created_at = Just "2016-11-09T19:32:00.000Z"
+                  , updated_at = Just "2016-11-09T19:32:00.000Z"
+                  , authorization = Nothing
+                  , cleanup_policy = "delete"
+                  , audience = Nothing
+                  }
+                , { category = "business"
+                  , name = "eventlog.e6810a_generic_time_allocation"
+                  , owning_application = Just "eventlog-dispatcher-test"
+                  , schema =
                         { schema = ""
                         , version = Just "0.1.0"
                         , created_at = Just "2016-11-09T19:32:00.000Z"
                         }
-                   , enrichment_strategies = Just [ "metadata_enrichment" ]
-                   , partition_strategy = Just "hash"
-                   , compatibility_mode = Just "fixed"
-                   , partition_key_fields = Just [ "metadata.eid" ]
-                   , ordering_key_fields = Just ["data.order_index"]
-                   , default_statistic = Nothing
-                   , options =
+                  , enrichment_strategies = Just [ "metadata_enrichment" ]
+                  , partition_strategy = Just "hash"
+                  , compatibility_mode = Just "fixed"
+                  , partition_key_fields = Just [ "metadata.eid" ]
+                  , ordering_key_fields = Just [ "data.order_index" ]
+                  , default_statistic = Nothing
+                  , options =
                         Just
                             { retention_time = Nothing }
-                   , created_at = Just "2016-11-09T19:32:00.000Z"
-                   , updated_at = Just "2016-11-09T19:32:00.000Z"
-                   , authorization =
+                  , created_at = Just "2016-11-09T19:32:00.000Z"
+                  , updated_at = Just "2016-11-09T19:32:00.000Z"
+                  , authorization =
                         Just
                             { readers =
                                 [ { key = User
@@ -178,11 +178,10 @@ all =
                                   }
                                 ]
                             }
-                   , cleanup_policy = "compact"
-                   , audience = Just "company-internal"
-                   }
-                 ]
-                )
+                  , cleanup_policy = "compact"
+                  , audience = Just "company-internal"
+                  }
+                ]
             )
         ]
 
