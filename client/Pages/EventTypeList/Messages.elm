@@ -1,4 +1,4 @@
-module Pages.EventTypeList.Messages exposing (..)
+module Pages.EventTypeList.Messages exposing (Msg(..))
 
 import Helpers.Store exposing (Id)
 import Routing.Models exposing (Route)

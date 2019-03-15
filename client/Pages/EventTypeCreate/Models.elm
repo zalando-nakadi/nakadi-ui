@@ -1,22 +1,22 @@
-module Pages.EventTypeCreate.Models exposing (..)
+module Pages.EventTypeCreate.Models exposing (Field(..), Model, Operation(..), defaultApplication, defaultRetentionDays, defaultSchema, defaultSql, defaultValues, initialModel, loadValues)
 
+import Constants exposing (emptyString)
+import Dict
+import Helpers.AccessEditor as AccessEditor
+import Helpers.Forms exposing (..)
+import Helpers.Store exposing (ErrorMessage, Status(Unknown))
 import Stores.EventType
     exposing
         ( EventType
-        , categories
         , allCategories
-        , compatibilityModes
         , allModes
-        , partitionStrategies
-        , cleanupPolicies
         , audiences
+        , categories
+        , cleanupPolicies
+        , compatibilityModes
+        , partitionStrategies
         )
 import Stores.Partition
-import Helpers.Store exposing (Status(Unknown), ErrorMessage)
-import Helpers.AccessEditor as AccessEditor
-import Helpers.Forms exposing (..)
-import Constants exposing (emptyString)
-import Dict
 
 
 type Operation
@@ -24,6 +24,7 @@ type Operation
     | Update String
     | Clone String
     | CreateQuery
+
 
 type Field
     = FieldName
@@ -90,7 +91,7 @@ defaultValues =
     , ( FieldCompatibilityMode, compatibilityModes.forward )
     , ( FieldAudience, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
-    , ( FieldPartitionCompactionKeyField, emptyString)
+    , ( FieldPartitionCompactionKeyField, emptyString )
     ]
         |> toValuesDict
 
@@ -110,18 +111,18 @@ loadValues eventType =
                 |> Basics.clamp 2 4
                 |> toString
     in
-        defaultValues
-            |> setValue FieldName eventType.name
-            |> maybeSetValue FieldOwningApplication eventType.owning_application
-            |> setValue FieldCategory eventType.category
-            |> maybeSetValue FieldPartitionStrategy eventType.partition_strategy
-            |> maybeSetListValue FieldPartitionKeyFields eventType.partition_key_fields
-            |> maybeSetListValue FieldOrderingKeyFields eventType.ordering_key_fields
-            |> maybeSetValue FieldCompatibilityMode eventType.compatibility_mode
-            |> setValue FieldSchema eventType.schema.schema
-            |> setValue FieldRetentionTime retentionTime
-            |> maybeSetValue FieldAudience eventType.audience
-            |> setValue FieldCleanupPolicy eventType.cleanup_policy
+    defaultValues
+        |> setValue FieldName eventType.name
+        |> maybeSetValue FieldOwningApplication eventType.owning_application
+        |> setValue FieldCategory eventType.category
+        |> maybeSetValue FieldPartitionStrategy eventType.partition_strategy
+        |> maybeSetListValue FieldPartitionKeyFields eventType.partition_key_fields
+        |> maybeSetListValue FieldOrderingKeyFields eventType.ordering_key_fields
+        |> maybeSetValue FieldCompatibilityMode eventType.compatibility_mode
+        |> setValue FieldSchema eventType.schema.schema
+        |> setValue FieldRetentionTime retentionTime
+        |> maybeSetValue FieldAudience eventType.audience
+        |> setValue FieldCleanupPolicy eventType.cleanup_policy
 
 
 defaultSchema : String
@@ -159,6 +160,7 @@ defaultSchema =
     }
 }
 """
+
 
 defaultSql : String
 defaultSql =

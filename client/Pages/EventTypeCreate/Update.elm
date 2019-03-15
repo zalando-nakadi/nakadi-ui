@@ -1,25 +1,25 @@
-module Pages.EventTypeCreate.Update exposing (..)
+module Pages.EventTypeCreate.Update exposing (authorizationFromEventType, checkNameFormat, checkNameUnique, checkPartitionKeys, checkPartitionStrategy, checkSchemaFormat, daysToRetentionTimeJson, formValuesFromEventType, isNotEmpty, post, put, stringToJsonList, submitCreate, submitUpdate, update, validate)
 
+import Config
+import Constants exposing (emptyString)
+import Dict
+import Dom
+import Helpers.AccessEditor as AccessEditor
+import Helpers.Forms exposing (..)
+import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
+import Helpers.Store as Store
+import Helpers.Task exposing (dispatch)
+import Http
+import Json.Decode
+import Json.Encode as Json
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
 import Pages.EventTypeCreate.Query exposing (submitQueryCreate)
-import Http
-import Dict
-import Json.Encode as Json
-import Helpers.Store as Store
-import Config
-import Helpers.Task exposing (dispatch)
 import Regex
-import Json.Decode
-import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
-import Helpers.AccessEditor as AccessEditor
 import Stores.Authorization exposing (Authorization, userAuthorization)
-import Constants exposing (emptyString)
 import Stores.EventType exposing (categories, partitionStrategies)
 import Stores.Partition
-import Dom
 import Task
-import Helpers.Forms exposing (..)
 import User.Models exposing (User)
 
 
@@ -31,14 +31,14 @@ update message model eventTypeStore user =
                 values =
                     setValue field value model.values
             in
-                ( { model | values = values }, dispatch Validate )
+            ( { model | values = values }, dispatch Validate )
 
         AccessEditorMsg subMsg ->
             let
                 ( newSubModel, newSubMsg ) =
                     AccessEditor.update subMsg model.accessEditor
             in
-                ( { model | accessEditor = newSubModel }, Cmd.map AccessEditorMsg newSubMsg )
+            ( { model | accessEditor = newSubModel }, Cmd.map AccessEditorMsg newSubMsg )
 
         SchemaFormat ->
             let
@@ -48,14 +48,14 @@ update message model eventTypeStore user =
                 values =
                     setValue FieldSchema schema model.values
             in
-                ( { model | values = values }, dispatch Validate )
+            ( { model | values = values }, dispatch Validate )
 
         SchemaClear ->
             let
                 values =
                     setValue FieldSchema emptyString model.values
             in
-                ( { model | values = values }, dispatch Validate )
+            ( { model | values = values }, dispatch Validate )
 
         Validate ->
             ( validate model eventTypeStore, Cmd.none )
@@ -135,7 +135,7 @@ update message model eventTypeStore user =
                         , loadPartitionsCmd
                         ]
             in
-                ( newModel, cmd )
+            ( newModel, cmd )
 
         FocusResult result ->
             ( model, Cmd.none )
@@ -156,10 +156,11 @@ update message model eventTypeStore user =
                                     |> Basics.clamp 1 Config.maxPartitionNumber
                                     |> toString
                                 )
+
                     else
                         model.values
             in
-                ( { model | partitionsStore = partitionsStore, values = values }, Cmd.map PartitionsStoreMsg newMsg )
+            ( { model | partitionsStore = partitionsStore, values = values }, Cmd.map PartitionsStoreMsg newMsg )
 
         SubmitResponse result ->
             case result of
@@ -182,12 +183,12 @@ formValuesFromEventType name eventTypeStore =
         maybeEventType =
             Store.get name eventTypeStore
     in
-        case maybeEventType of
-            Nothing ->
-                setValue FieldName name initialModel.values
+    case maybeEventType of
+        Nothing ->
+            setValue FieldName name initialModel.values
 
-            Just eventType ->
-                loadValues eventType
+        Just eventType ->
+            loadValues eventType
 
 
 authorizationFromEventType : Maybe String -> Stores.EventType.Model -> String -> Authorization
@@ -239,13 +240,14 @@ validate model eventTypeStore =
                         |> isNotEmpty FieldOwningApplication model
                         |> isNotEmpty FieldAudience model
     in
-        { model | validationErrors = errors }
+    { model | validationErrors = errors }
 
 
 isNotEmpty : Field -> Model -> ErrorsDict -> ErrorsDict
 isNotEmpty field model dict =
     if String.isEmpty (String.trim (getValue field model.values)) then
         Dict.insert (toString field) "This field is required" dict
+
     else
         dict
 
@@ -254,6 +256,7 @@ checkNameUnique : Model -> Stores.EventType.Model -> ErrorsDict -> ErrorsDict
 checkNameUnique model eventTypeStore dict =
     if Store.has (String.trim (getValue FieldName model.values)) eventTypeStore then
         Dict.insert (toString FieldName) "Name is already used." dict
+
     else
         dict
 
@@ -267,29 +270,32 @@ checkNameFormat model dict =
         pattern =
             Regex.regex "^[a-zA-Z][-0-9a-zA-Z_]*(\\.[a-zA-Z][-0-9a-zA-Z_]*)*$"
     in
-        if Regex.contains pattern name then
-            dict
-        else
-            Dict.insert (toString FieldName) "Wrong format." dict
+    if Regex.contains pattern name then
+        dict
+
+    else
+        Dict.insert (toString FieldName) "Wrong format." dict
 
 
 checkPartitionStrategy : Model -> ErrorsDict -> ErrorsDict
 checkPartitionStrategy model dict =
     if
-        ((getValue FieldCategory model.values) == categories.undefined)
-            && ((getValue FieldPartitionStrategy model.values) == partitionStrategies.user_defined)
+        (getValue FieldCategory model.values == categories.undefined)
+            && (getValue FieldPartitionStrategy model.values == partitionStrategies.user_defined)
     then
         Dict.insert (toString FieldPartitionStrategy)
             "The 'user_defined' partitioning strategy cannot be used with event types of category 'undefined'"
             dict
+
     else
         dict
 
 
 checkPartitionKeys : Model -> ErrorsDict -> ErrorsDict
 checkPartitionKeys model dict =
-    if (getValue FieldPartitionStrategy model.values) == partitionStrategies.hash then
+    if getValue FieldPartitionStrategy model.values == partitionStrategies.hash then
         isNotEmpty FieldPartitionKeyFields model dict
+
     else
         dict
 
@@ -303,12 +309,12 @@ checkSchemaFormat model dict =
         result =
             Json.Decode.decodeString (Json.Decode.dict Json.Decode.value) schema
     in
-        case result of
-            Ok value ->
-                dict
+    case result of
+        Ok value ->
+            dict
 
-            Err err ->
-                Dict.insert (toString FieldSchema) ("JSON expected. " ++ (toString err)) dict
+        Err err ->
+            Dict.insert (toString FieldSchema) ("JSON expected. " ++ toString err) dict
 
 
 submitCreate : Model -> Cmd Msg
@@ -376,6 +382,7 @@ submitCreate model =
         enrichment =
             if getValue FieldCategory model.values == categories.undefined then
                 []
+
             else
                 [ ( "enrichment_strategies"
                   , Json.list
@@ -387,7 +394,7 @@ submitCreate model =
         body =
             Json.object (List.concat [ fields, enrichment ])
     in
-        post body
+    post body
 
 
 post : Json.Value -> Cmd Msg
@@ -454,6 +461,7 @@ submitUpdate model =
         enrichment =
             if getValue FieldCategory model.values == categories.undefined then
                 []
+
             else
                 [ ( "enrichment_strategies"
                   , Json.list
@@ -465,7 +473,7 @@ submitUpdate model =
         body =
             Json.object (List.concat [ fields, enrichment ])
     in
-        put body (getValue FieldName model.values)
+    put body (getValue FieldName model.values)
 
 
 put : Json.Value -> String -> Cmd Msg
@@ -473,7 +481,7 @@ put body name =
     Http.request
         { method = "PUT"
         , headers = []
-        , url = Config.urlNakadiApi ++ "event-types/" ++ (Http.encodeUri name)
+        , url = Config.urlNakadiApi ++ "event-types/" ++ Http.encodeUri name
         , body = Http.jsonBody body
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing

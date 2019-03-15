@@ -1,11 +1,12 @@
 module Helpers.StoreLocal exposing (Model, Msg(..), collectionDecoder, config, has, initialModel, update, updateWithConfig)
 
 import Dict
+import Helpers.Http exposing (HttpStringResult, getString, postString)
 import Helpers.Store as Store exposing (ErrorMessage, Status(..), onFetchErr)
 import Helpers.Task exposing (dispatch)
 import Json.Decode as Json exposing (..)
 import Json.Encode
-import Helpers.Http exposing (HttpStringResult,getString,postString)
+
 
 type alias Model =
     Store.Model String
@@ -13,11 +14,11 @@ type alias Model =
 
 type Msg
     = FetchData
-    | FetchAllDone (HttpStringResult)
+    | FetchAllDone HttpStringResult
     | Add String
     | Remove String
     | SaveData
-    | SaveAllDone (HttpStringResult)
+    | SaveAllDone HttpStringResult
     | SetParams (List ( String, String ))
 
 

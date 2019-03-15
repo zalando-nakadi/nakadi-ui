@@ -1,21 +1,22 @@
-module Helpers.String exposing (..)
+module Helpers.String exposing (Params, cleanDateTime, compareAsInt, formatDateTime, getMaybeBool, getMaybeInt, getMaybeString, justOrCrash, parseParams, parseUrl, periodToShortString, periodToString, pluralCount, pseudoIntSort, queryMaybeToUrl, splitFound, stringToBool, toKeyValuePair, toPx)
 
-import Strftime exposing (format)
-import Date
-import Http
-import Dict
 import Constants exposing (emptyString)
+import Date
+import Dict
+import Http
 import Regex
+import Strftime exposing (format)
+
 
 
 --------------- BASE
 
 
 {-| Split the given "where" string to the 3 parts:
-    before match , matched part, after match.
-    These parts are then used to highlight the match in search results.
-    If no substring found then "where" string go to the "before" part,
-    and "matched" and "after match" parts contain empty string.
+before match , matched part, after match.
+These parts are then used to highlight the match in search results.
+If no substring found then "where" string go to the "before" part,
+and "matched" and "after match" parts contain empty string.
 -}
 splitFound : String -> String -> ( String, String, String )
 splitFound whatStr whereStr =
@@ -42,7 +43,7 @@ splitFound whatStr whereStr =
             String.length whatStrLowered
 
         indexEnd =
-            (index + filterLen)
+            index + filterLen
 
         before =
             String.left index whereStr
@@ -53,16 +54,17 @@ splitFound whatStr whereStr =
         after =
             String.right (len - indexEnd) whereStr
     in
-        ( before, it, after )
+    ( before, it, after )
 
 
 pluralCount : Int -> String -> String
 pluralCount count label =
-    (toString count)
+    toString count
         ++ " "
         ++ label
         ++ (if count == 1 then
                 " "
+
             else
                 "s "
            )
@@ -74,7 +76,7 @@ pluralCount count label =
 
 toPx : Int -> String
 toPx n =
-    (toString n) ++ "px"
+    toString n ++ "px"
 
 
 
@@ -114,7 +116,7 @@ parseUrl url =
                 |> Maybe.withDefault emptyString
                 |> parseParams
     in
-        ( path, query )
+    ( path, query )
 
 
 type alias Params =
@@ -145,7 +147,7 @@ queryMaybeToUrl query =
         dictToKeyVal key maybeVal accumulator =
             case maybeVal of
                 Just val ->
-                    List.append accumulator [ (Http.encodeUri key) ++ "=" ++ (Http.encodeUri val) ]
+                    List.append accumulator [ Http.encodeUri key ++ "=" ++ Http.encodeUri val ]
 
                 Nothing ->
                     accumulator
@@ -155,10 +157,11 @@ queryMaybeToUrl query =
                 |> Dict.foldl dictToKeyVal []
                 |> String.join "&"
     in
-        if url |> String.isEmpty then
-            emptyString
-        else
-            "?" ++ url
+    if url |> String.isEmpty then
+        emptyString
+
+    else
+        "?" ++ url
 
 
 
@@ -219,10 +222,12 @@ periodToString ms =
         plural n name =
             if n == 0 then
                 emptyString
+
             else if n > 1 then
-                (toString n) ++ " " ++ name ++ "s"
+                toString n ++ " " ++ name ++ "s"
+
             else
-                (toString n) ++ " " ++ name
+                toString n ++ " " ++ name
 
         msSecond =
             1000
@@ -278,9 +283,9 @@ periodToString ms =
         millisecondsStr =
             plural milliseconds "millisecond"
     in
-        [ daysStr, hoursStr, minutesStr, secondsStr, millisecondsStr ]
-            |> List.filter (\str -> not (String.isEmpty str))
-            |> String.join " "
+    [ daysStr, hoursStr, minutesStr, secondsStr, millisecondsStr ]
+        |> List.filter (\str -> not (String.isEmpty str))
+        |> String.join " "
 
 
 periodToShortString : Int -> String
@@ -289,8 +294,9 @@ periodToShortString ms =
         format n name =
             if n == 0 then
                 emptyString
+
             else
-                (toString n) ++ name
+                toString n ++ name
 
         msSecond =
             1000
@@ -346,9 +352,9 @@ periodToShortString ms =
         millisecondsStr =
             format milliseconds "ms"
     in
-        [ daysStr, hoursStr, minutesStr, secondsStr, millisecondsStr ]
-            |> List.filter (\str -> not (String.isEmpty str))
-            |> String.join " "
+    [ daysStr, hoursStr, minutesStr, secondsStr, millisecondsStr ]
+        |> List.filter (\str -> not (String.isEmpty str))
+        |> String.join " "
 
 
 

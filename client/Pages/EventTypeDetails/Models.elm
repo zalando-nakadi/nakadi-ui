@@ -1,19 +1,19 @@
-module Pages.EventTypeDetails.Models exposing (..)
+module Pages.EventTypeDetails.Models exposing (Model, Tabs(..), UrlParams, UrlQuery, dictToParams, dictToQuery, emptyQuery, initialModel, queryToUrl, stringToTabs)
 
-import Helpers.String exposing (justOrCrash, getMaybeBool, queryMaybeToUrl)
+import Constants exposing (emptyString)
 import Dict exposing (get)
 import Helpers.JsonEditor as JsonEditor
-import Constants exposing (emptyString)
-import Stores.Publisher
+import Helpers.Store exposing (ErrorMessage, Status(Unknown))
+import Helpers.String exposing (getMaybeBool, justOrCrash, queryMaybeToUrl)
+import Pages.EventTypeDetails.PublishTab
+import RemoteData exposing (RemoteData(NotAsked), WebData)
 import Stores.Consumer
-import Stores.Partition
 import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
+import Stores.Partition
+import Stores.Publisher
 import Stores.Query exposing (Query)
-import Helpers.Store exposing (Status(Unknown), ErrorMessage)
-import RemoteData exposing (WebData, RemoteData(NotAsked))
-import Pages.EventTypeDetails.PublishTab
 
 
 initialModel : Model

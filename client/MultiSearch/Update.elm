@@ -1,19 +1,18 @@
-module MultiSearch.Update exposing (..)
+module MultiSearch.Update exposing (clearInput, defaultConfig, itemToRoute, moveSelected, onEnter, onKeyDown, removeFocus, scrollTo, scrollToView, search, setFocus, update)
 
-import MultiSearch.Messages exposing (..)
-import MultiSearch.Models exposing (..)
-import Helpers.Task exposing (dispatch)
-import Dom.Scroll
-import Dom
-import Task
-import Keyboard.Extra exposing (Key(ArrowUp, ArrowDown, PageUp, PageDown, Enter, Escape))
-import Helpers.Task exposing (dispatch)
 import Constants exposing (emptyString)
-import Routing.Models exposing (Route(..))
-import Pages.EventTypeDetails.Models
+import Dom
+import Dom.Scroll
 import Helpers.Store as Store
 import Helpers.StoreLocal as StoreLocal
+import Helpers.Task exposing (dispatch)
+import Keyboard.Extra exposing (Key(ArrowDown, ArrowUp, Enter, Escape, PageDown, PageUp))
 import Models exposing (AppModel)
+import MultiSearch.Messages exposing (..)
+import MultiSearch.Models exposing (..)
+import Pages.EventTypeDetails.Models
+import Routing.Models exposing (Route(..))
+import Task
 
 
 defaultConfig : AppModel -> Config
@@ -39,7 +38,7 @@ update config message state =
                 filtered =
                     config.searchFunc filterSanitized
             in
-                ( { state | filtered = filtered, showAll = False }, Cmd.none )
+            ( { state | filtered = filtered, showAll = False }, Cmd.none )
 
         Selected item ->
             let
@@ -49,7 +48,7 @@ update config message state =
                         |> OutRedirect
                         |> dispatch
             in
-                ( state, Cmd.batch [ removeFocus config, redirectMessage ] )
+            ( state, Cmd.batch [ removeFocus config, redirectMessage ] )
 
         FilterChanged filter ->
             ( { state | selected = 0, filter = filter |> String.trim }, dispatch Refresh )
@@ -131,16 +130,17 @@ onKeyDown config key state =
 
         lastIndex =
             if state.showAll then
-                (List.length state.filtered) - 1
+                List.length state.filtered - 1
+
             else
-                (Basics.min (List.length state.filtered) maxResults) - 1
+                Basics.min (List.length state.filtered) maxResults - 1
 
         newSelected =
             selected
                 |> min lastIndex
                 |> max 0
     in
-        ( { state | selected = newSelected }, cmd )
+    ( { state | selected = newSelected }, cmd )
 
 
 moveSelected : Config -> Int -> Model -> ( Int, Cmd Msg )
@@ -149,7 +149,7 @@ moveSelected config delta state =
         pos =
             state.selected + delta
     in
-        ( pos, scrollToView config pos )
+    ( pos, scrollToView config pos )
 
 
 onEnter : Model -> Cmd Msg
@@ -158,12 +158,12 @@ onEnter state =
         maybeItem =
             List.head (List.drop state.selected state.filtered)
     in
-        case maybeItem of
-            Just item ->
-                dispatch (Selected item)
+    case maybeItem of
+        Just item ->
+            dispatch (Selected item)
 
-            Nothing ->
-                Cmd.none
+        Nothing ->
+            Cmd.none
 
 
 scrollToView : Config -> Int -> Cmd Msg
@@ -190,11 +190,12 @@ scrollTo config index scrollPosition =
                 |> min itemPosition
                 |> max maxScroll
     in
-        if (newScroll == currentScroll) then
-            -- do nothing
-            Task.succeed ()
-        else
-            Dom.Scroll.toY config.dropdownId (toFloat newScroll)
+    if newScroll == currentScroll then
+        -- do nothing
+        Task.succeed ()
+
+    else
+        Dom.Scroll.toY config.dropdownId (toFloat newScroll)
 
 
 itemToRoute : SearchItem -> Route
@@ -214,6 +215,7 @@ search model filter =
         relevancy points str =
             if String.contains filter (String.toLower str) then
                 points
+
             else
                 0
 
@@ -226,6 +228,7 @@ search model filter =
         getStarWeight isStarred =
             if isStarred then
                 starCoefficient
+
             else
                 noneCoefficient
 
@@ -245,22 +248,22 @@ search model filter =
 
                 weight =
                     itemTypeCoefficient
-                        * (getStarWeight isStarred)
-                        * ((relevancy nameWeight eventType.name)
-                            + (relevancy owningAppWeight
+                        * getStarWeight isStarred
+                        * (relevancy nameWeight eventType.name
+                            + relevancy owningAppWeight
                                 (eventType.owning_application
                                     |> Maybe.withDefault Constants.emptyString
                                 )
-                              )
                           )
             in
-                if weight > 0 then
-                    Just
-                        { weight = -weight
-                        , item = SearchItemEventType eventType isStarred
-                        }
-                else
-                    Nothing
+            if weight > 0 then
+                Just
+                    { weight = -weight
+                    , item = SearchItemEventType eventType isStarred
+                    }
+
+            else
+                Nothing
 
         filterSubscription subscription =
             let
@@ -281,19 +284,20 @@ search model filter =
 
                 weight =
                     itemTypeCoefficient
-                        * (getStarWeight isStarred)
-                        * ((relevancy idWeight subscription.id)
-                            + (relevancy consumerGroupWeight subscription.consumer_group)
-                            + (relevancy owningAppWeight subscription.owning_application)
+                        * getStarWeight isStarred
+                        * (relevancy idWeight subscription.id
+                            + relevancy consumerGroupWeight subscription.consumer_group
+                            + relevancy owningAppWeight subscription.owning_application
                           )
             in
-                if weight > 0 then
-                    Just
-                        { weight = -weight
-                        , item = SearchItemSubscription subscription isStarred
-                        }
-                else
-                    Nothing
+            if weight > 0 then
+                Just
+                    { weight = -weight
+                    , item = SearchItemSubscription subscription isStarred
+                    }
+
+            else
+                Nothing
 
         foundEventTypes =
             model.eventTypeStore
@@ -314,7 +318,8 @@ search model filter =
         results =
             unsortedResults |> List.sortBy .weight |> List.map .item
     in
-        if String.isEmpty filter then
-            []
-        else
-            results
+    if String.isEmpty filter then
+        []
+
+    else
+        results

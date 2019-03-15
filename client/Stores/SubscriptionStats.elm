@@ -1,12 +1,12 @@
-module Stores.SubscriptionStats exposing (..)
+module Stores.SubscriptionStats exposing (Model, Msg, SubscriptionStats, SubscriptionStatsPartition, collectionDecoder, config, fetchStats, initialModel, memberDecoder, partitionDecoder, update)
 
-import Helpers.Store
 import Config
-import Json.Decode exposing (field, int, string, float, Decoder, list, nullable, map6, maybe)
-import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Dict
-import Http
 import Constants exposing (emptyString)
+import Dict
+import Helpers.Store
+import Http
+import Json.Decode exposing (Decoder, field, float, int, list, map6, maybe, nullable, string)
+import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
 
 
 type alias SubscriptionStats =
@@ -38,13 +38,13 @@ config : Dict.Dict String String -> Helpers.Store.Config SubscriptionStats
 config params =
     let
         id =
-            (Dict.get Constants.id params) |> Maybe.withDefault emptyString
+            Dict.get Constants.id params |> Maybe.withDefault emptyString
     in
-        { getKey = (\index item -> item.event_type)
-        , url = Config.urlNakadiApi ++ "subscriptions/" ++ id ++ "/stats?show_time_lag=true"
-        , decoder = collectionDecoder
-        , headers = []
-        }
+    { getKey = \index item -> item.event_type
+    , url = Config.urlNakadiApi ++ "subscriptions/" ++ id ++ "/stats?show_time_lag=true"
+    , decoder = collectionDecoder
+    , headers = []
+    }
 
 
 initialModel : Model

@@ -1,24 +1,22 @@
-module Pages.SubscriptionDetails.Update exposing (..)
+module Pages.SubscriptionDetails.Update exposing (callDelete, modelToRoute, routeToModel, setInputKey, setInputValue, submitOffset, update)
 
-import Pages.SubscriptionDetails.Messages exposing (Msg(..))
-import Pages.SubscriptionDetails.Models exposing (Model, initialModel, Tabs(..))
-import Stores.SubscriptionStats exposing (fetchStats, config)
-import Helpers.Store as Store exposing (onFetchStart, onFetchOk, onFetchErr, loadStore)
-import Stores.SubscriptionStats exposing (fetchStats)
-import Stores.SubscriptionCursors exposing (fetchCursors)
-import Stores.Cursor
-import Helpers.Store exposing (onFetchStart, onFetchOk, onFetchErr, loadStore)
-import Routing.Models exposing (Route(SubscriptionDetailsRoute))
-import Helpers.Task exposing (dispatch)
-import User.Commands exposing (logoutIfExpired)
-import Dict
-import Constants
-import Http
 import Config
-import Task
+import Constants
+import Dict
 import Dom
+import Helpers.Store as Store exposing (loadStore, onFetchErr, onFetchOk, onFetchStart)
+import Helpers.Task exposing (dispatch)
+import Http
 import Json.Encode
 import Keyboard.Extra
+import Pages.SubscriptionDetails.Messages exposing (Msg(..))
+import Pages.SubscriptionDetails.Models exposing (Model, Tabs(..), initialModel)
+import Routing.Models exposing (Route(SubscriptionDetailsRoute))
+import Stores.Cursor
+import Stores.SubscriptionCursors exposing (fetchCursors)
+import Stores.SubscriptionStats exposing (config, fetchStats)
+import Task
+import User.Commands exposing (logoutIfExpired)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
@@ -34,13 +32,14 @@ update message model =
                         cmd =
                             if newModel.id == model.id then
                                 Cmd.none
+
                             else
                                 Cmd.batch
                                     [ dispatch LoadStats
                                     , dispatch LoadCursors
                                     ]
                     in
-                        ( newModel, cmd )
+                    ( newModel, cmd )
 
                 LoadStats ->
                     let
@@ -52,7 +51,7 @@ update message model =
                                 | params = Dict.singleton Constants.id model.id
                             }
                     in
-                        ( { model | statsStore = statsStore }, fetchStats StatsLoaded model.id )
+                    ( { model | statsStore = statsStore }, fetchStats StatsLoaded model.id )
 
                 StatsLoaded result ->
                     case result of
@@ -66,7 +65,7 @@ update message model =
                                         | statsStore = onFetchOk newStore
                                     }
                             in
-                                ( newModel, Cmd.none )
+                            ( newModel, Cmd.none )
 
                         Err error ->
                             ( { model | statsStore = onFetchErr model.statsStore error }
@@ -81,7 +80,7 @@ update message model =
                         openedDeletePopup =
                             { newDeletePopup | isOpen = True }
                     in
-                        ( { model | deletePopup = openedDeletePopup }, Cmd.none )
+                    ( { model | deletePopup = openedDeletePopup }, Cmd.none )
 
                 CloseDeletePopup ->
                     ( { model | deletePopup = initialModel.deletePopup }, Cmd.none )
@@ -94,7 +93,7 @@ update message model =
                         newPopup =
                             { deletePopup | deleteCheckbox = not model.deletePopup.deleteCheckbox }
                     in
-                        ( { model | deletePopup = newPopup }, Cmd.none )
+                    ( { model | deletePopup = newPopup }, Cmd.none )
 
                 Delete ->
                     ( { model | deletePopup = Store.onFetchStart model.deletePopup }, callDelete model.id )
@@ -128,7 +127,7 @@ update message model =
                                 | params = Dict.singleton Constants.id model.id
                             }
                     in
-                        ( { model | cursorsStore = cursorsStore }, fetchCursors CursorsLoaded model.id )
+                    ( { model | cursorsStore = cursorsStore }, fetchCursors CursorsLoaded model.id )
 
                 CursorsLoaded result ->
                     case result of
@@ -142,7 +141,7 @@ update message model =
                                         | cursorsStore = onFetchOk newStore
                                     }
                             in
-                                ( newModel, Cmd.none )
+                            ( newModel, Cmd.none )
 
                         Err error ->
                             ( { model | cursorsStore = onFetchErr model.cursorsStore error }
@@ -178,7 +177,7 @@ update message model =
                                 _ ->
                                     Cmd.none
                     in
-                        ( model, cmd )
+                    ( model, cmd )
 
                 ResetOffsetDone result ->
                     case result of
@@ -210,7 +209,7 @@ update message model =
                 OutRemoveFromFavorite str ->
                     ( model, Cmd.none )
     in
-        ( newModel, cmd, modelToRoute newModel )
+    ( newModel, cmd, modelToRoute newModel )
 
 
 modelToRoute : Model -> Route
@@ -219,6 +218,7 @@ modelToRoute model =
         { tab =
             if model.tab == StatsTab then
                 Nothing
+
             else
                 Just model.tab
         }
@@ -242,7 +242,7 @@ callDelete name =
     Http.request
         { method = "DELETE"
         , headers = []
-        , url = Config.urlNakadiApi ++ "subscriptions/" ++ (Http.encodeUri name)
+        , url = Config.urlNakadiApi ++ "subscriptions/" ++ Http.encodeUri name
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing
@@ -288,16 +288,16 @@ submitOffset model =
                       )
                     ]
     in
-        Http.request
-            { method = "PATCH"
-            , headers = []
-            , url = Config.urlNakadiApi ++ "subscriptions/" ++ (Http.encodeUri id) ++ "/cursors"
-            , body = body
-            , expect = Http.expectStringResponse (always (Ok ()))
-            , timeout = Nothing
-            , withCredentials = False
-            }
-            |> Http.send ResetOffsetDone
+    Http.request
+        { method = "PATCH"
+        , headers = []
+        , url = Config.urlNakadiApi ++ "subscriptions/" ++ Http.encodeUri id ++ "/cursors"
+        , body = body
+        , expect = Http.expectStringResponse (always (Ok ()))
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> Http.send ResetOffsetDone
 
 
 setInputKey : Maybe String -> Model -> Model
@@ -309,7 +309,7 @@ setInputKey key model =
         newEditOffsetInput =
             { editOffsetInput | editPartition = key }
     in
-        { model | editOffsetInput = newEditOffsetInput }
+    { model | editOffsetInput = newEditOffsetInput }
 
 
 setInputValue : String -> Model -> Model
@@ -321,4 +321,4 @@ setInputValue val model =
         newEditOffsetInput =
             { editOffsetInput | editPartitionValue = val }
     in
-        { model | editOffsetInput = newEditOffsetInput }
+    { model | editOffsetInput = newEditOffsetInput }

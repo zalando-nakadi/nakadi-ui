@@ -1,29 +1,23 @@
-module Pages.EventTypeCreate.Query exposing (..)
-
-import Pages.EventTypeCreate.Messages exposing (..)
-import Pages.EventTypeCreate.Models exposing (..)
-import Json.Encode as Json
-import Http
-import Config
-import Constants
-import Helpers.Forms exposing (..)
-import Helpers.AccessEditor as AccessEditor
-import Stores.Authorization exposing (Authorization)
-import Stores.EventType exposing (cleanupPolicies, categories)
-
+module Pages.EventTypeCreate.Query exposing (daysToRetentionTimeJson, helpSql, post, sqlAccessEditor, sqlEditor, stringToJsonList, submitQueryCreate, viewQueryForm)
 
 {--------------- View -----------------}
 
+import Config
+import Constants
+import Helpers.AccessEditor as AccessEditor
+import Helpers.Forms exposing (..)
+import Helpers.Panel
+import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Helpers.AccessEditor as AccessEditor
-import Config
-import Helpers.Forms exposing (..)
-import Pages.EventTypeDetails.Help as Help
-import Helpers.Panel
-import Stores.EventType exposing (allAudiences)
+import Http
+import Json.Encode as Json
 import Models exposing (AppModel)
-import Helpers.UI exposing (..)
+import Pages.EventTypeCreate.Messages exposing (..)
+import Pages.EventTypeCreate.Models exposing (..)
+import Pages.EventTypeDetails.Help as Help
+import Stores.Authorization exposing (Authorization)
+import Stores.EventType exposing (allAudiences, categories, cleanupPolicies)
 
 
 viewQueryForm : AppModel -> Html Msg
@@ -38,104 +32,106 @@ viewQueryForm model =
         formTitle =
             "Create SQL Query"
     in
-        div [ class "dc-column form-create__form-container" ]
-            [ div []
-                [ h4 [ class "dc-h4 dc--text-center" ] [ text formTitle ]
-                , textInput formModel
-                    FieldName
-                    OnInput
-                    "Output Event Type Name"
-                    "Example: bazar.price-updater.price_changed"
-                    "Should be several words (with '_', '-') separated by dot."
-                    Help.eventType
-                    Required
-                    Enabled
-                , textInput formModel
-                    FieldOwningApplication
-                    OnInput
-                    "Owning Application"
-                    "Example: stups_price-updater"
-                    "App name registered in YourTurn with 'stups_' prefix"
-                    Help.owningApplication
-                    Required
-                    Enabled
-                , selectInput formModel
-                    FieldCleanupPolicy
-                    OnInput
-                    "Cleanup policy"
-                    ""
-                    Help.cleanupPolicy
-                    Required
-                    Enabled
-                    [ cleanupPolicies.compact
-                    , cleanupPolicies.delete
-                    ]
-                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.compact then
-                    textInput formModel
-                        FieldPartitionCompactionKeyField
-                        OnInput
-                        "Partition Compaction Key Field"
-                        "Example: metadata.partition_compaction_key"
-                        "Field to be used as partition_compaction_key"
-                        Help.partitionCompactionKeyField
-                        Required
-                        Enabled
-                  else
-                    none
-                , if (getValue FieldCleanupPolicy formModel.values) == cleanupPolicies.delete then
-                    selectInput formModel
-                        FieldRetentionTime
-                        OnInput
-                        "Retention Time (Days)"
-                        ""
-                        Help.options
-                        Optional
-                        Enabled
-                        [ "2", "3", "4" ]
-                  else
-                    none
-                , selectInput
-                    formModel
-                    FieldCategory
-                    OnInput
-                    "Category"
-                    ""
-                    Help.category
-                    Optional
-                    Enabled
-                    [ categories.business
-                    , categories.data
-                    ]
-                , textInput formModel
-                    FieldOrderingKeyFields
-                    OnInput
-                    "Ordering Key Fields"
-                    "Example: order.day, order.index"
-                    "Comma-separated list of keys."
-                    Help.orderingKeyFields
-                    Optional
-                    Enabled
-                , selectInput formModel
-                    FieldAudience
-                    OnInput
-                    "Audience"
-                    ""
-                    Help.audience
-                    Required
-                    Enabled
-                    ("" :: allAudiences)
-                , sqlEditor formModel
-                , hr [ class "dc-divider" ] []
-                , sqlAccessEditor appsInfoUrl usersInfoUrl formModel
+    div [ class "dc-column form-create__form-container" ]
+        [ div []
+            [ h4 [ class "dc-h4 dc--text-center" ] [ text formTitle ]
+            , textInput formModel
+                FieldName
+                OnInput
+                "Output Event Type Name"
+                "Example: bazar.price-updater.price_changed"
+                "Should be several words (with '_', '-') separated by dot."
+                Help.eventType
+                Required
+                Enabled
+            , textInput formModel
+                FieldOwningApplication
+                OnInput
+                "Owning Application"
+                "Example: stups_price-updater"
+                "App name registered in YourTurn with 'stups_' prefix"
+                Help.owningApplication
+                Required
+                Enabled
+            , selectInput formModel
+                FieldCleanupPolicy
+                OnInput
+                "Cleanup policy"
+                ""
+                Help.cleanupPolicy
+                Required
+                Enabled
+                [ cleanupPolicies.compact
+                , cleanupPolicies.delete
                 ]
-            , hr [ class "dc-divider" ]
-                []
-            , div
-                [ class "dc-toast__content dc-toast__content--success" ]
-                [ text "Nakady SQL Query Created!" ]
-                |> Helpers.Panel.loadingStatus formModel
-            , buttonPanel formTitle Submit Reset FieldName formModel
+            , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.compact then
+                textInput formModel
+                    FieldPartitionCompactionKeyField
+                    OnInput
+                    "Partition Compaction Key Field"
+                    "Example: metadata.partition_compaction_key"
+                    "Field to be used as partition_compaction_key"
+                    Help.partitionCompactionKeyField
+                    Required
+                    Enabled
+
+              else
+                none
+            , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.delete then
+                selectInput formModel
+                    FieldRetentionTime
+                    OnInput
+                    "Retention Time (Days)"
+                    ""
+                    Help.options
+                    Optional
+                    Enabled
+                    [ "2", "3", "4" ]
+
+              else
+                none
+            , selectInput
+                formModel
+                FieldCategory
+                OnInput
+                "Category"
+                ""
+                Help.category
+                Optional
+                Enabled
+                [ categories.business
+                , categories.data
+                ]
+            , textInput formModel
+                FieldOrderingKeyFields
+                OnInput
+                "Ordering Key Fields"
+                "Example: order.day, order.index"
+                "Comma-separated list of keys."
+                Help.orderingKeyFields
+                Optional
+                Enabled
+            , selectInput formModel
+                FieldAudience
+                OnInput
+                "Audience"
+                ""
+                Help.audience
+                Required
+                Enabled
+                ("" :: allAudiences)
+            , sqlEditor formModel
+            , hr [ class "dc-divider" ] []
+            , sqlAccessEditor appsInfoUrl usersInfoUrl formModel
             ]
+        , hr [ class "dc-divider" ]
+            []
+        , div
+            [ class "dc-toast__content dc-toast__content--success" ]
+            [ text "Nakady SQL Query Created!" ]
+            |> Helpers.Panel.loadingStatus formModel
+        , buttonPanel formTitle Submit Reset FieldName formModel
+        ]
 
 
 sqlEditor : Model -> Html Msg
@@ -145,12 +141,11 @@ sqlEditor formModel =
             [ div [ class "dc-btn-group" ] []
             , pre
                 [ class "ace-edit" ]
-                [  node "ace-editor"
+                [ node "ace-editor"
                     [ value (getValue FieldSql formModel.values)
                     , onChange (OnInput FieldSql)
                     , attribute "theme" "ace/theme/dawn"
                     , attribute "mode" "ace/mode/sql"
-
                     ]
                     []
                 ]
@@ -199,8 +194,8 @@ submitQueryCreate model =
                     , ( "owning_application", asString FieldOwningApplication )
                     , ( "category", asString FieldCategory )
                     , ( "cleanup_policy", asString FieldCleanupPolicy )
-                    , ( "retention_time", daysToRetentionTimeJson model.values)
-                    , ( "partition_compaction_key_field", asString FieldPartitionCompactionKeyField)
+                    , ( "retention_time", daysToRetentionTimeJson model.values )
+                    , ( "partition_compaction_key_field", asString FieldPartitionCompactionKeyField )
                     , ( "ordering_key_fields", orderingKeyFields )
                     , ( "audience", asString FieldAudience )
                     ]
@@ -210,9 +205,9 @@ submitQueryCreate model =
             ]
 
         body =
-            Json.object (fields)
+            Json.object fields
     in
-        post body
+    post body
 
 
 post : Json.Value -> Cmd Msg

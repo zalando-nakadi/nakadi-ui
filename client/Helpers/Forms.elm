@@ -1,11 +1,11 @@
-module Helpers.Forms exposing (..)
+module Helpers.Forms exposing (ErrorsDict, FormModel, Locking(..), Requirement(..), ValuesDict, areaInput, buttonPanel, getError, getValue, inputFrame, inputId, maybeSetListValue, maybeSetValue, selectInput, setValue, textInput, toValuesDict, validationClass, validationMessage)
 
+import Dict
+import Helpers.Store exposing (Status(Loading))
+import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Helpers.UI exposing (..)
-import Dict
-import Helpers.Store exposing (Status(Loading))
 
 
 type Requirement
@@ -58,17 +58,17 @@ inputFrame field inputLabel hint help isRequired formModel input =
                 Optional ->
                     none
     in
-        div
-            [ class fieldClass ]
-            [ label [ class "dc-label" ]
-                [ text inputLabel
-                , helpIcon inputLabel help BottomRight
-                , requiredMark
-                ]
-            , input
-            , validationMessage field formModel
-            , p [ class "dc--text-less-important" ] [ text hint ]
+    div
+        [ class fieldClass ]
+        [ label [ class "dc-label" ]
+            [ text inputLabel
+            , helpIcon inputLabel help BottomRight
+            , requiredMark
             ]
+        , input
+        , validationMessage field formModel
+        , p [ class "dc--text-less-important" ] [ text hint ]
+        ]
 
 
 textInput :
@@ -85,6 +85,7 @@ textInput :
 textInput formModel field onInputMsg inputLabel inputPlaceholder hint help isRequired isDisabled =
     if isDisabled == Disabled then
         none
+
     else
         inputFrame field inputLabel hint help isRequired formModel <|
             input
@@ -114,35 +115,37 @@ selectInput :
 selectInput formModel field onInputMsg inputLabel hint help isRequired isDisabled options =
     let
         selectedValue =
-            (getValue field formModel.values)
+            getValue field formModel.values
 
         isDisabledOrOne =
-            if (List.length options) <= 1 then
+            if List.length options <= 1 then
                 True
+
             else
-                (isDisabled == Disabled)
+                isDisabled == Disabled
     in
-        if isDisabledOrOne then
-            none
-        else
-            inputFrame field inputLabel hint help isRequired formModel <|
-                select
-                    [ onChange (onInputMsg field)
-                    , validationClass field "dc-select" formModel
-                    , id (inputId formModel.formId field)
-                    , tabindex 1
-                    , disabled isDisabledOrOne
-                    ]
-                    (options
-                        |> List.map
-                            (\optionName ->
-                                option
-                                    [ selected (selectedValue == optionName)
-                                    , value optionName
-                                    ]
-                                    [ text optionName ]
-                            )
-                    )
+    if isDisabledOrOne then
+        none
+
+    else
+        inputFrame field inputLabel hint help isRequired formModel <|
+            select
+                [ onChange (onInputMsg field)
+                , validationClass field "dc-select" formModel
+                , id (inputId formModel.formId field)
+                , tabindex 1
+                , disabled isDisabledOrOne
+                ]
+                (options
+                    |> List.map
+                        (\optionName ->
+                            option
+                                [ selected (selectedValue == optionName)
+                                , value optionName
+                                ]
+                                [ text optionName ]
+                        )
+                )
 
 
 areaInput :
@@ -181,18 +184,19 @@ buttonPanel submitLabel action resetMsg mainField model =
                     && (model.status /= Loading)
             then
                 button [ onClick action, class "dc-btn dc-btn--primary", tabindex 3 ] [ text submitLabel ]
+
             else
                 button [ disabled True, class "dc-btn dc-btn--disabled" ] [ text submitLabel ]
     in
-        div []
-            [ submitBtn
-            , button [ onClick resetMsg, class "dc-btn panel--right-float", tabindex 4 ] [ text "Reset" ]
-            ]
+    div []
+        [ submitBtn
+        , button [ onClick resetMsg, class "dc-btn panel--right-float", tabindex 4 ] [ text "Reset" ]
+        ]
 
 
 inputId : String -> field -> String
 inputId formId field =
-    formId ++ (toString field)
+    formId ++ toString field
 
 
 getError : field -> FormModel a -> Maybe String

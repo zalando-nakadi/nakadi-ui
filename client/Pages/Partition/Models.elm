@@ -1,15 +1,14 @@
-module Pages.Partition.Models exposing (..)
+module Pages.Partition.Models exposing (Model, UrlParams, UrlQuery, dictToParams, dictToQuery, emptyQuery, getOldestNewestOffsets, initialModel, initialPageSize, isPartitionEmpty, queryToUrl)
 
-import Helpers.String exposing (justOrCrash, getMaybeBool, queryMaybeToUrl, getMaybeInt, getMaybeString)
-import Dict exposing (get)
+import Constants exposing (emptyString)
+import Dict exposing (Dict, get)
+import Helpers.JsonEditor as JsonEditor
 import Helpers.Store as Store
+import Helpers.String exposing (getMaybeBool, getMaybeInt, getMaybeString, justOrCrash, queryMaybeToUrl)
+import Stores.CursorDistance
 import Stores.Events
 import Stores.Partition
 import Stores.ShiftedCursor
-import Stores.CursorDistance
-import Dict exposing (Dict)
-import Helpers.JsonEditor as JsonEditor
-import Constants exposing (emptyString)
 
 
 initialPageSize : Int
@@ -81,7 +80,7 @@ emptyQuery =
 
 
 {-| Convert key/value pairs from url query to route UrlQuery record.
-   This record then will be loaded to the model by update function
+This record then will be loaded to the model by update function
 -}
 dictToQuery : Dict String String -> UrlQuery
 dictToQuery dict =
@@ -91,19 +90,19 @@ dictToQuery dict =
 
         size =
             10
-                ^ (Basics.floor (Basics.logBase 10 (2 * (toFloat rawSize))))
+                ^ Basics.floor (Basics.logBase 10 (2 * toFloat rawSize))
                 |> Basics.clamp 100 100000
     in
-        UrlQuery
-            (getMaybeBool "formatted" dict)
-            (getMaybeString "offset" dict)
-            (Just size)
-            (getMaybeString Constants.filter dict)
-            (getMaybeString "selected" dict)
+    UrlQuery
+        (getMaybeBool "formatted" dict)
+        (getMaybeString "offset" dict)
+        (Just size)
+        (getMaybeString Constants.filter dict)
+        (getMaybeString "selected" dict)
 
 
-{-| Convert  UrlQuery record back to the key/value dict
-   and then converted to the url query string by routing
+{-| Convert UrlQuery record back to the key/value dict
+and then converted to the url query string by routing
 -}
 queryToUrl : UrlQuery -> String
 queryToUrl query =
@@ -118,8 +117,8 @@ queryToUrl query =
 
 
 {-| Convert dict of params parsed from the url path template to UrlParams record
-   It will crash on run time if required field was not found.
-   But this only can happen if url template is wrong.
+It will crash on run time if required field was not found.
+But this only can happen if url template is wrong.
 -}
 dictToParams : Dict String String -> UrlParams
 dictToParams dict =
@@ -147,7 +146,6 @@ isPartitionEmpty partitionPage =
         ( oldest, newest ) =
             getOldestNewestOffsets partitionPage
                 --it will say "is empty" if partition not loaded yet
-                |>
-                    Maybe.withDefault ( "1", "0" )
+                |> Maybe.withDefault ( "1", "0" )
     in
-        oldest > newest
+    oldest > newest

@@ -1,7 +1,7 @@
-module Stores.Authorization exposing (..)
+module Stores.Authorization exposing (Authorization, AuthorizationAttribute, Key(..), Permission, PermissionType(..), adminPermission, collectionDecoder, dataTypeToKey, emptyAuthorization, emptyPermission, encodeAttribute, encoder, encoderReadAdmin, memberDecoder, readPermission, userAuthorization, writePermission)
 
-import Json.Decode exposing (string, Decoder, field, list, succeed)
-import Json.Decode.Pipeline exposing (decode, required, optional, resolve)
+import Json.Decode exposing (Decoder, field, list, string, succeed)
+import Json.Decode.Pipeline exposing (decode, optional, required, resolve)
 import Json.Encode as Encode
 
 

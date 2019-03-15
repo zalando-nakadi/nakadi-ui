@@ -1,9 +1,9 @@
-module Pages.EventTypeDetails.Help exposing (..)
+module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, compatibilityMode, consumers, createdAt, defaultStatistic, enrichmentStrategies, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
 
+import Config
+import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Helpers.UI exposing (..)
-import Config
 
 
 eventType : List (Html msg)
@@ -443,8 +443,8 @@ cleanupPolicy =
 orderingKeyFields : List (Html msg)
 orderingKeyFields =
     [ text "This field is useful in case the producer wants to communicate the complete"
-     , text "order accross all the events published to all partitions."
-     , text " This is the case when there is an incremental generator on the producer side."
+    , text "order accross all the events published to all partitions."
+    , text " This is the case when there is an incremental generator on the producer side."
     , newline
     , bold "This is only an informational field. No reordering is done by Nakadi."
     , newline
@@ -455,6 +455,7 @@ orderingKeyFields =
     , newline
     , man "#definition_EventType*ordering_key_fields"
     ]
+
 
 authorization : List (Html msg)
 authorization =
@@ -496,13 +497,14 @@ authorization =
     , man "#using_authorization"
     ]
 
+
 partitionCompactionKeyField : List (Html msg)
 partitionCompactionKeyField =
     [ text "This field is useful & necessary in case the output event-type is log-compacted"
-     , text " The value in the field specified is used as the partition_compaction_key for the output"
-     , text " event type. Thus, this field should be non-nullable and of type string. In case of join queries,"
-     , text " this field should be set to metadata.partition_compaction_key and partition_compaction_key from"
-     , text " one of the joined events is used as the key for the output event type."
+    , text " The value in the field specified is used as the partition_compaction_key for the output"
+    , text " event type. Thus, this field should be non-nullable and of type string. In case of join queries,"
+    , text " this field should be set to metadata.partition_compaction_key and partition_compaction_key from"
+    , text " one of the joined events is used as the key for the output event type."
     , newline
     , bold "This field is mandatory only if input event type is non log-compacted and output event type is compacted"
     , newline

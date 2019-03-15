@@ -1,7 +1,6 @@
-module Helpers.JsonEditor exposing (..)
+module Helpers.JsonEditor exposing (JsonValue(..), Model, Msg(..), emptyString, initialModel, jsonValueDecoder, jsonValueDelete, jsonValueGet, jsonValueSet, jsonValueSetFirst, jsonValueToCollapsibleHtml, jsonValueToHtml, jsonValueToPrettyString, jsonValueToString, jsonValueToValue, stringToJsonValue, update, valueToJsonValue, view)
 
-{-|
-JSON Viewer with collapsible sections
+{-| JSON Viewer with collapsible sections
 
 Example:
 
@@ -45,16 +44,17 @@ Example:
                      [ text "Json parsing error" (toString error)
                      , text json
                      ]
+
 -}
 
 import Dict exposing (Dict)
-import Json.Decode exposing (..)
-import Json.Encode
-import Html exposing (text, span, li, ul)
+import Html exposing (li, span, text, ul)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import List.Extra exposing (find)
 import Html.Keyed
+import Json.Decode exposing (..)
+import Json.Encode
+import List.Extra exposing (find)
 
 
 type JsonValue
@@ -153,21 +153,21 @@ jsonValueSet key value obj =
         isReplace list =
             find byKey list
     in
-        case obj of
-            ValueObject list ->
-                case isReplace list of
-                    Just a ->
-                        list
-                            |> List.Extra.replaceIf byKey ( key, value )
-                            |> ValueObject
+    case obj of
+        ValueObject list ->
+            case isReplace list of
+                Just a ->
+                    list
+                        |> List.Extra.replaceIf byKey ( key, value )
+                        |> ValueObject
 
-                    Nothing ->
-                        [ ( key, value ) ]
-                            |> List.append list
-                            |> ValueObject
+                Nothing ->
+                    [ ( key, value ) ]
+                        |> List.append list
+                        |> ValueObject
 
-            _ ->
-                obj
+        _ ->
+            obj
 
 
 jsonValueSetFirst : String -> JsonValue -> JsonValue -> JsonValue
@@ -179,21 +179,21 @@ jsonValueSetFirst key value obj =
         isReplace list =
             find byKey list
     in
-        case obj of
-            ValueObject list ->
-                case isReplace list of
-                    Just a ->
-                        list
-                            |> List.Extra.replaceIf byKey ( key, value )
-                            |> ValueObject
+    case obj of
+        ValueObject list ->
+            case isReplace list of
+                Just a ->
+                    list
+                        |> List.Extra.replaceIf byKey ( key, value )
+                        |> ValueObject
 
-                    Nothing ->
-                        list
-                            |> List.append [ ( key, value ) ]
-                            |> ValueObject
+                Nothing ->
+                    list
+                        |> List.append [ ( key, value ) ]
+                        |> ValueObject
 
-            _ ->
-                obj
+        _ ->
+            obj
 
 
 jsonValueDelete : String -> JsonValue -> JsonValue
@@ -256,59 +256,63 @@ jsonValueToHtml json =
         ValueObject dict ->
             let
                 last =
-                    (List.length dict) - 1
+                    List.length dict - 1
             in
-                if List.isEmpty dict then
-                    span [ class "json-empty-obj" ] [ text "{}" ]
-                else
-                    span []
-                        [ text "{"
-                        , ul [ class "json-obj" ]
-                            (dict
-                                |> List.indexedMap
-                                    (\index ( k, v ) ->
-                                        li []
-                                            [ span [ class "json-key" ] [ text k ]
-                                            , text ": "
-                                            , jsonValueToHtml v
-                                            , text <|
-                                                if index == last then
-                                                    emptyString
-                                                else
-                                                    ","
-                                            ]
-                                    )
-                            )
-                        , text "}"
-                        ]
+            if List.isEmpty dict then
+                span [ class "json-empty-obj" ] [ text "{}" ]
+
+            else
+                span []
+                    [ text "{"
+                    , ul [ class "json-obj" ]
+                        (dict
+                            |> List.indexedMap
+                                (\index ( k, v ) ->
+                                    li []
+                                        [ span [ class "json-key" ] [ text k ]
+                                        , text ": "
+                                        , jsonValueToHtml v
+                                        , text <|
+                                            if index == last then
+                                                emptyString
+
+                                            else
+                                                ","
+                                        ]
+                                )
+                        )
+                    , text "}"
+                    ]
 
         ValueArray array ->
             let
                 last =
-                    (List.length array) - 1
+                    List.length array - 1
             in
-                if List.isEmpty array then
-                    span [ class "json-empty-array" ] [ text "[]" ]
-                else
-                    span []
-                        [ text "["
-                        , ul [ class "json-array" ]
-                            (array
-                                |> List.map jsonValueToHtml
-                                |> List.indexedMap
-                                    (\index el ->
-                                        li []
-                                            [ el
-                                            , text <|
-                                                if index == last then
-                                                    emptyString
-                                                else
-                                                    ","
-                                            ]
-                                    )
-                            )
-                        , text "]"
-                        ]
+            if List.isEmpty array then
+                span [ class "json-empty-array" ] [ text "[]" ]
+
+            else
+                span []
+                    [ text "["
+                    , ul [ class "json-array" ]
+                        (array
+                            |> List.map jsonValueToHtml
+                            |> List.indexedMap
+                                (\index el ->
+                                    li []
+                                        [ el
+                                        , text <|
+                                            if index == last then
+                                                emptyString
+
+                                            else
+                                                ","
+                                        ]
+                                )
+                        )
+                    , text "]"
+                    ]
 
         ValueString str ->
             span [ class "json-string" ] [ text ("\"" ++ str ++ "\"") ]
@@ -324,6 +328,7 @@ jsonValueToHtml json =
                 [ text
                     (if bool then
                         "true"
+
                      else
                         "false"
                     )
@@ -353,15 +358,16 @@ jsonValueToCollapsibleHtml collapsedDict path json =
         plurals list =
             let
                 count =
-                    (List.length list)
+                    List.length list
 
                 itemsText =
                     if count == 1 then
-                        (toString count) ++ " item"
+                        toString count ++ " item"
+
                     else
-                        (toString count) ++ " items"
+                        toString count ++ " items"
             in
-                span [ class "json-placeholder" ] [ text itemsText ]
+            span [ class "json-placeholder" ] [ text itemsText ]
 
         collapsedPlaceholder itemPath value =
             case value of
@@ -376,8 +382,9 @@ jsonValueToCollapsibleHtml collapsedDict path json =
 
         lastComma index theList =
             text
-                (if index == ((List.length theList) - 1) then
+                (if index == (List.length theList - 1) then
                     emptyString
+
                  else
                     ","
                 )
@@ -387,20 +394,21 @@ jsonValueToCollapsibleHtml collapsedDict path json =
                 nextPath =
                     path ++ "." ++ key
             in
-                ( nextPath, renderListItem nextPath list index key value )
+            ( nextPath, renderListItem nextPath list index key value )
 
         renderArrayItem array index value =
             let
                 nextPath =
-                    path ++ "[" ++ (toString index) ++ "]"
+                    path ++ "[" ++ toString index ++ "]"
             in
-                renderListItem nextPath array index "" value
+            renderListItem nextPath array index "" value
 
         renderListItem itemPath array index key value =
             let
                 keyText =
                     if String.isEmpty key then
                         [ text emptyString ]
+
                     else
                         [ span [ class "json-key-quote" ] [ text "\"" ]
                         , text key
@@ -411,77 +419,82 @@ jsonValueToCollapsibleHtml collapsedDict path json =
                 comma =
                     lastComma index array
             in
-                li [] <|
-                    if not (isCollapsible value) then
-                        [ span
-                            [ class "json-key"
-                            ]
-                            keyText
-                        , (jsonValueToCollapsibleHtml collapsedDict itemPath value)
-                        , comma
+            li [] <|
+                if not (isCollapsible value) then
+                    [ span
+                        [ class "json-key"
                         ]
-                    else if isCollapsed itemPath then
-                        [ span
-                            [ onClick (Expand itemPath)
-                            , class "json-key json-toggle json-collapsed"
-                            ]
-                            keyText
-                        , collapsedPlaceholder itemPath value
-                        , comma
-                        ]
-                    else
-                        [ span
-                            [ onClick (Collapse itemPath)
-                            , class "json-key json-toggle"
-                            ]
-                            keyText
-                        , (jsonValueToCollapsibleHtml collapsedDict itemPath value)
-                        , comma
-                        ]
-    in
-        case json of
-            ValueObject obj ->
-                if List.isEmpty obj then
-                    span [ class "json-empty-obj" ] [ text "{}" ]
-                else
-                    span []
-                        [ text "{"
-                        , Html.Keyed.ul [ class "json-obj" ]
-                            (List.indexedMap (renderObjectItem obj) obj)
-                        , text "}"
-                        ]
-
-            ValueArray array ->
-                if List.isEmpty array then
-                    span [ class "json-empty-array" ] [ text "[]" ]
-                else
-                    span []
-                        [ text "["
-                        , ul [ class "json-array" ]
-                            (array
-                                |> List.indexedMap (renderArrayItem array)
-                            )
-                        , text "]"
-                        ]
-
-            ValueString str ->
-                span [ class "json-string" ] [ text ("\"" ++ str ++ "\"") ]
-
-            ValueFloat number ->
-                span [ class "json-float" ] [ text (toString number) ]
-
-            ValueInt number ->
-                span [ class "json-int" ] [ text (toString number) ]
-
-            ValueBool bool ->
-                span [ class "json-bool" ]
-                    [ text
-                        (if bool then
-                            "true"
-                         else
-                            "false"
-                        )
+                        keyText
+                    , jsonValueToCollapsibleHtml collapsedDict itemPath value
+                    , comma
                     ]
 
-            ValueNull ->
-                span [ class "json-null" ] [ text "null" ]
+                else if isCollapsed itemPath then
+                    [ span
+                        [ onClick (Expand itemPath)
+                        , class "json-key json-toggle json-collapsed"
+                        ]
+                        keyText
+                    , collapsedPlaceholder itemPath value
+                    , comma
+                    ]
+
+                else
+                    [ span
+                        [ onClick (Collapse itemPath)
+                        , class "json-key json-toggle"
+                        ]
+                        keyText
+                    , jsonValueToCollapsibleHtml collapsedDict itemPath value
+                    , comma
+                    ]
+    in
+    case json of
+        ValueObject obj ->
+            if List.isEmpty obj then
+                span [ class "json-empty-obj" ] [ text "{}" ]
+
+            else
+                span []
+                    [ text "{"
+                    , Html.Keyed.ul [ class "json-obj" ]
+                        (List.indexedMap (renderObjectItem obj) obj)
+                    , text "}"
+                    ]
+
+        ValueArray array ->
+            if List.isEmpty array then
+                span [ class "json-empty-array" ] [ text "[]" ]
+
+            else
+                span []
+                    [ text "["
+                    , ul [ class "json-array" ]
+                        (array
+                            |> List.indexedMap (renderArrayItem array)
+                        )
+                    , text "]"
+                    ]
+
+        ValueString str ->
+            span [ class "json-string" ] [ text ("\"" ++ str ++ "\"") ]
+
+        ValueFloat number ->
+            span [ class "json-float" ] [ text (toString number) ]
+
+        ValueInt number ->
+            span [ class "json-int" ] [ text (toString number) ]
+
+        ValueBool bool ->
+            span [ class "json-bool" ]
+                [ text
+                    (if bool then
+                        "true"
+
+                     else
+                        "false"
+                    )
+                ]
+
+        ValueNull ->
+            span [ class "json-null" ] [ text "null" ]

@@ -21,7 +21,7 @@ httpErrorToString error =
             "Network error"
 
         BadStatus response ->
-            "code: " ++ toString response.status.code ++", "++ response.body
+            "code: " ++ toString response.status.code ++ ", " ++ response.body
 
         BadPayload string response ->
             "Error decoding server response" ++ string

@@ -1,14 +1,15 @@
-module Helpers.UI exposing (..)
+module Helpers.UI exposing (PopupPosition(..), TabsOptions, bold, externalHtmlLink, externalLink, grid, helpIcon, highlightFound, link, linkHtmlToApp, linkHtmlToUser, linkToApp, linkToAppOrUser, linkToUser, man, mono, nbsp, newline, none, onChange, onKeyDown, onKeyUp, popup, refreshButton, searchInput, spec, starIcon, tabs)
 
+import Config
+import Constants exposing (emptyString, starOff, starOn)
+import Helpers.StoreLocal as StoreLocal
+import Helpers.String
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Maybe exposing (withDefault)
 import Json.Decode as Json
-import Constants exposing (emptyString, starOn, starOff)
-import Helpers.StoreLocal as StoreLocal
-import Helpers.String
-import Config
+import Maybe exposing (withDefault)
+
 
 
 {-
@@ -59,6 +60,7 @@ tabs options maybeSelected tabConfList =
         classActive tab =
             if isSelected tab then
                 classDef .activeTabClass "dc-btn tabs__tab__btn tabs__tab__btn--active"
+
             else
                 classDef .tabClass "dc-btn  tabs__tab__btn"
 
@@ -78,19 +80,20 @@ tabs options maybeSelected tabConfList =
                     (\( tabType, tabName, tabView ) ->
                         if Just tabType == maybeSelected then
                             Just tabView
+
                         else
                             Nothing
                     )
                 |> List.head
                 |> withDefault defaultView
     in
-        div [ classDef .class "tabs" ]
-            [ div [ classDef .containerClass "tabs__container" ]
-                tabButtons
-            , div
-                [ classDef .pageClass "tabs__content" ]
-                [ currentView ]
-            ]
+    div [ classDef .class "tabs" ]
+        [ div [ classDef .containerClass "tabs__container" ]
+            tabButtons
+        , div
+            [ classDef .pageClass "tabs__content" ]
+            [ currentView ]
+        ]
 
 
 grid : List String -> List (Html msg) -> Html msg
@@ -188,19 +191,19 @@ popup header content position parent =
                 BottomLeft ->
                     "help-popup--left"
     in
-        div
-            [ tabindex -1
-            , class "popup-container"
-            ]
-            [ parent
-            , div [ class ("help-popup " ++ positionClass) ]
-                [ div [ class "help-popup__header" ]
-                    [ span [] [ text header ]
-                    , i [ tabindex -1, class "help-popup__close-btn dc-icon dc-icon--close dc-icon--interactive" ] []
-                    ]
-                , div [ class "help-popup__content" ] content
+    div
+        [ tabindex -1
+        , class "popup-container"
+        ]
+        [ parent
+        , div [ class ("help-popup " ++ positionClass) ]
+            [ div [ class "help-popup__header" ]
+                [ span [] [ text header ]
+                , i [ tabindex -1, class "help-popup__close-btn dc-icon dc-icon--close dc-icon--interactive" ] []
                 ]
+            , div [ class "help-popup__content" ] content
             ]
+        ]
 
 
 refreshButton : msg -> Html msg
@@ -221,20 +224,21 @@ starIcon msgAdd msgRemove store id =
         isStarred =
             StoreLocal.has id store
     in
-        if isStarred then
-            span
-                [ onClick (msgRemove id)
-                , class "star-icon dc-icon dc-icon--interactive"
-                , title "Remove from favourites"
-                ]
-                [ text starOn ]
-        else
-            span
-                [ onClick (msgAdd id)
-                , class "star-icon dc-icon dc-icon--interactive"
-                , title "Add to favourites"
-                ]
-                [ text starOff ]
+    if isStarred then
+        span
+            [ onClick (msgRemove id)
+            , class "star-icon dc-icon dc-icon--interactive"
+            , title "Remove from favourites"
+            ]
+            [ text starOn ]
+
+    else
+        span
+            [ onClick (msgAdd id)
+            , class "star-icon dc-icon dc-icon--interactive"
+            , title "Add to favourites"
+            ]
+            [ text starOff ]
 
 
 linkHtmlToApp : String -> String -> List (Html msg) -> Html msg
@@ -244,10 +248,11 @@ linkHtmlToApp appsInfoUrl name content =
         appNameToAppId name =
             if name |> String.startsWith "stups_" then
                 String.dropLeft 6 name
+
             else
                 name
     in
-        externalHtmlLink (appsInfoUrl ++ (appNameToAppId name)) content
+    externalHtmlLink (appsInfoUrl ++ appNameToAppId name) content
 
 
 linkToApp : String -> String -> Html msg
@@ -259,6 +264,7 @@ linkToAppOrUser : String -> String -> String -> Html msg
 linkToAppOrUser appsInfoUrl usersInfoUrl name =
     if name |> String.startsWith "stups_" then
         linkToApp appsInfoUrl name
+
     else
         linkToUser usersInfoUrl name
 
@@ -294,10 +300,10 @@ highlightFound filter str =
         ( before, it, after ) =
             Helpers.String.splitFound filter str
     in
-        [ span [] [ text before ]
-        , b [] [ text it ]
-        , span [] [ text after ]
-        ]
+    [ span [] [ text before ]
+    , b [] [ text it ]
+    , span [] [ text after ]
+    ]
 
 
 newline : Html msg

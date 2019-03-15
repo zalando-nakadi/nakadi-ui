@@ -1,13 +1,13 @@
-module Stores.EventType exposing (..)
+module Stores.EventType exposing (EventType, EventTypeOptions, EventTypeStatistics, Model, Msg, allAudiences, allCategories, allCleanupPolicies, allModes, audiences, categories, cleanupPolicies, collectionDecoder, compatibilityModes, config, defaultStatisticDecoder, initialModel, memberDecoder, optionsDecoder, partitionStrategies, update)
 
-import Helpers.Store
 import Config
-import Json.Decode exposing (int, string, float, Decoder, list, nullable)
-import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Stores.EventTypeSchema as Schema exposing (EventTypeSchema)
-import Stores.Authorization exposing (Authorization)
-import Dict
 import Constants
+import Dict
+import Helpers.Store
+import Json.Decode exposing (Decoder, float, int, list, nullable, string)
+import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
+import Stores.Authorization exposing (Authorization)
+import Stores.EventTypeSchema as Schema exposing (EventTypeSchema)
 
 
 type alias EventType =
@@ -22,7 +22,7 @@ type alias EventType =
     , --enum fixed, none, compatible
       compatibility_mode : Maybe String
     , partition_key_fields : Maybe (List String)
-    , ordering_key_fields: Maybe (List String)
+    , ordering_key_fields : Maybe (List String)
     , default_statistic : Maybe EventTypeStatistics
     , options : Maybe EventTypeOptions
     , authorization :
@@ -155,7 +155,7 @@ allCleanupPolicies =
 
 config : Dict.Dict String String -> Helpers.Store.Config EventType
 config params =
-    { getKey = (\index eventType -> eventType.name)
+    { getKey = \index eventType -> eventType.name
     , url = Config.urlNakadiApi ++ "event-types"
     , decoder = collectionDecoder
     , headers = []

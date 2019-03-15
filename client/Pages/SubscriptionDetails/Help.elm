@@ -1,8 +1,8 @@
-module Pages.SubscriptionDetails.Help exposing (..)
+module Pages.SubscriptionDetails.Help exposing (authorization, consumerGroup, createdAt, cursors, eventTypes, owningApplication, readFrom, subscription, subscriptionStats)
 
+import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Helpers.UI exposing (..)
 
 
 subscription : List (Html msg)

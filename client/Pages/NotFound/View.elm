@@ -1,15 +1,14 @@
-module Pages.NotFound.View exposing (..)
+module Pages.NotFound.View exposing (panelWithButton, view)
 
+import Helpers.Panel exposing (page, panel)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Models exposing (AppModel)
-import Types exposing (AppHtml)
-import Helpers.Panel exposing (page, panel)
-import Html exposing (text, Html)
-import Routing.Models exposing (Route(HomeRoute))
-import Routing.Messages exposing (Msg(Redirect))
 import Messages exposing (Msg(RoutingMsg))
+import Models exposing (AppModel)
+import Routing.Messages exposing (Msg(Redirect))
+import Routing.Models exposing (Route(HomeRoute))
+import Types exposing (AppHtml)
 
 
 view : AppModel -> AppHtml

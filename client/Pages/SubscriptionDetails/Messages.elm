@@ -1,11 +1,12 @@
-module Pages.SubscriptionDetails.Messages exposing (..)
+module Pages.SubscriptionDetails.Messages exposing (Msg(..))
 
-import Routing.Models exposing (Route(..))
-import Stores.SubscriptionStats exposing (SubscriptionStats)
-import Stores.Cursor exposing (SubscriptionCursor)
-import Http
 import Char exposing (KeyCode)
+import Http
 import Pages.SubscriptionDetails.Models exposing (Tabs)
+import Routing.Models exposing (Route(..))
+import Stores.Cursor exposing (SubscriptionCursor)
+import Stores.SubscriptionStats exposing (SubscriptionStats)
+
 
 type Msg
     = OnRouteChange Route

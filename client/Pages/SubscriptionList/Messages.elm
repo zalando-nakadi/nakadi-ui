@@ -1,4 +1,4 @@
-module Pages.SubscriptionList.Messages exposing (..)
+module Pages.SubscriptionList.Messages exposing (Msg(..))
 
 import Helpers.Store exposing (Id)
 import Routing.Models exposing (Route)

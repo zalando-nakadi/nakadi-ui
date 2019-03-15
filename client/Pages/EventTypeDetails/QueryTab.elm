@@ -1,20 +1,19 @@
-module Pages.EventTypeDetails.QueryTab exposing (..)
+module Pages.EventTypeDetails.QueryTab exposing (deleteQuery, deleteQueryPopup, loadQuery, queryHelp, queryTab, queryTabHeader, showRemoteDataStatus, sqlView)
 
-import Pages.EventTypeDetails.Models exposing (Model)
-import Pages.EventTypeDetails.Messages exposing (..)
-import Stores.Query exposing (Query, queryDecoder)
-import RemoteData
+import Config
+import Helpers.Panel exposing (renderError)
+import Helpers.Store exposing (errorToViewRecord)
+import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Helpers.UI exposing (..)
-import Helpers.Panel exposing (renderError)
-import Helpers.Store exposing (errorToViewRecord)
-import RemoteData exposing (WebData)
 import Http
-import Config
-import User.Models exposing (Settings)
+import Pages.EventTypeDetails.Messages exposing (..)
+import Pages.EventTypeDetails.Models exposing (Model)
+import RemoteData exposing (WebData)
+import Stores.Query exposing (Query, queryDecoder)
 import String.Extra exposing (replace)
+import User.Models exposing (Settings)
 
 
 queryTab : Settings -> Model -> Html Msg
@@ -25,10 +24,12 @@ queryTab setting pageState =
             (queryTabHeader setting pageState)
         ]
 
+
 queryTabHeader : Settings -> Model -> Query -> Html Msg
 queryTabHeader settings model query =
     let
-        statClass = "schema-tab__value dc-status dc-status--active"
+        statClass =
+            "schema-tab__value dc-status dc-status--active"
 
         terminate =
             span
@@ -37,39 +38,38 @@ queryTabHeader settings model query =
                 , title "Terminate Query"
                 ]
                 []
-
     in
-        div []
-            [ span [] [ text "SQL Query" ]
-            , helpIcon "Nakadi SQL" queryHelp BottomRight
-            , label [ class "query-tab__label" ] [ text " Status: " ]
-            , span [ class (statClass) ] [ text "active" ]
-            , span [ class "query-tab__value toolbar" ]
-                [ a
-                    [ title "View Query as raw JSON"
-                    , class "icon-link dc-icon dc-icon--interactive"
-                    , target "_blank"
-                    , href <| Config.urlNakadiSqlApi ++ "queries/" ++ query.id
-                    ]
-                    [ i [ class "far fa-file-code" ] [] ]
-                , a
-                    [ title "Query Monitoring Graphs"
-                    , class "icon-link dc-icon dc-icon--interactive"
-                    , target "_blank"
-                    , href <| replace "{query}" query.id settings.queryMonitoringUrl
-                    ]
-                    [ i [ class "fas fa-chart-line" ] [] ]
-                , a
-                    [ onClick (CopyToClipboard query.sql)
-                    , class "icon-link dc-icon dc-icon--interactive"
-                    , title "Copy To Clipboard"
-                    ]
-                    [ i [ class "far fa-clipboard" ] [] ]
-                , terminate
+    div []
+        [ span [] [ text "SQL Query" ]
+        , helpIcon "Nakadi SQL" queryHelp BottomRight
+        , label [ class "query-tab__label" ] [ text " Status: " ]
+        , span [ class statClass ] [ text "active" ]
+        , span [ class "query-tab__value toolbar" ]
+            [ a
+                [ title "View Query as raw JSON"
+                , class "icon-link dc-icon dc-icon--interactive"
+                , target "_blank"
+                , href <| Config.urlNakadiSqlApi ++ "queries/" ++ query.id
                 ]
-            , sqlView query.sql
-            , deleteQueryPopup model query
+                [ i [ class "far fa-file-code" ] [] ]
+            , a
+                [ title "Query Monitoring Graphs"
+                , class "icon-link dc-icon dc-icon--interactive"
+                , target "_blank"
+                , href <| replace "{query}" query.id settings.queryMonitoringUrl
+                ]
+                [ i [ class "fas fa-chart-line" ] [] ]
+            , a
+                [ onClick (CopyToClipboard query.sql)
+                , class "icon-link dc-icon dc-icon--interactive"
+                , title "Copy To Clipboard"
+                ]
+                [ i [ class "far fa-clipboard" ] [] ]
+            , terminate
             ]
+        , sqlView query.sql
+        , deleteQueryPopup model query
+        ]
 
 
 queryHelp : List (Html msg)
@@ -91,20 +91,19 @@ queryHelp =
 sqlView : String -> Html msg
 sqlView sql =
     pre [ class "sql-view" ]
-        [
-            node "ace-editor"
-              [ value sql
-              , attribute "theme" "ace/theme/dawn"
-              , attribute "mode" "ace/mode/sql"
-              , readonly True
-              ]
+        [ node "ace-editor"
+            [ value sql
+            , attribute "theme" "ace/theme/dawn"
+            , attribute "mode" "ace/mode/sql"
+            , readonly True
+            ]
             []
         ]
 
 
 loadQuery : (WebData Query -> msg) -> String -> Cmd msg
 loadQuery tagger id =
-    Http.get (Config.urlNakadiSqlApi ++ "queries/" ++ (Http.encodeUri id)) queryDecoder
+    Http.get (Config.urlNakadiSqlApi ++ "queries/" ++ Http.encodeUri id) queryDecoder
         |> RemoteData.sendRequest
         |> Cmd.map tagger
 
@@ -135,6 +134,7 @@ deleteQueryPopup model query =
                     , class "dc-btn dc-btn--destroy"
                     ]
                     [ text "Delete Query" ]
+
             else
                 button [ disabled True, class "dc-btn dc-btn--disabled" ]
                     [ text "Delete Query" ]
@@ -194,10 +194,11 @@ deleteQueryPopup model query =
                     ]
                 ]
     in
-        if model.deleteQueryPopupOpen then
-            dialog
-        else
-            none
+    if model.deleteQueryPopupOpen then
+        dialog
+
+    else
+        none
 
 
 deleteQuery : (WebData () -> msg) -> String -> Cmd msg
@@ -205,7 +206,7 @@ deleteQuery tagger id =
     Http.request
         { method = "DELETE"
         , headers = []
-        , url = Config.urlNakadiSqlApi ++ "queries/" ++ (Http.encodeUri id)
+        , url = Config.urlNakadiSqlApi ++ "queries/" ++ Http.encodeUri id
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing
