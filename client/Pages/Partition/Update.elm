@@ -8,7 +8,7 @@ import Helpers.Store as Store exposing (onFetchErr, onFetchOk, onFetchStart)
 import Helpers.Task exposing (dispatch)
 import Http
 import Json.Decode
-import Keyboard.Extra
+import Keyboard
 import Pages.Partition.Messages exposing (Msg(..))
 import Pages.Partition.Models
     exposing
@@ -26,6 +26,7 @@ import Stores.CursorDistance
 import Stores.Events exposing (fetchEvents)
 import Stores.Partition exposing (Partition, fetchPartitions)
 import Stores.ShiftedCursor
+import Url exposing (percentEncode)
 import User.Commands exposing (logoutIfExpired)
 
 
@@ -329,11 +330,12 @@ update message model =
                 OffsetKeyUp key ->
                     let
                         cmd =
-                            if Keyboard.Extra.Enter == Keyboard.Extra.fromCode key then
-                                dispatch (SetOffset model.offset)
+                            case Keyboard.oneOf [ Keyboard.whitespaceKey ] key of
+                                Just Enter ->
+                                    dispatch (SetOffset model.offset)
 
-                            else
-                                Cmd.none
+                                _ ->
+                                    Cmd.none
                     in
                     ( model, cmd )
 
@@ -394,7 +396,7 @@ update message model =
                             Http.stringBody "" ("[" ++ rows ++ "]")
 
                         url =
-                            "elm:downloadAs?format=application/json&filename=" ++ Http.encodeUri filename
+                            "elm:downloadAs?format=application/json&filename=" ++ percentEncode filename
 
                         startDownload =
                             Http.post url body Json.Decode.string

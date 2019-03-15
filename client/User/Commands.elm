@@ -4,8 +4,8 @@ import Config
 import Constants exposing (emptyString)
 import Helpers.Http exposing (postString)
 import Http exposing (Error(..))
-import Json.Decode as Decode exposing (..)
-import Json.Decode.Pipeline exposing (decode, optional, required)
+import Json.Decode as Decode exposing (Decoder, bool, maybe, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required)
 import User.Messages exposing (Msg(..))
 import User.Models exposing (Settings, User)
 
@@ -17,7 +17,7 @@ fetchAll =
 
 memberDecoder : Decode.Decoder (Maybe User)
 memberDecoder =
-    decode User
+    succeed User
         |> required Constants.id string
         |> required Constants.name string
         |> required "settings" settingsDecoder
@@ -26,7 +26,7 @@ memberDecoder =
 
 settingsDecoder : Decoder Settings
 settingsDecoder =
-    decode Settings
+    succeed Settings
         |> required "nakadiApiUrl" string
         |> optional "appsInfoUrl" string emptyString
         |> optional "usersInfoUrl" string emptyString
@@ -46,9 +46,15 @@ settingsDecoder =
 This function never actually returns
 but to be a function in Elm it must accept some dummy argument
 -}
+
+
+
+--TODO logout
+
+
 logout : a -> Cmd msg
 logout dummy =
-    postString (\r -> Debug.crash "Logout performed") "elm:forceReLogin" Config.urlLogout
+    postString (\r -> Debug.todo "Logout performed") "elm:forceReLogin" Config.urlLogout
 
 
 {-| Check the response from the server and if return is not recoverable

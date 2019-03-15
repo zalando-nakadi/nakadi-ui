@@ -233,7 +233,7 @@ eventTypesEditor isDisabled model =
 
         eventTypeList =
             model.eventTypeStore
-                |> Helpers.Store.items
+                |> Store.items
                 |> List.map (\et -> option [ value et.name ] [])
     in
     inputFrame FieldEventTypes

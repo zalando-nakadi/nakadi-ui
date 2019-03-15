@@ -1,7 +1,7 @@
 module Stores.Authorization exposing (Authorization, AuthorizationAttribute, Key(..), Permission, PermissionType(..), adminPermission, collectionDecoder, dataTypeToKey, emptyAuthorization, emptyPermission, encodeAttribute, encoder, encoderReadAdmin, memberDecoder, readPermission, userAuthorization, writePermission)
 
-import Json.Decode exposing (Decoder, field, list, string, succeed)
-import Json.Decode.Pipeline exposing (decode, optional, required, resolve)
+import Json.Decode exposing (Decoder, list, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required, resolve)
 import Json.Encode as Encode
 
 
@@ -112,7 +112,7 @@ userAuthorization userId =
 
 collectionDecoder : Decoder Authorization
 collectionDecoder =
-    decode Authorization
+    succeed Authorization
         |> required "readers" (list (memberDecoder readPermission))
         |> optional "writers" (list (memberDecoder writePermission)) []
         |> required "admins" (list (memberDecoder adminPermission))
@@ -120,7 +120,7 @@ collectionDecoder =
 
 memberDecoder : Permission -> Decoder AuthorizationAttribute
 memberDecoder permission =
-    decode
+    succeed
         (\dataType value ->
             succeed
                 { key = dataTypeToKey dataType
@@ -137,17 +137,17 @@ memberDecoder permission =
 encoder : Authorization -> Encode.Value
 encoder authorization =
     Encode.object
-        [ ( "readers", Encode.list (authorization.readers |> List.map encodeAttribute) )
-        , ( "writers", Encode.list (authorization.writers |> List.map encodeAttribute) )
-        , ( "admins", Encode.list (authorization.admins |> List.map encodeAttribute) )
+        [ ( "readers", Encode.list encodeAttribute authorization.readers )
+        , ( "writers", Encode.list encodeAttribute authorization.writers )
+        , ( "admins", Encode.list encodeAttribute authorization.admins )
         ]
 
 
 encoderReadAdmin : Authorization -> Encode.Value
 encoderReadAdmin authorization =
     Encode.object
-        [ ( "readers", Encode.list (authorization.readers |> List.map encodeAttribute) )
-        , ( "admins", Encode.list (authorization.admins |> List.map encodeAttribute) )
+        [ ( "readers", Encode.list encodeAttribute authorization.readers )
+        , ( "admins", Encode.list encodeAttribute authorization.admins )
         ]
 
 

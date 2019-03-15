@@ -33,8 +33,8 @@ splitFound whatStr whereStr =
         --highlight only first occurrence
         index =
             case List.head indexes of
-                Just index ->
-                    index
+                Just firstIndex ->
+                    firstIndex
 
                 Nothing ->
                     len

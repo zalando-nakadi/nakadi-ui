@@ -1,10 +1,10 @@
 module Pages.SubscriptionCreate.Update exposing (authorizationFromSubscription, checkConsumerGroupFormat, checkCursors, checkEventTypesExist, cloneSubscription, formToRequestBody, isNotEmpty, post, put, searchConfig, searchEvenType, stringToJsonList, stringToList, update, updateSubscription, validate)
 
+import Browser.Dom exposing (focus)
 import Config
 import Constants exposing (emptyString)
 import Debug exposing (toString)
 import Dict
-import Dom
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Http exposing (getString)
@@ -68,8 +68,8 @@ update message model eventTypeStore subscriptionStore user =
 
         Reset ->
             let
-                focus =
-                    Dom.focus "subscriptionCreateFormFieldConsumerGroup"
+                focusCmd =
+                    focus "subscriptionCreateFormFieldConsumerGroup"
                         |> Task.attempt FocusResult
 
                 authorization maybeId =
@@ -85,7 +85,7 @@ update message model eventTypeStore subscriptionStore user =
                     case model.operation of
                         Create ->
                             ( initialModel
-                            , [ focus, setAuthEditorCmd Nothing ]
+                            , [ focusCmd, setAuthEditorCmd Nothing ]
                             )
 
                         Update id ->
@@ -95,7 +95,7 @@ update message model eventTypeStore subscriptionStore user =
 
                         Clone id ->
                             ( cloneSubscription subscriptionStore id model
-                            , [ focus
+                            , [ focusCmd
                               , setAuthEditorCmd (Just id)
                               , loadCursorsCmd id
                               ]
@@ -196,8 +196,7 @@ update message model eventTypeStore subscriptionStore user =
                 cursors =
                     subModel
                         |> Store.items
-                        |> List.map Stores.Cursor.subscriptionCursorEncoder
-                        |> Json.list
+                        |> Json.list Stores.Cursor.subscriptionCursorEncoder
                         |> Json.encode 1
 
                 values =
@@ -325,8 +324,7 @@ formToRequestBody model =
                 |> Json.Decode.decodeString
                     (Json.Decode.list Stores.Cursor.subscriptionCursorDecoder)
                 |> Result.withDefault []
-                |> List.map Stores.Cursor.subscriptionCursorEncoder
-                |> Json.list
+                |> Json.list Stores.Cursor.subscriptionCursorEncoder
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
@@ -404,8 +402,7 @@ stringToJsonList : String -> Json.Value
 stringToJsonList str =
     str
         |> stringToList
-        |> List.map Json.string
-        |> Json.list
+        |> Json.list Json.string
 
 
 searchEvenType : Stores.EventType.Model -> String -> List SearchItem

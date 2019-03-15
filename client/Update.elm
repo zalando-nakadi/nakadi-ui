@@ -34,7 +34,6 @@ import Stores.EventType
 import Stores.StarredEventTypes
 import Stores.StarredSubscriptions
 import Stores.Subscription
-import User.Messages exposing (Msg(..))
 import User.Update
 
 

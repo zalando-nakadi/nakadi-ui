@@ -8,6 +8,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
+import Keyboard exposing (RawKey, eventKeyDecoder)
 import Maybe exposing (withDefault)
 
 
@@ -118,16 +119,16 @@ onChange msg =
     on "change" (Json.map msg <| Json.at [ "target", "value" ] Json.string)
 
 
-onKeyUp : (Int -> msg) -> Attribute msg
+onKeyUp : (RawKey -> msg) -> Attribute msg
 onKeyUp tagger =
     on "keyup" <|
-        Json.map tagger keyCode
+        Json.map tagger eventKeyDecoder
 
 
-onKeyDown : (Int -> msg) -> Attribute msg
+onKeyDown : (RawKey -> msg) -> Attribute msg
 onKeyDown tagger =
     on "keydown" <|
-        Json.map tagger keyCode
+        Json.map tagger eventKeyDecoder
 
 
 {-| Create html for search(filter) input

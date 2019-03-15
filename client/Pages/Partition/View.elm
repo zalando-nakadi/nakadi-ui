@@ -1,5 +1,6 @@
 module Pages.Partition.View exposing (eventsView, navigation, offsetButton, pager, stringClamp, view, viewEventDetails, viewEventRow)
 
+import Browser.Events exposing (onKeyUp)
 import Constants exposing (emptyString)
 import Helpers.JsonEditor as JsonEditor
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
@@ -265,7 +266,7 @@ pager partitionPage =
         , offsetButton "fa fa-backward" "Load one page back in time" maybePageBackOffset
         , input
             [ onInput InputOffset
-            , Helpers.UI.onKeyUp OffsetKeyUp
+            , UI.onKeyUp OffsetKeyUp
             , id "inputOffset"
             , class "dc-input"
             , value partitionPage.offset
@@ -274,7 +275,7 @@ pager partitionPage =
             ]
             []
         , span [ style "margin-left" "-20px" ]
-            [ helpIcon "Offset" Help.offset Helpers.UI.BottomRight
+            [ helpIcon "Offset" Help.offset UI.BottomRight
             ]
         , select
             [ onInput InputSize

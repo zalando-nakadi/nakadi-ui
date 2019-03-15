@@ -1,6 +1,6 @@
 module Pages.SubscriptionCreate.Messages exposing (Msg(..))
 
-import Dom
+import Browser.Dom
 import Helpers.AccessEditor as AccessEditor
 import Http
 import MultiSearch.Messages
@@ -19,7 +19,7 @@ type Msg
     | FileSelected String String
     | FileLoaded (Result Http.Error String)
     | OnRouteChange Operation
-    | FocusResult (Result Dom.Error ())
+    | FocusResult (Result Browser.Dom.Error ())
     | SubmitResponse (Result Http.Error String)
     | OutSubscriptionCreated String
     | CursorsStoreMsg Stores.SubscriptionCursors.Msg

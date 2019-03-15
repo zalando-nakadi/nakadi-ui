@@ -1,7 +1,7 @@
 module Pages.SubscriptionDetails.Messages exposing (Msg(..))
 
-import Char exposing (KeyCode)
 import Http
+import Keyboard exposing (RawKey)
 import Pages.SubscriptionDetails.Models exposing (Tabs)
 import Routing.Models exposing (Route(..))
 import Stores.Cursor exposing (SubscriptionCursor)
@@ -28,6 +28,6 @@ type Msg
     | EditOffsetSubmit
     | ResetOffsetDone (Result Http.Error ())
     | OutRefreshSubscriptions
-    | OffsetKeyDown KeyCode
+    | OffsetKeyDown RawKey
     | OutAddToFavorite String
     | OutRemoveFromFavorite String

@@ -4,7 +4,7 @@ import Basics
 import Constants exposing (emptyString)
 import Dict exposing (get)
 import Helpers.String exposing (getMaybeBool, getMaybeInt, getMaybeString, queryMaybeToUrl)
-import Maybe exposing (withDefault)
+import Maybe
 
 
 initialModel : Model

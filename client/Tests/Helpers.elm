@@ -1,6 +1,5 @@
 module Tests.Helpers exposing (all, jsonValueToPrettyStringTest, jsonValueToStringTest, paginationTest, parseJsonTest, periodToStringTest, prettyPrintJsonTest, pseudoIntSortTest, viewSplitFoundTest)
 
-import Dict
 import Expect
 import Helpers.JsonEditor exposing (JsonValue(..), jsonValueToPrettyString, jsonValueToString, stringToJsonValue)
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)

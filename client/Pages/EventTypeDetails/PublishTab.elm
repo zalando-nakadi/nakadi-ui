@@ -82,7 +82,7 @@ publishTab model =
                         ""
 
                     Err err ->
-                        err
+                        Debug.toString err
 
         isDisabled =
             isLoading model.sendEventResponse
@@ -184,7 +184,7 @@ sendEvent tagger name event =
                 |> Cmd.map tagger
 
         Err err ->
-            Debug.log ("event JSON decode error:" ++ err) Cmd.none
+            Debug.log ("event JSON decode error:" ++ Debug.toString err) Cmd.none
 
 
 showRemoteDataStatus : WebData String -> Html Msg

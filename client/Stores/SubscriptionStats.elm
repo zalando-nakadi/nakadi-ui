@@ -5,8 +5,8 @@ import Constants exposing (emptyString)
 import Dict
 import Helpers.Store
 import Http
-import Json.Decode exposing (Decoder, field, float, int, list, map6, maybe, nullable, string)
-import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
+import Json.Decode exposing (Decoder, field, int, list, map6, maybe, string, succeed)
+import Json.Decode.Pipeline exposing (required)
 
 
 type alias SubscriptionStats =
@@ -73,9 +73,13 @@ collectionDecoder =
 
 memberDecoder : Decoder SubscriptionStats
 memberDecoder =
-    decode SubscriptionStats
+    succeed SubscriptionStats
         |> required "event_type" string
         |> required "partitions" (list partitionDecoder)
+
+
+
+-- TODO use pipes
 
 
 partitionDecoder : Decoder SubscriptionStatsPartition

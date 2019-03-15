@@ -32,7 +32,7 @@ import Routing.Models exposing (Route(..), routeToUrl)
 import Stores.Partition
 import Stores.Subscription exposing (Subscription)
 import Stores.SubscriptionStats
-import String.Extra exposing (replace)
+import String exposing (replace)
 
 
 view : AppModel -> Html Msg
