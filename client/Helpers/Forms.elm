@@ -127,7 +127,7 @@ selectInput formModel field onInputMsg inputLabel hint help isRequired isDisable
         else
             inputFrame field inputLabel hint help isRequired formModel <|
                 select
-                    [ onSelect (onInputMsg field)
+                    [ onChange (onInputMsg field)
                     , validationClass field "dc-select" formModel
                     , id (inputId formModel.formId field)
                     , tabindex 1

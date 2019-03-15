@@ -1,5 +1,6 @@
 module Pages.EventTypeDetails.PublishTab exposing (..)
 
+import Helpers.UI exposing (onChange)
 import RemoteData
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -12,7 +13,6 @@ import Http
 import Json.Decode
 import Config
 import Result
-import Helpers.Ace as Ace
 import Date exposing (Date)
 import Strftime exposing (format)
 import String.Extra
@@ -123,18 +123,13 @@ Example:
             , div []
                 [ pre
                     [ class "ace-edit", style [ ( "height", "400px" ) ] ]
-                    [ Ace.toHtml
-                        [ Ace.value model.editEvent
-                        , Ace.onSourceChange EditEvent
-                        , Ace.mode "json"
-                        , Ace.theme "dawn"
-                        , Ace.tabSize 4
-                        , Ace.useSoftTabs False
-                        , Ace.extensions [ "language_tools" ]
-                        , Ace.enableLiveAutocompletion True
-                        , Ace.enableBasicAutocompletion True
-                        ]
-                        []
+                    [  node "ace-editor"
+                       [ value model.editEvent
+                       , onChange EditEvent
+                       , attribute "theme" "ace/theme/dawn"
+                       , attribute "mode" "ace/mode/json"
+                       ]
+                       []
                     ]
                 ]
             , div [ class "dc--text-error" ] [ text jsonError ]

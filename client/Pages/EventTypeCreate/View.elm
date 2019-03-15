@@ -6,7 +6,7 @@ import Html.Events exposing (..)
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
 import Pages.EventTypeCreate.Query exposing (viewQueryForm)
-import Helpers.UI exposing (helpIcon, PopupPosition(..), onSelect, none, externalLink)
+import Helpers.UI exposing (PopupPosition(..), externalLink, none, onChange)
 import Pages.EventTypeDetails.Help as Help
 import Models exposing (AppModel)
 import Helpers.Panel
@@ -28,7 +28,6 @@ import Stores.EventType
 import Helpers.AccessEditor as AccessEditor
 import Config
 import Helpers.Forms exposing (..)
-import Helpers.Ace as Ace
 
 
 view : AppModel -> Html Msg
@@ -348,17 +347,13 @@ schemaEditor formModel =
                 ]
             , pre
                 [ class "ace-edit" ]
-                [ Ace.toHtml
-                    [ Ace.value (getValue FieldSchema formModel.values)
-                    , Ace.onSourceChange (OnInput FieldSchema)
-                    , Ace.mode "json"
-                    , Ace.theme "dawn"
-                    , Ace.tabSize 4
-                    , Ace.useSoftTabs False
-                    , Ace.extensions [ "language_tools" ]
-                    , Ace.enableLiveAutocompletion True
-                    , Ace.enableBasicAutocompletion True
-                    ]
-                    []
+                [
+                    node "ace-editor"
+                         [ value (getValue FieldSchema formModel.values)
+                         , onChange (OnInput FieldSchema)
+                         , attribute "theme" "ace/theme/dawn"
+                         , attribute "mode" "ace/mode/json"
+                         ]
+                         []
                 ]
             ]

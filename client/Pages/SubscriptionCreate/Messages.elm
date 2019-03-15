@@ -4,7 +4,6 @@ import Http
 import Pages.SubscriptionCreate.Models exposing (Field, Operation)
 import Dom
 import MultiSearch.Messages
-import Helpers.FileReader as FileReader
 import Stores.SubscriptionCursors
 import Helpers.AccessEditor as AccessEditor
 
@@ -16,8 +15,8 @@ type Msg
     | Reset
     | FormatEventTypes
     | ClearEventTypes
-    | FileSelected (List FileReader.NativeFile)
-    | FileLoaded (Result FileReader.Error String)
+    | FileSelected String String
+    | FileLoaded (Result Http.Error String)
     | OnRouteChange Operation
     | FocusResult (Result Dom.Error ())
     | SubmitResponse (Result Http.Error String)

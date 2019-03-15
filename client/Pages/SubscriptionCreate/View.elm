@@ -13,8 +13,8 @@ import Helpers.Store exposing (Status(Loading))
 import Helpers.Store as Store
 import MultiSearch.View
 import Pages.SubscriptionCreate.Update exposing (searchConfig)
-import Json.Decode
-import Helpers.FileReader as FileReader
+import Helpers.Http exposing (httpErrorToString)
+
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 
@@ -110,6 +110,8 @@ viewForm model setup =
 
         usersInfoUrl =
             model.userStore.user.settings.usersInfoUrl
+        cursosId =
+            "subscriptionCursorFileSelector"
     in
         div [ class "dc-column form-create__form-container" ]
             [ div []
@@ -162,8 +164,8 @@ viewForm model setup =
                             FieldCursors
                             OnInput
                             "Initial cursors"
-                            "Example: [{\"event_type\":\"shop.updater.changed\", \"partition\":\"0\", \"offset\":\"00000000000123456\"}]"
-                            "Example: [{\"event_type\":\"shop.updater.changed\", \"partition\":\"0\", \"offset\":\"00000000000123456\"},{...}]"
+                            "Example:\n[{\n\"event_type\":\"shop.updater.changed\",\n\"partition\":\"0\",\n\"offset\":\"00000000000123456\"\n},{\n...\n}]"
+                            "Upload JSON or input cursors in this format: [{\"event_type\":\"shop.updater.changed\", \"partition\":\"0\", \"offset\":\"00000000000123456\"},{...}]"
                             Help.cursors
                             Required
                             (if updateMode then
@@ -174,13 +176,21 @@ viewForm model setup =
                         , if updateMode then
                             none
                           else
-                            input [ type_ "file", onFileChange FileSelected ] []
+                          div [class "form-create__input-block"] [
+                            input [
+                                class "dc-input",
+                                type_ "file",
+                                id cursosId,
+                                onInput (FileSelected cursosId),
+                                accept ".json"
+                                ] []
+                          ]
                         , case formModel.fileLoaderError of
                             Nothing ->
                                 none
 
                             Just err ->
-                                span [ class "dc--text-error" ] [ text err ]
+                                span [ class "dc--text-error" ] [ text (httpErrorToString err) ]
                         ]
                   else
                     none
@@ -206,11 +216,6 @@ accessEditor appsInfoUrl usersInfoUrl formModel =
         }
         AccessEditorMsg
         formModel.accessEditor
-
-
-onFileChange : (List FileReader.NativeFile -> Msg) -> Attribute Msg
-onFileChange action =
-    on "change" (Json.Decode.map action FileReader.parseSelectedFiles)
 
 
 eventTypesEditor : Bool -> AppModel -> Html Msg

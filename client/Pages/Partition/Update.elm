@@ -1,32 +1,32 @@
-module Pages.Partition.Update exposing (..)
+module Pages.Partition.Update exposing (distanceFromBegin, modelToRoute, normalizeOffset, routeToModel, update)
 
+import Constants
+import Dict
+import Helpers.Http exposing (postString)
+import Helpers.JsonEditor as JsonEditor
+import Helpers.Store as Store exposing (onFetchErr, onFetchOk, onFetchStart)
+import Helpers.Task exposing (dispatch)
+import Http
+import Json.Decode
+import Keyboard.Extra
 import Pages.Partition.Messages exposing (Msg(..))
 import Pages.Partition.Models
     exposing
-        ( initialPageSize
-        , Model
-        , initialModel
-        , UrlQuery
+        ( Model
         , UrlParams
-        , isPartitionEmpty
+        , UrlQuery
         , getOldestNewestOffsets
+        , initialModel
+        , initialPageSize
+        , isPartitionEmpty
         )
 import Routing.Models exposing (Route(PartitionRoute))
-import Helpers.Task exposing (dispatch)
-import Helpers.Store as Store exposing (onFetchErr, onFetchOk, onFetchStart)
-import Helpers.Browser exposing (copyToClipboard)
-import Stores.Events exposing (fetchEvents)
-import Stores.Partition exposing (fetchPartitions, Partition)
 import Stores.Cursor
-import Stores.ShiftedCursor
 import Stores.CursorDistance
-import Helpers.JsonEditor as JsonEditor
-import Dict
+import Stores.Events exposing (fetchEvents)
+import Stores.Partition exposing (Partition, fetchPartitions)
+import Stores.ShiftedCursor
 import User.Commands exposing (logoutIfExpired)
-import Constants
-import Keyboard.Extra
-import Native.Browser
-import Helpers.Ports
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
@@ -47,16 +47,20 @@ update message model =
                                     && (newModel.size == model.size)
                             then
                                 Cmd.none
+
                             else
                                 dispatch LoadPartitions
                     in
-                        ( newModel, cmd )
+                    ( newModel, cmd )
 
                 SetFormatted enable ->
                     ( { model | formatted = enable }, Cmd.none )
 
                 CopyToClipboard str ->
-                    ( model, copyToClipboard str )
+                    ( model, postString CopyToClipboardDone "elm:copyToClipboard" str )
+
+                CopyToClipboardDone _ ->
+                    (model,Cmd.none)
 
                 LoadPartitions ->
                     let
@@ -68,7 +72,7 @@ update message model =
                                 | params = Dict.singleton Constants.eventTypeName model.name
                             }
                     in
-                        ( { model | partitionsStore = partitionsStore }, fetchPartitions PartitionsLoaded model.name )
+                    ( { model | partitionsStore = partitionsStore }, fetchPartitions PartitionsLoaded model.name )
 
                 PartitionsLoaded result ->
                     case result of
@@ -107,10 +111,11 @@ update message model =
                                 cmd =
                                     if isPartitionEmpty newModel then
                                         Cmd.none
+
                                     else
                                         calculateTotalCmd
                             in
-                                ( newModel, cmd )
+                            ( newModel, cmd )
 
                         Err error ->
                             ( { model | partitionsStore = onFetchErr model.partitionsStore error }
@@ -182,6 +187,7 @@ update message model =
                             if model.offset == "END" then
                                 lastPageCmd
                                 -- finally loading events and all navigation info
+
                             else
                                 Cmd.batch
                                     [ lastPageCmd
@@ -190,12 +196,12 @@ update message model =
                                     , dispatch LoadEvents
                                     ]
                     in
-                        ( { model | totalStore = newStore }
-                        , Cmd.batch
-                            [ Cmd.map TotalStoreMsg newSubMsg
-                            , Store.cmdIfDone subMsg nextCmd
-                            ]
-                        )
+                    ( { model | totalStore = newStore }
+                    , Cmd.batch
+                        [ Cmd.map TotalStoreMsg newSubMsg
+                        , Store.cmdIfDone subMsg nextCmd
+                        ]
+                    )
 
                 SetOffset offset ->
                     ( { model | offset = normalizeOffset model offset }
@@ -223,7 +229,7 @@ update message model =
                                 offset
                                 model.size
                     in
-                        ( { model | eventsStore = eventsStore, offset = offset }, cmd )
+                    ( { model | eventsStore = eventsStore, offset = offset }, cmd )
 
                 EventsLoaded result ->
                     case result of
@@ -235,7 +241,7 @@ update message model =
                                 newStore =
                                     onFetchOk { store | response = response }
                             in
-                                ( { model | eventsStore = newStore, showAll = False }, Cmd.none )
+                            ( { model | eventsStore = newStore, showAll = False }, Cmd.none )
 
                         Err error ->
                             ( { model | eventsStore = onFetchErr model.eventsStore error }
@@ -247,17 +253,15 @@ update message model =
                         ( newStore, newSubMsg ) =
                             Stores.CursorDistance.update subMsg model.distanceStore
                     in
-                        ( { model | distanceStore = newStore }, Cmd.map DistanceStoreMsg newSubMsg )
+                    ( { model | distanceStore = newStore }, Cmd.map DistanceStoreMsg newSubMsg )
 
-                NavigatorClicked pos ->
+                NavigatorClicked pos width ->
                     let
-                        width =
-                            Native.Browser.getElementWidth "navigator-bar-total"
 
                         total =
                             model.totalStore
                                 |> Store.get "0"
-                                |> Maybe.map (.distance)
+                                |> Maybe.map .distance
                                 |> Maybe.withDefault 0
 
                         numberOfEventsFromBegin =
@@ -271,7 +275,7 @@ update message model =
                                 |> Stores.ShiftedCursor.fetchShiftedCursors Store.FetchAllDone model.name
                                 |> Cmd.map NavigatorJumpStoreMsg
                     in
-                        ( model, cmd )
+                    ( model, cmd )
 
                 NavigatorJumpStoreMsg subMsg ->
                     let
@@ -287,9 +291,9 @@ update message model =
                                 |> dispatch
                                 |> Store.cmdIfDone subMsg
                     in
-                        ( { model | navigatorJumpStore = newStore }
-                        , Cmd.batch [ cmdOut, Cmd.map NavigatorJumpStoreMsg newSubMsg ]
-                        )
+                    ( { model | navigatorJumpStore = newStore }
+                    , Cmd.batch [ cmdOut, Cmd.map NavigatorJumpStoreMsg newSubMsg ]
+                    )
 
                 PageNewestCursorStoreMsg subMsg ->
                     let
@@ -305,19 +309,20 @@ update message model =
                                     |> SetOffset
                                     |> dispatch
                                     |> Store.cmdIfDone subMsg
+
                             else
                                 Cmd.none
                     in
-                        ( { model | pageNewestCursorStore = newStore }
-                        , Cmd.batch [ cmdOut, Cmd.map PageNewestCursorStoreMsg newSubMsg ]
-                        )
+                    ( { model | pageNewestCursorStore = newStore }
+                    , Cmd.batch [ cmdOut, Cmd.map PageNewestCursorStoreMsg newSubMsg ]
+                    )
 
                 PageBackCursorStoreMsg subMsg ->
                     let
                         ( newStore, newSubMsg ) =
                             Stores.ShiftedCursor.update subMsg model.pageBackCursorStore
                     in
-                        ( { model | pageBackCursorStore = newStore }, Cmd.map PageBackCursorStoreMsg newSubMsg )
+                    ( { model | pageBackCursorStore = newStore }, Cmd.map PageBackCursorStoreMsg newSubMsg )
 
                 InputOffset offset ->
                     ( { model | offset = offset }, Cmd.none )
@@ -327,17 +332,18 @@ update message model =
                         cmd =
                             if Keyboard.Extra.Enter == Keyboard.Extra.fromCode key then
                                 dispatch (SetOffset model.offset)
+
                             else
                                 Cmd.none
                     in
-                        ( model, cmd )
+                    ( model, cmd )
 
                 InputSize value ->
                     let
                         size =
                             value |> String.toInt |> Result.withDefault initialModel.size
                     in
-                        ( { model | size = size }, dispatch LoadPartitions )
+                    ( { model | size = size }, dispatch LoadPartitions )
 
                 InputFilter keyword ->
                     ( { model | filter = keyword, showAll = False }, Cmd.none )
@@ -368,12 +374,14 @@ update message model =
                         filteredList =
                             if filterKey |> String.isEmpty then
                                 events
+
                             else
                                 List.filter (\item -> item.body |> String.contains filterKey) events
 
                         reverse list =
                             if model.oldFirst then
                                 List.reverse list
+
                             else
                                 list
 
@@ -382,17 +390,30 @@ update message model =
 
                         rows =
                             reverse filteredList |> List.map eventToString |> String.join ",\n"
+
+                        body =
+                            Http.stringBody "" ("[" ++ rows ++ "]")
+
+                        url =
+                            "elm:downloadAs?format=application/json&filename=" ++ (Http.encodeUri filename)
+
+                        startDownload =
+                            Http.post url body Json.Decode.string
+                                |> Http.send DownloadStarted
                     in
-                        ( model, Helpers.Ports.downloadAs ( "application/json", filename, "[" ++ rows ++ "]" ) )
+                    ( model, startDownload )
+
+                DownloadStarted _ ->
+                    ( model, Cmd.none )
 
                 JsonEditorMsg subMsg ->
                     let
                         ( newSubModel, newSubMsg ) =
                             JsonEditor.update subMsg model.jsonEditorState
                     in
-                        ( { model | jsonEditorState = newSubModel }, Cmd.map JsonEditorMsg newSubMsg )
+                    ( { model | jsonEditorState = newSubModel }, Cmd.map JsonEditorMsg newSubMsg )
     in
-        ( newModel, cmd, modelToRoute newModel )
+    ( newModel, cmd, modelToRoute newModel )
 
 
 normalizeOffset : Model -> String -> String
@@ -404,10 +425,13 @@ normalizeOffset model offset =
         Just ( minOffset, maxOffset ) ->
             if offset == "BEGIN" then
                 "BEGIN"
+
             else if offset < minOffset then
                 "BEGIN"
+
             else if offset > maxOffset then
                 maxOffset
+
             else
                 offset
 
@@ -422,6 +446,7 @@ modelToRoute model =
         (UrlQuery
             (if model.formatted then
                 Nothing
+
              else
                 Just model.formatted
             )
@@ -429,10 +454,11 @@ modelToRoute model =
             (Just model.size)
             (if String.isEmpty model.filter then
                 Nothing
+
              else
                 Just model.filter
             )
-            (model.selected)
+            model.selected
         )
 
 

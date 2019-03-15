@@ -5,7 +5,8 @@ import Html.Attributes exposing (..)
 import Pages.SubscriptionList.Messages exposing (Msg(..))
 import Models exposing (AppModel)
 import Helpers.String
-import Helpers.UI exposing (refreshButton, starIcon, internalHtmlLink, linkHtmlToApp, highlightFound)
+import Helpers.UI exposing (starIcon, highlightFound)
+import Routing.Helpers exposing (internalHtmlLink)
 import Routing.Models exposing (Route(..))
 import Pages.EventTypeDetails.Models
 import Helpers.DataGrid as DataGrid

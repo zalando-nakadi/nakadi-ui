@@ -35,8 +35,7 @@ import Pages.SubscriptionDetails.Messages as SubscriptionDetailsPageMessages exp
 import Pages.SubscriptionCreate.Messages
 import Pages.SubscriptionCreate.Models
 import Pages.Partition.Messages exposing (Msg(..))
-import Helpers.Browser exposing (log)
-
+import Debug exposing (log)
 
 type alias AppMsg =
     Messages.Msg
@@ -45,13 +44,15 @@ type alias AppMsg =
 update : AppMsg -> AppModel -> ( AppModel, Cmd AppMsg )
 update message model =
     if isInactivePageMsg message model.route then
-        ( model
-            |> log (String.left 300 ("rejected: " ++ toString message))
-        , Cmd.none
-        )
+        let
+            a = log "Rejected MSG" (String.left 200 (toString message))
+        in
+        ( model, Cmd.none)
     else
+        let
+            a = log "MSG" (String.left 200 (toString message))
+        in
         model
-            |> log (String.left 300 (toString message))
             |> updateComponents message
             |> interComponentMessaging message
             |> updateUrl

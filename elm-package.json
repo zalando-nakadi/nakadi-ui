@@ -7,7 +7,7 @@
         "client"
     ],
     "exposed-modules": [],
-    "native-modules": true,
+    "native-modules": false,
     "dependencies": {
         "NoRedInk/elm-decode-pipeline": "3.0.0 <= v < 4.0.0",
         "danyx23/elm-mimetype": "3.0.1 <= v < 4.0.0",

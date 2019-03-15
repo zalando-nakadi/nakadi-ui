@@ -5,10 +5,10 @@ import Pages.EventTypeCreate.Models exposing (..)
 import Json.Encode as Json
 import Http
 import Config
-import Constants exposing (emptyString)
+import Constants
 import Helpers.Forms exposing (..)
 import Helpers.AccessEditor as AccessEditor
-import Stores.Authorization exposing (Authorization, emptyAuthorization)
+import Stores.Authorization exposing (Authorization)
 import Stores.EventType exposing (cleanupPolicies, categories)
 
 
@@ -24,7 +24,6 @@ import Helpers.Panel
 import Stores.EventType exposing (allAudiences)
 import Models exposing (AppModel)
 import Helpers.UI exposing (..)
-import Helpers.Ace as Ace
 
 
 viewQueryForm : AppModel -> Html Msg
@@ -146,16 +145,12 @@ sqlEditor formModel =
             [ div [ class "dc-btn-group" ] []
             , pre
                 [ class "ace-edit" ]
-                [ Ace.toHtml
-                    [ Ace.value (getValue FieldSql formModel.values)
-                    , Ace.onSourceChange (OnInput FieldSql)
-                    , Ace.mode "sql"
-                    , Ace.theme "dawn"
-                    , Ace.tabSize 4
-                    , Ace.useSoftTabs False
-                    , Ace.extensions [ "language_tools" ]
-                    , Ace.enableLiveAutocompletion True
-                    , Ace.enableBasicAutocompletion True
+                [  node "ace-editor"
+                    [ value (getValue FieldSql formModel.values)
+                    , onChange (OnInput FieldSql)
+                    , attribute "theme" "ace/theme/dawn"
+                    , attribute "mode" "ace/mode/sql"
+
                     ]
                     []
                 ]

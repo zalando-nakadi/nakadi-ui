@@ -8,7 +8,7 @@ import Dict
 import MultiSearch.Models
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
-
+import Http
 
 type Operation
     = Create
@@ -30,7 +30,7 @@ type alias Model =
         { addEventTypeWidget : MultiSearch.Models.Model
         , status : Status
         , error : Maybe ErrorMessage
-        , fileLoaderError : Maybe String
+        , fileLoaderError : Maybe Http.Error
         , cursorsStore : Stores.SubscriptionCursors.Model
         , operation : Operation
         , accessEditor : AccessEditor.Model

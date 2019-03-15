@@ -1,16 +1,12 @@
-port module Routing.Update exposing (..)
+module Routing.Update exposing (makeCmdForNewRoute, update)
 
-import Models exposing (AppModel)
-import Routing.Messages exposing (Msg(..))
-import Routing.Helpers exposing (routeToUrl, locationToRoute)
-import Routing.Models exposing (Route, routeToTitle)
-import Helpers.Task exposing (dispatch)
-import Helpers.Browser as Browser
-import Task
 import Constants exposing (emptyString)
-
-
-port title : String -> Cmd a
+import Helpers.Task exposing (dispatch)
+import Helpers.Http exposing (postString)
+import Models exposing (AppModel)
+import Routing.Helpers exposing (locationToRoute, routeToUrl)
+import Routing.Messages exposing (Msg(..))
+import Routing.Models exposing (Route, routeToTitle)
 
 
 update : Msg -> AppModel -> ( AppModel, Cmd Msg )
@@ -24,7 +20,7 @@ update message model =
                 cmd =
                     makeCmdForNewRoute model.route route
             in
-                ( { model | route = route }, cmd )
+            ( { model | route = route }, cmd )
 
         OnLocationChange location ->
             let
@@ -34,19 +30,23 @@ update message model =
                 changeRoute =
                     if realUrlRoute == model.route then
                         Cmd.none
+
                     else
                         dispatch (RouteChanged realUrlRoute)
             in
-                ( { model | route = realUrlRoute, newRoute = realUrlRoute }
-                , changeRoute
-                )
+            ( { model | route = realUrlRoute, newRoute = realUrlRoute }
+            , changeRoute
+            )
 
         RouteChanged route ->
             let
                 updateTitle =
-                    title (routeToTitle route)
+                    postString TitleChanged "elm:title" (routeToTitle route)
             in
-                ( model, updateTitle )
+            ( model, updateTitle )
+
+        TitleChanged _ ->
+            ( model, Cmd.none )
 
 
 makeCmdForNewRoute : Route -> Route -> Cmd Msg
@@ -60,14 +60,11 @@ makeCmdForNewRoute oldRoute newRoute =
                 |> Maybe.withDefault emptyString
 
         cmdPushHistory route =
-            toCmd Browser.pushState route
+            postString (always (RouteChanged route)) "elm:pushState" (routeToUrl route)
+
 
         cmdReplaceHistory route =
-            toCmd Browser.replaceState route
-
-        toCmd task route =
-            task (routeToUrl route)
-                |> Task.perform (always (RouteChanged route))
+            postString (always (RouteChanged route)) "elm:replaceState" (routeToUrl route)
 
         oldPath =
             extractPath oldRoute
@@ -75,9 +72,11 @@ makeCmdForNewRoute oldRoute newRoute =
         newPath =
             extractPath newRoute
     in
-        if oldRoute == newRoute then
-            Cmd.none
-        else if oldPath == newPath then
-            cmdReplaceHistory newRoute
-        else
-            cmdPushHistory newRoute
+    if oldRoute == newRoute then
+        Cmd.none
+
+    else if oldPath == newPath then
+        cmdReplaceHistory newRoute
+
+    else
+        cmdPushHistory newRoute

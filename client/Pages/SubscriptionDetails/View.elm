@@ -30,7 +30,7 @@ import Stores.SubscriptionStats
 import Stores.Partition
 import Pages.Partition.Models
 import Routing.Models exposing (routeToUrl, Route(..))
-import Routing.Helpers exposing (link)
+import Routing.Helpers exposing (internalLink)
 import Config
 import Constants
 import Helpers.AccessEditor as AccessEditor
@@ -94,7 +94,7 @@ detailsLayout id subscription model =
                 [ div [ class "dc-row dc-row--collapse" ]
                     [ ul [ class "dc-breadcrumb" ]
                         [ li [ class "dc-breadcrumb__item" ]
-                            [ link (SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery) "Subscriptions"
+                            [ internalLink "Subscriptions" (SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery)
                             ]
                         , li [ class "dc-breadcrumb__item" ]
                             [ span [] [ text id, helpIcon "Subscription" Help.subscription BottomRight ]
@@ -463,7 +463,7 @@ noAuthMessage : Subscription -> Html Msg
 noAuthMessage subscription =
     let
         updateLink =
-            link (SubscriptionUpdateRoute { id = subscription.id }) "update subscription"
+            internalLink "update subscription" (SubscriptionUpdateRoute { id = subscription.id })
     in
         if subscription.authorization == Nothing then
             warningMessage

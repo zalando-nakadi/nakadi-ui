@@ -7,6 +7,7 @@ import Models exposing (AppModel)
 import Helpers.Store exposing (Status(..))
 import Helpers.UI as UI
 import Routing.Models exposing (Route(..))
+import Routing.Helpers exposing (internalLink)
 import Pages.EventTypeList.Models
 import Pages.EventTypeDetails.Models
 import Pages.SubscriptionList.Models
@@ -101,7 +102,7 @@ starredTypesList model =
                         Remove
                         model.starredEventTypesStore
                         eventTypeName
-                , UI.internalLink eventTypeName
+                , internalLink eventTypeName
                     (EventTypeDetailsRoute
                         { name = eventTypeName }
                         Pages.EventTypeDetails.Models.emptyQuery
@@ -116,7 +117,7 @@ starredTypesList model =
         if isEmpty then
             [ text "No starred Events Types yet"
             , br [] []
-            , UI.internalLink "Search for Event Types" <|
+            , internalLink "Search for Event Types" <|
                 EventTypeListRoute Pages.EventTypeList.Models.emptyQuery
             ]
         else
@@ -138,7 +139,7 @@ starredSubscriptions model =
                         Remove
                         model.starredSubscriptionsStore
                         subscriptionId
-                , UI.internalLink subscriptionId
+                , internalLink subscriptionId
                     (SubscriptionDetailsRoute
                         { id = subscriptionId }
                         { tab = Nothing }
@@ -153,7 +154,7 @@ starredSubscriptions model =
         if isEmpty then
             [ text "No starred Subscriptions yet"
             , br [] []
-            , UI.internalLink "Search for Subscription" <|
+            , internalLink "Search for Subscription" <|
                 SubscriptionListRoute Pages.SubscriptionList.Models.emptyQuery
             ]
         else
@@ -172,7 +173,7 @@ lastUpdatedTypes model =
         |> List.map
             (\eventType ->
                 li [ class "dc-list__item" ]
-                    [ UI.internalLink eventType.name
+                    [ internalLink eventType.name
                         (EventTypeDetailsRoute
                             { name = eventType.name }
                             Pages.EventTypeDetails.Models.emptyQuery
@@ -193,7 +194,7 @@ lastUpdatedSubscriptions model =
         |> List.map
             (\subscription ->
                 li [ class "dc-list__item" ]
-                    [ UI.internalLink subscription.id (SubscriptionDetailsRoute { id = subscription.id } { tab = Nothing })
+                    [ internalLink subscription.id (SubscriptionDetailsRoute { id = subscription.id } { tab = Nothing })
                     , span [ class "panel--right-float", title subscription.created_at ]
                         [ text (formatDateTime subscription.created_at) ]
                     ]
