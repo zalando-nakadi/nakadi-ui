@@ -61,22 +61,22 @@ testRoute : ParsedUrl -> RouteConfig -> Maybe Route
 testRoute ( path, query ) ( pattern, toRoute ) =
     let
         -- Folds the template path to true/false collecting params on the way
-        isMatch templateFolder result =
+        isMatch templateFolder matchResult =
             let
                 fullStop =
                     { match = False, params = Dict.empty, rest = [] }
 
                 next =
-                    { result | rest = List.drop 1 result.rest }
+                    { matchResult | rest = List.drop 1 matchResult.rest }
 
                 key =
                     String.dropLeft 1 templateFolder
             in
-            case List.head result.rest of
+            case List.head matchResult.rest of
                 Just folderName ->
                     if templateFolder |> String.startsWith ":" then
                         { next
-                            | params = Dict.insert key folderName result.params
+                            | params = Dict.insert key folderName matchResult.params
                         }
 
                     else if folderName == templateFolder then

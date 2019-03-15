@@ -14,7 +14,7 @@ import Pages.SubscriptionDetails.Models exposing (Model, Tabs(..), initialModel)
 import Routing.Models exposing (Route(..))
 import Stores.Cursor
 import Stores.SubscriptionCursors exposing (fetchCursors)
-import Stores.SubscriptionStats exposing (config, fetchStats)
+import Stores.SubscriptionStats exposing (fetchStats)
 import Task
 import Url exposing (percentEncode)
 import User.Commands exposing (logoutIfExpired)
@@ -23,7 +23,7 @@ import User.Commands exposing (logoutIfExpired)
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
 update message model =
     let
-        ( newModel, cmd ) =
+        ( resultModel, resultCmd ) =
             case message of
                 OnRouteChange route ->
                     let
@@ -169,10 +169,10 @@ update message model =
                     let
                         cmd =
                             case Keyboard.anyKeyOriginal key of
-                                Keyboard.Enter ->
+                                Just Keyboard.Enter ->
                                     dispatch EditOffsetSubmit
 
-                                Keyboard.Escape ->
+                                Just Keyboard.Escape ->
                                     dispatch EditOffsetCancel
 
                                 _ ->
@@ -210,7 +210,7 @@ update message model =
                 OutRemoveFromFavorite str ->
                     ( model, Cmd.none )
     in
-    ( newModel, cmd, modelToRoute newModel )
+    ( resultModel, resultCmd, modelToRoute resultModel )
 
 
 modelToRoute : Model -> Route

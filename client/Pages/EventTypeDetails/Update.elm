@@ -31,7 +31,7 @@ update settings message model =
         deletePopup =
             model.deletePopup
 
-        ( newModel, cmd ) =
+        ( resultModel, resultCmd ) =
             case message of
                 OnRouteChange route ->
                     let
@@ -330,7 +330,7 @@ update settings message model =
                 OutRemoveFromFavorite typeName ->
                     ( model, Cmd.none )
     in
-    ( newModel, cmd, modelToRoute newModel )
+    ( resultModel, resultCmd, modelToRoute resultModel )
 
 
 modelToRoute : Model -> Route

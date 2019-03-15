@@ -3,6 +3,7 @@ module Main exposing (init, locationToMessage, main, subs)
 import Browser
 import Browser.Navigation exposing (Key)
 import Helpers.Task exposing (dispatch)
+import Json.Decode exposing (Value)
 import Messages exposing (Msg(..))
 import Models
 import Routing.Helpers exposing (locationToRoute)
@@ -13,7 +14,7 @@ import User.Messages exposing (Msg(..))
 import View
 
 
-main : Program Never Models.AppModel Messages.Msg
+main : Program Value Models.AppModel Messages.Msg
 main =
     Browser.application
         { init = init
@@ -30,7 +31,7 @@ locationToMessage location =
     RoutingMsg (OnLocationChange location)
 
 
-init : Never -> Url -> Key -> ( Models.AppModel, Cmd Messages.Msg )
+init : Value -> Url -> Key -> ( Models.AppModel, Cmd Messages.Msg )
 init flags location key =
     let
         model =

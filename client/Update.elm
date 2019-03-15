@@ -34,6 +34,7 @@ import Stores.EventType
 import Stores.StarredEventTypes
 import Stores.StarredSubscriptions
 import Stores.Subscription
+import User.Messages
 import User.Update
 
 
@@ -263,7 +264,7 @@ interComponentMessaging message ( model, cmd ) =
             )
     in
     case message of
-        UserMsg LoginDone ->
+        UserMsg User.Messages.LoginDone ->
             send
                 [ RoutingMsg (RouteChanged model.route)
                 , EventTypeStoreMsg Store.FetchData
@@ -275,7 +276,7 @@ interComponentMessaging message ( model, cmd ) =
         MultiSearchMsg (OutRedirect route) ->
             urlRedirect route
 
-        EventTypeStoreMsg (FetchAllDone (Ok result)) ->
+        EventTypeStoreMsg (Store.FetchAllDone (Ok result)) ->
             let
                 messages =
                     case model.route of

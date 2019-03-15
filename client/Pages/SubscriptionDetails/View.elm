@@ -263,7 +263,7 @@ renderType model stat =
 renderPartition : Model -> String -> Stores.SubscriptionStats.SubscriptionStatsPartition -> Html Msg
 renderPartition model eventTypeName partition =
     let
-        lag =
+        lagText =
             case partition.consumer_lag_seconds of
                 Nothing ->
                     "-"
@@ -279,10 +279,10 @@ renderPartition model eventTypeName partition =
                     else
                         " (" ++ periodToShortString (lag * 1000) ++ ")"
 
-        events =
+        eventsCountText =
             case partition.unconsumed_events of
                 Just events ->
-                    String.fromInt events ++ lag
+                    String.fromInt events ++ lagText
 
                 Nothing ->
                     "-"
@@ -344,7 +344,7 @@ renderPartition model eventTypeName partition =
             [ text (partition.state ++ " " ++ (partition.assignment_type |> Maybe.withDefault "")) ]
         , td
             [ class "dc-table__td" ]
-            [ text events ]
+            [ text eventsCountText ]
         , td
             [ class "dc-table__td" ]
             [ text (partition.stream_id |> Maybe.withDefault "-") ]

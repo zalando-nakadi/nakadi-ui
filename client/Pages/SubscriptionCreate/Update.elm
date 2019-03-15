@@ -288,7 +288,7 @@ checkCursors model dict =
             else
                 case decodedCursors of
                     Err error ->
-                        error
+                        Debug.toString error
 
                     Ok parsedCursors ->
                         emptyString

@@ -33,7 +33,7 @@ import User.Commands exposing (logoutIfExpired)
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
 update message model =
     let
-        ( newModel, cmd ) =
+        ( resultModel, resultCmd ) =
             case message of
                 OnRouteChange route ->
                     let
@@ -330,8 +330,8 @@ update message model =
                 OffsetKeyUp key ->
                     let
                         cmd =
-                            case Keyboard.oneOf [ Keyboard.whitespaceKey ] key of
-                                Just Enter ->
+                            case Keyboard.whitespaceKey key of
+                                Just Keyboard.Enter ->
                                     dispatch (SetOffset model.offset)
 
                                 _ ->
@@ -414,7 +414,7 @@ update message model =
                     in
                     ( { model | jsonEditorState = newSubModel }, Cmd.map JsonEditorMsg newSubMsg )
     in
-    ( newModel, cmd, modelToRoute newModel )
+    ( resultModel, resultCmd, modelToRoute resultModel )
 
 
 normalizeOffset : Model -> String -> String

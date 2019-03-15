@@ -1,6 +1,5 @@
 module Pages.Partition.Messages exposing (Msg(..))
 
-import Char exposing (KeyCode)
 import Helpers.Http exposing (HttpStringResult)
 import Helpers.JsonEditor as JsonEditor
 import Http
