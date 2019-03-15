@@ -1,6 +1,6 @@
 module Pages.EventTypeCreate.Messages exposing (Msg(..))
 
-import Dom
+import Browser.Dom
 import Helpers.AccessEditor as AccessEditor
 import Http
 import Pages.EventTypeCreate.Models exposing (Field, Operation)
@@ -16,7 +16,7 @@ type Msg
     | Submit
     | Reset
     | OnRouteChange Operation
-    | FocusResult (Result Dom.Error ())
+    | FocusResult (Result Browser.Dom.Error ())
     | SubmitResponse (Result Http.Error ())
     | OutEventTypeCreated String
     | PartitionsStoreMsg Stores.Partition.Msg

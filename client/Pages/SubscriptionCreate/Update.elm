@@ -8,6 +8,7 @@ import Dom
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Http exposing (getString)
+import Helpers.Regex
 import Helpers.Store as Store
 import Helpers.Task exposing (dispatch)
 import Http
@@ -242,7 +243,7 @@ checkConsumerGroupFormat model dict =
             model.values |> getValue FieldConsumerGroup |> String.trim
 
         pattern =
-            Regex.regex "^[-0-9a-zA-Z_]*$"
+            Helpers.Regex.fromString "^[-0-9a-zA-Z_]*$"
     in
     if Regex.contains pattern name then
         dict
@@ -392,8 +393,8 @@ put id body =
 stringToList : String -> List String
 stringToList str =
     str
-        |> Regex.split Regex.All (Regex.regex "[\\s\\n\\,]")
-        |> List.map (Regex.replace Regex.All (Regex.regex "['\"]") (\_ -> ""))
+        |> Regex.split (Helpers.Regex.fromString "[\\s\\n\\,]")
+        |> List.map (Regex.replace (Helpers.Regex.fromString "['\"]") (\_ -> ""))
         |> List.map String.trim
         |> List.filter (String.isEmpty >> not)
         |> List.Extra.unique

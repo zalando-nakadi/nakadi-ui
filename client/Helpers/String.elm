@@ -1,11 +1,11 @@
 module Helpers.String exposing (Params, cleanDateTime, compareAsInt, formatDateTime, getMaybeBool, getMaybeInt, getMaybeString, justOrCrash, parseParams, parseUrl, periodToShortString, periodToString, pluralCount, pseudoIntSort, queryMaybeToUrl, splitFound, stringToBool, toKeyValuePair, toPx)
 
 import Constants exposing (emptyString)
-import Date
 import Dict
-import Http
-import Regex
+import ISO8601
 import Strftime exposing (format)
+import Time
+import Url exposing (percentDecode, percentEncode)
 
 
 
@@ -83,14 +83,14 @@ toPx n =
 ---------- Maybe
 
 
-justOrCrash : String -> Maybe a -> a
+justOrCrash : String -> Maybe String -> String
 justOrCrash error maybeValue =
     case maybeValue of
         Just value ->
             value
 
         Nothing ->
-            Debug.crash error
+            Debug.log "ERROR:" error
 
 
 
@@ -135,7 +135,7 @@ toKeyValuePair : String -> Maybe ( String, String )
 toKeyValuePair segment =
     case String.split "=" segment of
         [ key, value ] ->
-            Maybe.map2 (\a b -> ( a, b )) (Http.decodeUri key) (Http.decodeUri value)
+            Maybe.map2 (\a b -> ( a, b )) (percentDecode key) (percentDecode value)
 
         _ ->
             Nothing
@@ -147,7 +147,7 @@ queryMaybeToUrl query =
         dictToKeyVal key maybeVal accumulator =
             case maybeVal of
                 Just val ->
-                    List.append accumulator [ Http.encodeUri key ++ "=" ++ Http.encodeUri val ]
+                    List.append accumulator [ percentEncode key ++ "=" ++ percentEncode val ]
 
                 Nothing ->
                     accumulator
@@ -203,14 +203,19 @@ getMaybeInt name dict =
 
 formatDateTime : String -> String
 formatDateTime timestamp =
-    Date.fromString timestamp
-        |> Result.map (format Constants.userDateTimeFormat)
+    ISO8601.fromString timestamp
+        |> Result.map
+            (ISO8601.toPosix
+                >> format Constants.userDateTimeFormat Time.utc
+            )
         |> Result.withDefault timestamp
 
 
 cleanDateTime : String -> String
 cleanDateTime date =
-    Regex.replace Regex.All (Regex.regex "[TZ]") (\_ -> " ") date
+    date
+        |> String.replace "T" " "
+        |> String.replace "Z" " "
 
 
 periodToString : Int -> String

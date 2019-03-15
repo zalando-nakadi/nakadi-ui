@@ -1,5 +1,6 @@
 module Pages.EventTypeCreate.Models exposing (Field(..), Model, Operation(..), defaultApplication, defaultRetentionDays, defaultSchema, defaultSql, defaultValues, initialModel, loadValues)
 
+import Config exposing (appPreffix)
 import Constants exposing (emptyString)
 import Dict
 import Helpers.AccessEditor as AccessEditor
@@ -8,9 +9,6 @@ import Helpers.Store exposing (ErrorMessage, Status(..))
 import Stores.EventType
     exposing
         ( EventType
-        , allCategories
-        , allModes
-        , audiences
         , categories
         , cleanupPolicies
         , compatibilityModes
@@ -73,7 +71,7 @@ defaultRetentionDays =
 
 defaultApplication : String
 defaultApplication =
-    "stups_nakadi-ui-elm"
+    appPreffix ++ "nakadi-ui-elm"
 
 
 defaultValues : ValuesDict

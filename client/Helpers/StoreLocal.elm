@@ -52,22 +52,22 @@ update message store =
 
 
 updateWithConfig : (Dict.Dict String String -> Store.Config String) -> Msg -> Model -> ( Model, Cmd Msg )
-updateWithConfig config message store =
+updateWithConfig conf message store =
     case message of
         FetchData ->
-            ( Store.onFetchStart store, getString FetchAllDone (config store.params).url )
+            ( Store.onFetchStart store, getString FetchAllDone (conf store.params).url )
 
         FetchAllDone (Ok jsonStr) ->
             let
                 decodedResult =
                     jsonStr
-                        |> decodeString (config store.params).decoder
+                        |> decodeString (conf store.params).decoder
 
                 newModel =
                     case decodedResult of
                         Ok decodedItems ->
                             Store.onFetchOk <|
-                                Store.loadStore (config store.params) decodedItems store
+                                Store.loadStore (conf store.params) decodedItems store
 
                         Err error ->
                             { store
@@ -92,11 +92,10 @@ updateWithConfig config message store =
                 dataStr =
                     store
                         |> Store.items
-                        |> List.map Json.Encode.string
-                        |> Json.Encode.list
+                        |> Json.Encode.list Json.Encode.string
                         |> Json.Encode.encode 0
             in
-            ( store, postString SaveAllDone (config store.params).url dataStr )
+            ( store, postString SaveAllDone (conf store.params).url dataStr )
 
         SaveAllDone (Ok _) ->
             ( store, Cmd.none )
@@ -123,7 +122,7 @@ updateWithConfig config message store =
                 newParams =
                     Dict.fromList params
             in
-            updateWithConfig config FetchData { store | params = newParams }
+            updateWithConfig conf FetchData { store | params = newParams }
 
 
 collectionDecoder : Decoder (List String)

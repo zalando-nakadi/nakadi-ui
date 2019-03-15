@@ -4,7 +4,6 @@ import Dict
 import Helpers.String exposing (parseUrl)
 import Html exposing (Html, a, text)
 import Html.Attributes exposing (class, href)
-import Navigation exposing (Location)
 import Routing.Models
     exposing
         ( PageLoader
@@ -14,6 +13,7 @@ import Routing.Models
         , routeToUrl
         , routingConfig
         )
+import Url exposing (Url)
 
 
 routeToUrl : Route -> String
@@ -37,13 +37,12 @@ internalLink name route =
     internalHtmlLink route [ text name ]
 
 
-locationToRoute : Location -> Route
+locationToRoute : Url -> Route
 locationToRoute location =
     let
         parsedUrl =
-            location.hash
-                --drop #
-                |> String.dropLeft 1
+            location.fragment
+                |> Maybe.withDefault ""
                 |> parseUrl
     in
     routingConfig

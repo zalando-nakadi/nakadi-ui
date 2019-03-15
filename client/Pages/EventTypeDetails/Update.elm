@@ -9,7 +9,7 @@ import Helpers.Task exposing (dispatch)
 import Http
 import Pages.EventTypeDetails.Messages exposing (Msg(..))
 import Pages.EventTypeDetails.Models exposing (Model, Tabs(..), initialModel)
-import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
+import Pages.EventTypeDetails.PublishTab
 import Pages.EventTypeDetails.QueryTab exposing (deleteQuery, loadQuery)
 import RemoteData exposing (RemoteData(..), isFailure, isSuccess)
 import Routing.Models exposing (Route(..))
@@ -20,6 +20,7 @@ import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import Stores.Partition
 import Stores.Publisher
+import Url exposing (percentEncode)
 import User.Commands exposing (logoutIfExpired)
 import User.Models exposing (Settings)
 
@@ -379,7 +380,7 @@ callDelete name =
     Http.request
         { method = "DELETE"
         , headers = []
-        , url = Config.urlNakadiApi ++ "event-types/" ++ Http.encodeUri name
+        , url = Config.urlNakadiApi ++ "event-types/" ++ percentEncode name
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing

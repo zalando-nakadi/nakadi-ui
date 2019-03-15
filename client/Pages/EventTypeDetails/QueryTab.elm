@@ -12,7 +12,8 @@ import Pages.EventTypeDetails.Messages exposing (..)
 import Pages.EventTypeDetails.Models exposing (Model)
 import RemoteData exposing (WebData)
 import Stores.Query exposing (Query, queryDecoder)
-import String.Extra exposing (replace)
+import String exposing (replace)
+import Url exposing (percentEncode)
 import User.Models exposing (Settings)
 
 
@@ -103,7 +104,7 @@ sqlView sql =
 
 loadQuery : (WebData Query -> msg) -> String -> Cmd msg
 loadQuery tagger id =
-    Http.get (Config.urlNakadiSqlApi ++ "queries/" ++ Http.encodeUri id) queryDecoder
+    Http.get (Config.urlNakadiSqlApi ++ "queries/" ++ percentEncode id) queryDecoder
         |> RemoteData.sendRequest
         |> Cmd.map tagger
 
@@ -206,7 +207,7 @@ deleteQuery tagger id =
     Http.request
         { method = "DELETE"
         , headers = []
-        , url = Config.urlNakadiSqlApi ++ "queries/" ++ Http.encodeUri id
+        , url = Config.urlNakadiSqlApi ++ "queries/" ++ percentEncode id
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing

@@ -12,17 +12,8 @@ express(window, router => {
   router.post('localStorage', (req, res) =>
       res.ok(window.localStorage.setItem(req.params.get('key'), req.body)))
 
-  router.post('title', (req, res) =>
-      res.ok(document.title = req.body))
-
   router.post('forceReLogin', (req, res) =>
       res.ok(document.location.href = `${req.body}?returnTo=${encodeURIComponent(document.location.href)}`))
-
-  router.post('pushState', (req, res) =>
-      res.ok(history.pushState({}, '', req.body)))
-
-  router.post('replaceState', (req, res) =>
-      res.ok(history.replaceState({}, '', req.body)))
 
   router.post('copyToClipboard', (req, res) => {
     const el = document.createElement('textarea')

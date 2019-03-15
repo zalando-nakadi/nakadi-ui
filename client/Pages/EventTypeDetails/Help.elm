@@ -1,6 +1,6 @@
 module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, compatibilityMode, consumers, createdAt, defaultStatistic, enrichmentStrategies, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
 
-import Config
+import Config exposing (appPreffix)
 import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -33,7 +33,7 @@ owningApplication =
     , newline
     , bold "Example"
     , text ": "
-    , mono "\"stups_price-service\""
+    , mono ("\"" ++ appPreffix ++ "price-service\"")
     , newline
     , bold "Key: "
     , mono "owning_application"

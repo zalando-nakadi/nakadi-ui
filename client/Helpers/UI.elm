@@ -1,6 +1,6 @@
 module Helpers.UI exposing (PopupPosition(..), TabsOptions, bold, externalHtmlLink, externalLink, grid, helpIcon, highlightFound, link, linkHtmlToApp, linkHtmlToUser, linkToApp, linkToAppOrUser, linkToUser, man, mono, nbsp, newline, none, onChange, onKeyDown, onKeyUp, popup, refreshButton, searchInput, spec, starIcon, tabs)
 
-import Config
+import Config exposing (appPreffix)
 import Constants exposing (emptyString, starOff, starOn)
 import Helpers.StoreLocal as StoreLocal
 import Helpers.String
@@ -241,17 +241,17 @@ starIcon msgAdd msgRemove store id =
             [ text starOff ]
 
 
+appNameToAppId : String -> String
+appNameToAppId name =
+    if name |> String.startsWith appPreffix then
+        String.dropLeft 6 name
+
+    else
+        name
+
+
 linkHtmlToApp : String -> String -> List (Html msg) -> Html msg
 linkHtmlToApp appsInfoUrl name content =
-    let
-        appNameToAppId : String -> String
-        appNameToAppId name =
-            if name |> String.startsWith "stups_" then
-                String.dropLeft 6 name
-
-            else
-                name
-    in
     externalHtmlLink (appsInfoUrl ++ appNameToAppId name) content
 
 
@@ -262,7 +262,7 @@ linkToApp appsInfoUrl name =
 
 linkToAppOrUser : String -> String -> String -> Html msg
 linkToAppOrUser appsInfoUrl usersInfoUrl name =
-    if name |> String.startsWith "stups_" then
+    if name |> String.startsWith appPreffix then
         linkToApp appsInfoUrl name
 
     else
@@ -343,4 +343,4 @@ none =
 
 nbsp : String
 nbsp =
-    " "
+    "\u{00A0}"

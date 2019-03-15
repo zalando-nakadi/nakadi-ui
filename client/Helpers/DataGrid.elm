@@ -244,13 +244,13 @@ renderHeader config =
     let
         renderCol col =
             let
-                colStyle =
+                colWidth =
                     case col.width of
                         Nothing ->
-                            []
+                            "auto"
 
                         Just width ->
-                            [ ( "width", toPx width ) ]
+                            toPx width
 
                 sortClass =
                     if config.sortBy /= Just col.id then
@@ -272,7 +272,7 @@ renderHeader config =
             if col.sort /= SortNone then
                 th
                     [ class "dc-table__th dc-table__th--sortable"
-                    , style colStyle
+                    , style "width" colWidth
                     , onClick sortMessage
                     ]
                     [ col.label
@@ -281,7 +281,7 @@ renderHeader config =
 
             else
                 th
-                    [ class "dc-table__th", style colStyle ]
+                    [ class "dc-table__th", style "width" colWidth ]
                     [ col.label ]
     in
     thead

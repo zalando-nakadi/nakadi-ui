@@ -37,7 +37,7 @@ import Stores.EventTypeValidation exposing (EventTypeValidationIssue)
 import Stores.Partition
 import Stores.Publisher
 import Stores.Subscription
-import String.Extra exposing (replace)
+import String exposing (replace)
 
 
 view : AppModel -> Html Msg
@@ -106,7 +106,7 @@ detailsLayout typeName eventType model =
             pageState.jsonEditor
 
         tabOptions =
-            { onChange = \tab -> TabChange tab
+            { onChange = \aTab -> TabChange aTab
             , notSelectedView = Just (div [] [ text "No tab selected" ])
             , class = Just "dc-column"
             , containerClass = Nothing

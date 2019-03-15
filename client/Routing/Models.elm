@@ -2,12 +2,12 @@ module Routing.Models exposing (Model, PageLoader, ParsedUrl, Route(..), RouteCo
 
 import Constants exposing (emptyString)
 import Helpers.String exposing (Params)
-import Http
 import Pages.EventTypeDetails.Models as EventTypeDetails
 import Pages.EventTypeList.Models as EventTypeList
 import Pages.Partition.Models as Partition
 import Pages.SubscriptionDetails.Models as SubscriptionDetails
 import Pages.SubscriptionList.Models as SubscriptionList
+import Url exposing (percentEncode)
 
 
 type alias Model =
@@ -98,6 +98,10 @@ routingConfig =
     ]
 
 
+
+-- TODO use https://package.elm-lang.org/packages/elm/url/1.0.0/Url-Builder
+
+
 routeToUrl : Route -> String
 routeToUrl route =
     case route of
@@ -111,34 +115,34 @@ routeToUrl route =
             "#types" ++ EventTypeList.queryToUrl query
 
         EventTypeDetailsRoute params query ->
-            "#types/" ++ Http.encodeUri params.name ++ EventTypeDetails.queryToUrl query
+            "#types/" ++ percentEncode params.name ++ EventTypeDetails.queryToUrl query
 
         EventTypeCreateRoute ->
             "#createtype"
 
         EventTypeUpdateRoute params ->
-            "#types/" ++ Http.encodeUri params.name ++ "/update"
+            "#types/" ++ percentEncode params.name ++ "/update"
 
         EventTypeCloneRoute params ->
-            "#types/" ++ Http.encodeUri params.name ++ "/clone"
+            "#types/" ++ percentEncode params.name ++ "/clone"
 
         PartitionRoute params query ->
-            "#types/" ++ Http.encodeUri params.name ++ "/partitions/" ++ Http.encodeUri params.partition ++ Partition.queryToUrl query
+            "#types/" ++ percentEncode params.name ++ "/partitions/" ++ percentEncode params.partition ++ Partition.queryToUrl query
 
         SubscriptionListRoute query ->
             "#subscriptions" ++ SubscriptionList.queryToUrl query
 
         SubscriptionDetailsRoute params query ->
-            "#subscriptions/" ++ Http.encodeUri params.id ++ SubscriptionDetails.queryToUrl query
+            "#subscriptions/" ++ percentEncode params.id ++ SubscriptionDetails.queryToUrl query
 
         SubscriptionCreateRoute ->
             "#createsubscription"
 
         SubscriptionUpdateRoute params ->
-            "#subscriptions/" ++ Http.encodeUri params.id ++ "/update"
+            "#subscriptions/" ++ percentEncode params.id ++ "/update"
 
         SubscriptionCloneRoute params ->
-            "#subscriptions/" ++ Http.encodeUri params.id ++ "/clone"
+            "#subscriptions/" ++ percentEncode params.id ++ "/clone"
 
         QueryCreateRoute ->
             "#createquery"

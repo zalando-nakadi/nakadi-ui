@@ -1,5 +1,6 @@
 module Pages.SubscriptionDetails.Help exposing (authorization, consumerGroup, createdAt, cursors, eventTypes, owningApplication, readFrom, subscription, subscriptionStats)
 
+import Config exposing (appPreffix)
 import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -36,7 +37,7 @@ owningApplication =
     , newline
     , bold "Example"
     , text ": "
-    , mono "\"stups_price-service\""
+    , mono ("\"" ++ appPreffix ++ "price-service\"")
     , newline
     , bold "Key: "
     , mono "owning_application"
@@ -170,7 +171,7 @@ subscriptionStats =
         , text "the partition is not assigned to any client;"
         , newline
         , mono "reassigning"
-        , text "the partition is reasssigning from one client to another;"
+        , text "the partition is reassigning from one client to another;"
         , newline
         , mono "assigned"
         , text "the partition is assigned to a client."

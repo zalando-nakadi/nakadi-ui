@@ -82,13 +82,13 @@ wrapSchema schema =
                 |> Maybe.withDefault (ValueObject [])
                 |> jsonValueSet "data" schemaWithoutDefinitions
 
-        trySetDefinitions schema =
+        trySetDefinitions aSchema =
             case schemaDefinitions of
                 Nothing ->
-                    schema
+                    aSchema
 
                 Just definitions ->
-                    schema
+                    aSchema
                         |> jsonValueSet "definitions" definitions
     in
     dataCategoryJson

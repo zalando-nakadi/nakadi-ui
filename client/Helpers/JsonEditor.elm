@@ -109,12 +109,12 @@ view collapsedDict json =
 -- Helpers
 
 
-stringToJsonValue : String -> Result String JsonValue
+stringToJsonValue : String -> Result Error JsonValue
 stringToJsonValue jsonString =
     decodeString jsonValueDecoder jsonString
 
 
-valueToJsonValue : Value -> Result String JsonValue
+valueToJsonValue : Value -> Result Error JsonValue
 valueToJsonValue value =
     decodeValue jsonValueDecoder value
 
@@ -158,7 +158,7 @@ jsonValueSet key value obj =
             case isReplace list of
                 Just a ->
                     list
-                        |> List.Extra.replaceIf byKey ( key, value )
+                        |> List.Extra.setIf byKey ( key, value )
                         |> ValueObject
 
                 Nothing ->
@@ -184,7 +184,7 @@ jsonValueSetFirst key value obj =
             case isReplace list of
                 Just a ->
                     list
-                        |> List.Extra.replaceIf byKey ( key, value )
+                        |> List.Extra.setIf byKey ( key, value )
                         |> ValueObject
 
                 Nothing ->
@@ -221,8 +221,7 @@ jsonValueToValue json =
 
         ValueArray array ->
             array
-                |> List.map jsonValueToValue
-                |> Json.Encode.list
+                |> Json.Encode.list jsonValueToValue
 
         ValueString str ->
             Json.Encode.string str
@@ -341,8 +340,8 @@ jsonValueToHtml json =
 jsonValueToCollapsibleHtml : Model -> String -> JsonValue -> Html.Html Msg
 jsonValueToCollapsibleHtml collapsedDict path json =
     let
-        isCollapsed path =
-            Dict.get path collapsedDict |> Maybe.withDefault False
+        isCollapsed apath =
+            Dict.get apath collapsedDict |> Maybe.withDefault False
 
         isCollapsible v =
             case v of

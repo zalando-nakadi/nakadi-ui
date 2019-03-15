@@ -7,6 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
+import Keyboard exposing (Key(..), anyKeyUpper, eventKeyDecoder)
 import MultiSearch.Messages exposing (..)
 import MultiSearch.Models exposing (..)
 
@@ -54,14 +55,23 @@ view config model =
         ]
 
 
-{-| VirtualDom in elm can't conditionally preventDefault
-<https://github.com/elm-lang/html/issues/66>
-so page down will scroll whole page and scroll search results together :(
+{-| We wan't to prevent the whole page to scroll if we navigate inside popup
 -}
+rawKeyToMsg rawKey =
+    let
+        key =
+            anyKeyUpper rawKey |> Maybe.withDefault Spacebar
+
+        prevent =
+            key == ArrowUp || key == ArrowDown || key == PageUp || key == PageDown
+    in
+    ( KeyPress key, prevent )
+
+
 onKeyDown : Attribute Msg
 onKeyDown =
-    on "keydown" <|
-        Json.map (\key -> Key key) keyCode
+    preventDefaultOn "keydown" <|
+        Json.map rawKeyToMsg eventKeyDecoder
 
 
 renderSuggestions : Config -> String -> List SearchItem -> Int -> Bool -> List (Html Msg)

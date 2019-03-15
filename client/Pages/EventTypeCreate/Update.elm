@@ -1,12 +1,13 @@
 module Pages.EventTypeCreate.Update exposing (authorizationFromEventType, checkNameFormat, checkNameUnique, checkPartitionKeys, checkPartitionStrategy, checkSchemaFormat, daysToRetentionTimeJson, formValuesFromEventType, isNotEmpty, post, put, stringToJsonList, submitCreate, submitUpdate, update, validate)
 
+import Browser.Dom as Dom
 import Config
 import Constants exposing (emptyString)
 import Dict
-import Dom
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
+import Helpers.Regex
 import Helpers.Store as Store
 import Helpers.Task exposing (dispatch)
 import Http
@@ -20,6 +21,7 @@ import Stores.Authorization exposing (Authorization, userAuthorization)
 import Stores.EventType exposing (categories, partitionStrategies)
 import Stores.Partition
 import Task
+import Url exposing (percentEncode)
 import User.Models exposing (User)
 
 
@@ -268,7 +270,7 @@ checkNameFormat model dict =
             model.values |> getValue FieldName |> String.trim
 
         pattern =
-            Regex.regex "^[a-zA-Z][-0-9a-zA-Z_]*(\\.[a-zA-Z][-0-9a-zA-Z_]*)*$"
+            Helpers.Regex.fromString "^[a-zA-Z][-0-9a-zA-Z_]*(\\.[a-zA-Z][-0-9a-zA-Z_]*)*$"
     in
     if Regex.contains pattern name then
         dict
@@ -385,9 +387,7 @@ submitCreate model =
 
             else
                 [ ( "enrichment_strategies"
-                  , Json.list
-                        [ Json.string "metadata_enrichment"
-                        ]
+                  , Json.list Json.string [ "metadata_enrichment" ]
                   )
                 ]
 
@@ -464,9 +464,7 @@ submitUpdate model =
 
             else
                 [ ( "enrichment_strategies"
-                  , Json.list
-                        [ Json.string "metadata_enrichment"
-                        ]
+                  , Json.list Json.string [ "metadata_enrichment" ]
                   )
                 ]
 
@@ -481,7 +479,7 @@ put body name =
     Http.request
         { method = "PUT"
         , headers = []
-        , url = Config.urlNakadiApi ++ "event-types/" ++ Http.encodeUri name
+        , url = Config.urlNakadiApi ++ "event-types/" ++ percentEncode name
         , body = Http.jsonBody body
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing
@@ -496,8 +494,7 @@ stringToJsonList str =
         |> String.split ","
         |> List.map String.trim
         |> List.filter (String.isEmpty >> not)
-        |> List.map Json.string
-        |> Json.list
+        |> Json.list Json.string
 
 
 daysToRetentionTimeJson : ValuesDict -> Json.Value

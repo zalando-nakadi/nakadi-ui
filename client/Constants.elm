@@ -11,11 +11,6 @@ userDateTimeFormat =
     "%b %d %Y, %-I:%M %p"
 
 
-isoDateTimeFormat : String
-isoDateTimeFormat =
-    "%Y-%m-%dT%H:%M:%SZ"
-
-
 emptyString : String
 emptyString =
     ""

@@ -1,5 +1,6 @@
 module Helpers.AccessEditor exposing (Config, Model, Msg(..), accessTable, addRowControls, changePermission, checkboxReadOnly, checkboxWrite, filterOut, findRecord, flatten, hasPermission, initialModel, mergePermissions, recordName, rowReadOnly, rowWrite, sameRecord, typeRow, unflatten, update, view, viewReadOnly)
 
+import Config exposing (appPreffix)
 import Constants exposing (emptyString)
 import Debug exposing (toString)
 import Helpers.UI as UI exposing (none)
@@ -341,7 +342,7 @@ addRowControls config model =
                     "User name in LDAP, e.g. 'amerkel'"
 
                 "service" ->
-                    "Service Id with 'stups_' prefix, i.e. 'stups_shop'"
+                    "Service Id with '" ++ appPreffix ++ "' prefix, i.e. '" ++ appPreffix ++ "_shop'"
 
                 _ ->
                     "Value"

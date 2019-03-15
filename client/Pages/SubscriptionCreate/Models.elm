@@ -1,5 +1,6 @@
 module Pages.SubscriptionCreate.Models exposing (Field(..), Model, Operation(..), allReadFrom, cloneValues, copyValues, defaultApplication, defaultValues, initialModel, readFrom)
 
+import Config exposing (appPreffix)
 import Constants exposing (emptyString)
 import Dict
 import Helpers.AccessEditor as AccessEditor
@@ -75,7 +76,7 @@ allReadFrom =
 
 defaultApplication : String
 defaultApplication =
-    "stups_nakadi-ui-elm"
+    appPreffix ++ "nakadi-ui-elm"
 
 
 defaultValues : ValuesDict

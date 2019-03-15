@@ -1,5 +1,6 @@
 module Models exposing (AppModel, initialModel)
 
+import Browser.Navigation exposing (Key)
 import Helpers.StoreLocal
 import MultiSearch.Models
 import Pages.EventTypeCreate.Models
@@ -26,6 +27,7 @@ type alias AppModel =
     , userStore : User.Models.Model
     , newRoute : Routing.Models.Model
     , route : Routing.Models.Model
+    , routerKey : Key
     , multiSearch : MultiSearch.Models.Model
     , eventTypeStore : Stores.EventType.Model
     , subscriptionStore : Stores.Subscription.Model
@@ -34,8 +36,8 @@ type alias AppModel =
     }
 
 
-initialModel : AppModel
-initialModel =
+initialModel : Key -> AppModel
+initialModel key =
     { eventTypeListPage = Pages.EventTypeList.Models.initialModel
     , eventTypeDetailsPage = Pages.EventTypeDetails.Models.initialModel
     , eventTypeCreatePage = Pages.EventTypeCreate.Models.initialModel
@@ -46,6 +48,7 @@ initialModel =
     , userStore = User.Models.initialModel
     , newRoute = Routing.Models.NotFoundRoute
     , route = Routing.Models.NotFoundRoute
+    , routerKey = key
     , multiSearch = MultiSearch.Models.initialModel
     , eventTypeStore = Stores.EventType.initialModel
     , subscriptionStore = Stores.Subscription.initialModel
