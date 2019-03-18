@@ -63,5 +63,5 @@ express(window, router => {
 })
 
 
-const Elm = require('./Main')
-Elm.Main.fullscreen()
+const {Elm} = require('./Main.elm')
+Elm.Main.init()
