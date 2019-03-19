@@ -234,7 +234,7 @@ suite =
         , periodToStringTest "A second" 1000 "1 second"
         , periodToStringTest "A day" ((24 * 60 * 60 * 1000) + 2000) "1 day 2 seconds"
         , pseudoIntSortTest "10 to end" [ "1", "10", "2" ] [ "1", "2", "10" ]
-        , pseudoIntSortTest "Mixed with no-nums" [ "1", "10", "b", "2", "a" ] [ "1", "2", "10", "a", "b" ]
+        , pseudoIntSortTest "Mixed with non-numeric" [ "1", "10", "b", "2", "a" ] [ "1", "2", "10", "a", "b" ]
         ]
 
 

@@ -55,13 +55,12 @@ view config model =
         ]
 
 
-{-| We wan't to prevent the whole page to scroll if we navigate inside popup
--}
 rawKeyToMsg rawKey =
     let
         key =
             anyKeyUpper rawKey |> Maybe.withDefault Spacebar
 
+        -- We want to prevent the whole page to scroll if we navigate inside popup
         prevent =
             key == ArrowUp || key == ArrowDown || key == PageUp || key == PageDown
     in
