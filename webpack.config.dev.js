@@ -26,8 +26,7 @@ module.exports = {
     new CopyWebpackPlugin([{
       context: './client/assets/static/',
       from: '**/*',
-      to: '/',
-      //TODO This option is not working.
+      // TODO This 'dot' option is not working. ¯\_(ツ)_/¯
       // static/.well-konwn/schema-discovery Is unreachable.
       dot: true
     }], {logLevel: 'debug'}),

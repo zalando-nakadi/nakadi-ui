@@ -1,4 +1,4 @@
-module Tests.Helpers exposing (all, jsonValueToPrettyStringTest, jsonValueToStringTest, paginationTest, parseJsonTest, periodToStringTest, prettyPrintJsonTest, pseudoIntSortTest, viewSplitFoundTest)
+module Tests.Helpers exposing (suite)
 
 import Expect
 import Helpers.JsonEditor exposing (JsonValue(..), jsonValueToPrettyString, jsonValueToString, stringToJsonValue)
@@ -8,15 +8,16 @@ import Helpers.String exposing (periodToString, pseudoIntSort, splitFound)
 import Test exposing (Test, describe, test)
 
 
-all : Test
-all =
-    describe "Test MultiSearch"
-        [ viewSplitFoundTest "bbb" "Bla bla bBblllaaa" ( "Bla bla ", "bBb", "lllaaa" )
-        , viewSplitFoundTest "Bla" "Bla bla bBblllaaa" ( "", "Bla", " bla bBblllaaa" )
-        , viewSplitFoundTest "aaa" "Bla bla bBblllaaa" ( "Bla bla bBblll", "aaa", "" )
-        , viewSplitFoundTest "" "Bla bla bBblllaaa" ( "Bla bla bBblllaaa", "", "" )
-        , viewSplitFoundTest "a b" "" ( "", "", "" )
-        , paginationTest 100
+suite : Test
+suite =
+    describe "Test Helpers"
+        [ viewSplitFoundTest "Case insensitive search" "bbb" "Bla bla bBblllaaa" ( "Bla bla ", "bBb", "lllaaa" )
+        , viewSplitFoundTest "Find at the begin" "Bla" "Bla bla bBblllaaa" ( "", "Bla", " bla bBblllaaa" )
+        , viewSplitFoundTest "Find at the end" "aaa" "Bla bla bBblllaaa" ( "Bla bla bBblll", "aaa", "" )
+        , viewSplitFoundTest "Empty search key" "" "Bla bla bBblllaaa" ( "Bla bla bBblllaaa", "", "" )
+        , viewSplitFoundTest "empty result" "a b" "" ( "", "", "" )
+        , paginationTest "Begin"
+            100
             0
             1
             1
@@ -30,7 +31,8 @@ all =
             , Page 99
             , Next (Just 1)
             ]
-        , paginationTest 100
+        , paginationTest "Page 3"
+            100
             3
             1
             1
@@ -44,7 +46,8 @@ all =
             , Page 99
             , Next (Just 4)
             ]
-        , paginationTest 100
+        , paginationTest "Page 4"
+            100
             4
             1
             1
@@ -58,7 +61,8 @@ all =
             , Page 99
             , Next (Just 5)
             ]
-        , paginationTest 100
+        , paginationTest "Middle"
+            100
             95
             1
             1
@@ -72,7 +76,8 @@ all =
             , Page 99
             , Next (Just 96)
             ]
-        , paginationTest 100
+        , paginationTest "Close to end"
+            100
             96
             1
             1
@@ -86,7 +91,8 @@ all =
             , Page 99
             , Next (Just 97)
             ]
-        , paginationTest 100
+        , paginationTest "The end"
+            100
             99
             1
             1
@@ -100,14 +106,16 @@ all =
             , Current 99
             , Next Nothing
             ]
-        , paginationTest 0
+        , paginationTest "No pages"
+            0
             0
             1
             1
             [ Previous Nothing
             , Next Nothing
             ]
-        , paginationTest 5
+        , paginationTest "Few pages"
+            5
             3
             1
             1
@@ -119,7 +127,8 @@ all =
             , Page 4
             , Next (Just 4)
             ]
-        , paginationTest 7
+        , paginationTest "Max fit"
+            7
             6
             1
             1
@@ -133,23 +142,17 @@ all =
             , Current 6
             , Next Nothing
             ]
-        , prettyPrintJsonTest "{}" "{}"
-        , prettyPrintJsonTest
+        , prettyPrintJsonTest "empty" "{}" "{}"
+        , prettyPrintJsonTest "all"
             "{ \"a\":   {\"b\":  [ \"key\", 1, false]}}"
             "{\n    \"a\": {\n        \"b\": [\n            \"key\",\n            1,\n            false\n        ]\n    }\n}"
-        , parseJsonTest
+        , parseJsonTest "All"
             "{\"a\":1,\"c\":2,\"b\":3,\"keystring\":\"astring\",\"keyint\":123,\"keyobj\":{\"subkeyint\":1,\"subarraykey\":[1,\"str\",3.14,null,true, false, [{}] ]}}"
             (Ok
                 (ValueObject
-                    [ ( "a", ValueInt 1 )
-                    , ( "c", ValueInt 2 )
-                    , ( "b", ValueInt 3 )
-                    , ( "keystring", ValueString "astring" )
-                    , ( "keyint", ValueInt 123 )
-                    , ( "keyobj"
+                    [ ( "keyobj"
                       , ValueObject
-                            [ ( "subkeyint", ValueInt 1 )
-                            , ( "subarraykey"
+                            [ ( "subarraykey"
                               , ValueArray
                                     [ ValueInt 1
                                     , ValueString "str"
@@ -160,12 +163,18 @@ all =
                                     , ValueArray [ ValueObject [] ]
                                     ]
                               )
+                            , ( "subkeyint", ValueInt 1 )
                             ]
                       )
+                    , ( "keyint", ValueInt 123 )
+                    , ( "keystring", ValueString "astring" )
+                    , ( "b", ValueInt 3 )
+                    , ( "c", ValueInt 2 )
+                    , ( "a", ValueInt 1 )
                     ]
                 )
             )
-        , jsonValueToStringTest
+        , jsonValueToStringTest "all"
             (ValueObject
                 [ ( "a", ValueInt 1 )
                 , ( "c", ValueInt 2 )
@@ -191,7 +200,7 @@ all =
                 ]
             )
             "{\"a\":1,\"c\":2,\"b\":3,\"keys\\\"tring\":\"astr\\\"ing\",\"keyint\":123,\"keyobj\":{\"subkeyint\":1,\"subarraykey\":[1,\"str\",3.14,null,true,false,[{}]]}}"
-        , jsonValueToPrettyStringTest
+        , jsonValueToPrettyStringTest "all"
             (ValueObject
                 [ ( "a", ValueInt 1 )
                 , ( "c", ValueInt 2 )
@@ -221,65 +230,65 @@ all =
                 ]
             )
             "{\n    \"a\": 1,\n    \"c\": 2,\n    \"b\": 3,\n    \"keystring\": \"astring\",\n    \"keyint\": 123,\n    \"emptyObj\": {},\n    \"emptyArr\": [],\n    \"keyobj\": {\n        \"subkeyint\": 1,\n        \"subarraykey\": [\n            1,\n            \"str\",\n            3.14,\n            null,\n            true,\n            false,\n            [\n                {}\n            ],\n            {\n                \"key\": []\n            }\n        ]\n    },\n    \"keyint2\": 123\n}"
-        , periodToStringTest 0 ""
-        , periodToStringTest 1000 "1 second"
-        , periodToStringTest ((24 * 60 * 60 * 1000) + 2000) "1 day 2 seconds"
-        , pseudoIntSortTest [ "1", "10", "2" ] [ "1", "2", "10" ]
-        , pseudoIntSortTest [ "1", "10", "b", "2", "a" ] [ "1", "2", "10", "a", "b" ]
+        , periodToStringTest "None" 0 ""
+        , periodToStringTest "A second" 1000 "1 second"
+        , periodToStringTest "A day" ((24 * 60 * 60 * 1000) + 2000) "1 day 2 seconds"
+        , pseudoIntSortTest "10 to end" [ "1", "10", "2" ] [ "1", "2", "10" ]
+        , pseudoIntSortTest "Mixed with no-nums" [ "1", "10", "b", "2", "a" ] [ "1", "2", "10", "a", "b" ]
         ]
 
 
-viewSplitFoundTest needle heap expected =
-    test "Expected splited string by the search word"
+viewSplitFoundTest name needle heap expected =
+    test ("Expected split string by the search word:" ++ name)
         (\() ->
             Expect.equal expected <| splitFound needle heap
         )
 
 
-paginationTest total index left right expected =
-    test "Pagination returns right set of buttons"
+paginationTest name total index left right expected =
+    test ("Pagination returns right set of buttons:" ++ name)
         (\() ->
             Expect.equal expected <| paginationButtons total index left right
         )
 
 
-prettyPrintJsonTest raw expected =
-    test "prettyPrintJson returns right format"
+prettyPrintJsonTest name raw expected =
+    test ("prettyPrintJson returns right format:" ++ name)
         (\() ->
             Expect.equal expected <| prettyPrintJson raw
         )
 
 
-parseJsonTest raw expected =
-    test "parseJson returns right format"
+parseJsonTest name raw expected =
+    test ("parseJson returns right format:" ++ name)
         (\() ->
             Expect.equal expected <| stringToJsonValue raw
         )
 
 
-jsonValueToStringTest raw expected =
-    test "jsonValueToStringTest returns right format"
+jsonValueToStringTest name raw expected =
+    test ("jsonValueToStringTest returns right format:" ++ name)
         (\() ->
             Expect.equal expected <| jsonValueToString raw
         )
 
 
-jsonValueToPrettyStringTest raw expected =
-    test "jsonValueToPrettyStringTest returns right format"
+jsonValueToPrettyStringTest name raw expected =
+    test ("jsonValueToPrettyStringTest returns right format:" ++ name)
         (\() ->
             Expect.equal expected <| jsonValueToPrettyString raw
         )
 
 
-periodToStringTest raw expected =
-    test "periodToString returns right format"
+periodToStringTest name raw expected =
+    test ("periodToString returns right format:" ++ name)
         (\() ->
             Expect.equal expected <| periodToString raw
         )
 
 
-pseudoIntSortTest raw expected =
-    test "pseudoIntSort returns right format"
+pseudoIntSortTest name raw expected =
+    test ("pseudoIntSort returns right format:" ++ name)
         (\() ->
             Expect.equal expected <| pseudoIntSort raw
         )

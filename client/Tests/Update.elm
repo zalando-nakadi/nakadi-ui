@@ -7,6 +7,7 @@ import Routing.Messages exposing (Msg(..))
 import Routing.Models exposing (..)
 import Test exposing (Test, describe, test)
 import Update
+import Url
 
 
 all : Test
@@ -26,7 +27,7 @@ routingNavigateToTest =
         (\() ->
             let
                 testModel =
-                    Models.initialModel
+                    Models.initialModel Nothing
 
                 expectedModel =
                     { testModel | newRoute = EventTypeCreateRoute }
@@ -46,7 +47,7 @@ routingOnLocationChangeTest =
         (\() ->
             let
                 testModel =
-                    Models.initialModel
+                    Models.initialModel Nothing
 
                 newRouting =
                     EventTypeCreateRoute
@@ -55,17 +56,12 @@ routingOnLocationChangeTest =
                     { testModel | newRoute = newRouting, route = newRouting }
 
                 location =
-                    { href = "https://some/#createtype"
-                    , host = ""
-                    , hostname = ""
-                    , protocol = ""
-                    , origin = ""
-                    , port_ = ""
-                    , pathname = ""
-                    , search = ""
-                    , hash = "#createtype"
-                    , username = ""
-                    , password = ""
+                    { protocol = Url.Https
+                    , host = "localhost"
+                    , port_ = Nothing
+                    , path = ""
+                    , query = Nothing
+                    , fragment = Just "createtype"
                     }
 
                 ( model, cmd ) =

@@ -35,7 +35,7 @@ init : Value -> Url -> Key -> ( Models.AppModel, Cmd Messages.Msg )
 init flags location key =
     let
         model =
-            Models.initialModel key
+            Models.initialModel (Just key)
 
         loadUser =
             dispatch (UserMsg FetchData)

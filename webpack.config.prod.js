@@ -22,7 +22,6 @@ module.exports = {
     new CopyWebpackPlugin([{
       context: './client/assets/static/',
       from: '**/*',
-  //    to: '/',
       dot: true
     }]),
     new HtmlWebpackPlugin({

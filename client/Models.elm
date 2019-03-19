@@ -27,7 +27,7 @@ type alias AppModel =
     , userStore : User.Models.Model
     , newRoute : Routing.Models.Model
     , route : Routing.Models.Model
-    , routerKey : Key
+    , routerKey : Maybe Key
     , multiSearch : MultiSearch.Models.Model
     , eventTypeStore : Stores.EventType.Model
     , subscriptionStore : Stores.Subscription.Model
@@ -36,7 +36,7 @@ type alias AppModel =
     }
 
 
-initialModel : Key -> AppModel
+initialModel : Maybe Key -> AppModel
 initialModel key =
     { eventTypeListPage = Pages.EventTypeList.Models.initialModel
     , eventTypeDetailsPage = Pages.EventTypeDetails.Models.initialModel

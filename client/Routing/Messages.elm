@@ -8,6 +8,6 @@ import Url exposing (Url)
 type Msg
     = OnLocationChange Url
     | UrlChangeRequested UrlRequest
-    | RouteChanged Route
+    | OutRouteChanged Route
     | SetLocation Route
     | Redirect Route

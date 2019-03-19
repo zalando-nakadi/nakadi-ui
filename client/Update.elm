@@ -266,7 +266,7 @@ interComponentMessaging message ( model, cmd ) =
     case message of
         UserMsg User.Messages.LoginDone ->
             send
-                [ RoutingMsg (RouteChanged model.route)
+                [ RoutingMsg (OutRouteChanged model.route)
                 , EventTypeStoreMsg Store.FetchData
                 , SubscriptionStoreMsg Stores.Subscription.FetchData
                 , StarredEventTypesStoreMsg StoreLocal.FetchData
@@ -425,7 +425,7 @@ interComponentMessaging message ( model, cmd ) =
                 _ ->
                     pass
 
-        RoutingMsg (RouteChanged location) ->
+        RoutingMsg (OutRouteChanged location) ->
             case model.newRoute of
                 EventTypeListRoute query ->
                     send [ EventTypeListMsg (EventTypeListPageMessages.OnRouteChange model.newRoute) ]
