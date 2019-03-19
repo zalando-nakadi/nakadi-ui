@@ -298,7 +298,7 @@ offsetButton : String -> String -> Maybe String -> Html Msg
 offsetButton label hint maybeOffset =
     case maybeOffset of
         Just offset ->
-            a [ onClick (SetOffset offset), class "event-list__pager-btn dc-btn ", title hint ] [ i [ class label ] [] ]
+            button [ onClick (SetOffset offset), class "event-list__pager-btn dc-btn ", title hint ] [ i [ class label ] [] ]
 
         Nothing ->
             button [ disabled True, class "event-list__pager-btn dc-btn dc-btn--disabled ", title hint ] [ i [ class label ] [] ]
@@ -470,7 +470,7 @@ viewEventDetails maybeSelectedEvent formatted jsonEditorState =
                             [ text "Formatted" ]
                         ]
                     , span [ class "toolbar" ]
-                        [ a
+                        [ button
                             [ onClick
                                 (CopyToClipboard
                                     (if formatted then

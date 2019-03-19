@@ -60,7 +60,7 @@ queryTabHeader settings model query =
                 , href <| replace "{query}" query.id settings.queryMonitoringUrl
                 ]
                 [ i [ class "fas fa-chart-line" ] [] ]
-            , a
+            , button
                 [ onClick (CopyToClipboard query.sql)
                 , class "icon-link dc-icon dc-icon--interactive"
                 , title "Copy To Clipboard"

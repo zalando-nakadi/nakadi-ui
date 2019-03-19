@@ -479,7 +479,7 @@ schemaTab jsonEditorState schemasStore selectedVersion formatted effective event
             , helpIcon "Effective Schema" Help.schema BottomLeft
             ]
         , span [ class "schema-tab__formatted toolbar" ]
-            [ a
+            [ button
                 [ onClick (selectedSchema.schema |> copyToClipboardVal |> CopyToClipboard)
                 , class "icon-link dc-icon dc-icon--interactive"
                 , title "Copy To Clipboard"

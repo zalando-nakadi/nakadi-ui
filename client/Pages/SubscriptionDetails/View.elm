@@ -332,7 +332,7 @@ renderPartition model eventTypeName partition =
             else
                 span []
                     [ span [] [ text offset, text " " ]
-                    , a [ onClick (EditOffset partitionKey offset), class "dc-link", href "javascript:undefined" ]
+                    , button [ onClick (EditOffset partitionKey offset), class "dc-btn--link" ]
                         [ text "Change" ]
                     ]
     in

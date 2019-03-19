@@ -759,6 +759,7 @@ body {
 .icon-link {
     text-decoration: none;
     color: inherit;
+    background: white;
 }
 
 .toolbar > * {
