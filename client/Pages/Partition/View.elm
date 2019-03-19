@@ -314,14 +314,13 @@ navigation partitionPage =
 
         total =
             maybeDistance
-                |> Maybe.map ((+) 1)
                 |> Maybe.map String.fromInt
                 |> Maybe.withDefault "Loading..."
 
         percentage size =
             case maybeDistance of
                 Just distance ->
-                    toFloat (Basics.round (toFloat size * 10000.0 / toFloat (distance + 1))) / 100.0
+                    toFloat (Basics.round (toFloat size * 10000.0 / toFloat distance)) / 100.0
 
                 Nothing ->
                     0.0

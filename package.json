@@ -14,7 +14,7 @@
     "start:prod": "NODE_ENV=production node ./server/server.js",
     "chromedriver": "chromedriver --url-base=/wd/hub --port=4444",
     "test": "npm run test:client && npm run test:server",
-    "test:client": "elm-test client/Tests/*.elm",
+    "test:client": "elm-test",
     "test:server": "istanbul cover --include-all-sources tests/runner.js"
   },
   "repository": {

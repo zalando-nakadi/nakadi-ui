@@ -116,7 +116,11 @@ update message model =
                                     else
                                         calculateTotalCmd
                             in
-                            ( newModel, cmd )
+                            if isPartitionEmpty newModel then
+                                ( { newModel | totalStore = onFetchOk newModel.totalStore }, Cmd.none )
+
+                            else
+                                ( newModel, calculateTotalCmd )
 
                         Err error ->
                             ( { model | partitionsStore = onFetchErr model.partitionsStore error }
@@ -175,7 +179,7 @@ update message model =
                             Stores.ShiftedCursor.ShiftedCursor
                                 model.partition
                                 model.offset
-                                -initialPageSize
+                                -backOffsetSize
                                 |> Stores.ShiftedCursor.fetchShiftedCursors Store.FetchAllDone model.name
                                 |> Cmd.map PageBackCursorStoreMsg
 
