@@ -7,8 +7,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   mode: 'development',
+  stats: "errors-only",
+  devtool: "source-map",
+  bail: true,
+  watch: true,
   entry: [
-    'webpack-hot-middleware/client',
+    'webpack-hot-middleware/client?reload=true',
     './client/index.js'
   ],
   output: {
@@ -29,13 +33,12 @@ module.exports = {
       // TODO This 'dot' option is not working. ¯\_(ツ)_/¯
       // static/.well-konwn/schema-discovery Is unreachable.
       dot: true
-    }], {logLevel: 'debug'}),
+    }]),
     new HtmlWebpackPlugin({
       title: 'Nakadi UI',
       //tests fail if this is true
       cache: false
-    }),
-    new webpack.HotModuleReplacementPlugin()
+    })
   ],
   module: {
     noParse: [/\.elm$/],
@@ -64,17 +67,13 @@ module.exports = {
         {
           loader: 'elm-webpack-loader',
           options: {
-            cwd: __dirname
+            cwd: __dirname,
+            cache: false,
+            forceWatch: true
           }
         }
       ]
     }]
-  },
-  devServer: {
-    contentBase: './dist',
-    historyApiFallback: false,
-    hot: true,
-    'module-bind': 'css=style\!css'
   }
 }
 
