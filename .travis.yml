@@ -9,4 +9,4 @@ cache:
 
 script:
   - elm-format --validate .
-  - elm-test
+  - npm run test:client
