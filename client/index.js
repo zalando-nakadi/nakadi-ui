@@ -36,7 +36,7 @@ express(window, router => {
 
     const file = document.getElementById(id).files[0]
     if (file.size > 2000000) {
-      return res.error('Selected file is too big. 2mb max.')
+      return res.error('Selected file is too big. 2MB Max.')
     }
     reader.readAsText(file)
   })
