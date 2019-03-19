@@ -1,3 +1,4 @@
+sudo: false
 language: elm
 
 cache:
@@ -7,4 +8,5 @@ cache:
     - $HOME/.npm # https://stackoverflow.com/a/42523517/1148249
 
 script:
-  elm-format --validate . && elm-test
+  - elm-format --validate .
+  - elm-test
