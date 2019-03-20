@@ -150,9 +150,15 @@ suite =
             "{\"a\":1,\"c\":2,\"b\":3,\"keystring\":\"astring\",\"keyint\":123,\"keyobj\":{\"subkeyint\":1,\"subarraykey\":[1,\"str\",3.14,null,true, false, [{}] ]}}"
             (Ok
                 (ValueObject
-                    [ ( "keyobj"
+                    [ ( "a", ValueInt 1 )
+                    , ( "c", ValueInt 2 )
+                    , ( "b", ValueInt 3 )
+                    , ( "keystring", ValueString "astring" )
+                    , ( "keyint", ValueInt 123 )
+                    , ( "keyobj"
                       , ValueObject
-                            [ ( "subarraykey"
+                            [ ( "subkeyint", ValueInt 1 )
+                            , ( "subarraykey"
                               , ValueArray
                                     [ ValueInt 1
                                     , ValueString "str"
@@ -163,14 +169,8 @@ suite =
                                     , ValueArray [ ValueObject [] ]
                                     ]
                               )
-                            , ( "subkeyint", ValueInt 1 )
                             ]
                       )
-                    , ( "keyint", ValueInt 123 )
-                    , ( "keystring", ValueString "astring" )
-                    , ( "b", ValueInt 3 )
-                    , ( "c", ValueInt 2 )
-                    , ( "a", ValueInt 1 )
                     ]
                 )
             )

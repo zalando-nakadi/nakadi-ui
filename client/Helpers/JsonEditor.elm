@@ -122,7 +122,7 @@ valueToJsonValue value =
 jsonValueDecoder : Decoder JsonValue
 jsonValueDecoder =
     oneOf
-        [ keyValuePairs (lazy (\_ -> jsonValueDecoder)) |> map (ValueObject << List.reverse)
+        [ keyValuePairs (lazy (\_ -> jsonValueDecoder)) |> map ValueObject
         , list (lazy (\_ -> jsonValueDecoder)) |> map ValueArray
         , int |> map ValueInt
         , float |> map ValueFloat
