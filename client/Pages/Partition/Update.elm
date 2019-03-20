@@ -94,6 +94,7 @@ update message model =
                                     { model
                                         | partitionsStore = onFetchOk newStore
                                         , eventsStore = Stores.Events.initialModel
+                                        , totalStore = Store.initialModel
                                     }
 
                                 justCalculateTotalCmd partition =
@@ -117,7 +118,7 @@ update message model =
                                         calculateTotalCmd
                             in
                             if isPartitionEmpty newModel then
-                                ( { newModel | totalStore = onFetchOk newModel.totalStore }, Cmd.none )
+                                ( newModel, Cmd.none )
 
                             else
                                 ( newModel, calculateTotalCmd )

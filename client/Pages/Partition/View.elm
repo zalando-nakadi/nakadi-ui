@@ -1,11 +1,10 @@
 module Pages.Partition.View exposing (eventsView, navigation, offsetButton, pager, stringClamp, view, viewEventDetails, viewEventRow)
 
-import Browser.Events exposing (onKeyUp)
 import Constants exposing (emptyString)
 import Helpers.JsonEditor as JsonEditor
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
 import Helpers.Panel exposing (infoMessage, loadingStatus)
-import Helpers.Store as Store
+import Helpers.Store as Store exposing (Status(..))
 import Helpers.UI as UI exposing (helpIcon, searchInput)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -313,9 +312,13 @@ navigation partitionPage =
                 |> Maybe.map .distance
 
         total =
-            maybeDistance
-                |> Maybe.map String.fromInt
-                |> Maybe.withDefault "Loading..."
+            if partitionPage.totalStore |> Store.isLoading then
+                "Loading..."
+
+            else
+                maybeDistance
+                    |> Maybe.map String.fromInt
+                    |> Maybe.withDefault "0"
 
         percentage size =
             case maybeDistance of
