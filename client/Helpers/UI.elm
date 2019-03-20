@@ -245,7 +245,7 @@ starIcon msgAdd msgRemove store id =
 appNameToAppId : String -> String
 appNameToAppId name =
     if name |> String.startsWith appPreffix then
-        String.dropLeft 6 name
+        String.dropLeft (String.length appPreffix) name
 
     else
         name
