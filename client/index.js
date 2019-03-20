@@ -12,8 +12,12 @@ express(window, router => {
   router.post('localStorage', (req, res) =>
       res.ok(window.localStorage.setItem(req.params.get('key'), req.body)))
 
+  // Redirect never resolves as it reload the whole page.
+  // We use it instead of Elm load() because we need current URL
+  // It is very tricky to get current URL in Elm an push it to all levels
+  // where logoutIfExpired function used (any request basically)
   router.post('forceReLogin', (req, res) =>
-      res.ok(document.location.href = `${req.body}?returnTo=${encodeURIComponent(document.location.href)}`))
+      document.location.href = `${req.body}?returnTo=${encodeURIComponent(document.location.href)}`)
 
   router.post('copyToClipboard', (req, res) => {
     const el = document.createElement('textarea')
