@@ -44,11 +44,10 @@ settingsDecoder =
 
 {-| Redirect browser to logout
 This function never actually returns
-but to be a function in Elm it must accept some dummy argument
 -}
 logout : Cmd msg
 logout =
-    postString (\_ -> Debug.todo "Logout Never returns") "elm:forceReLogin" Config.urlLogout
+    postString (\_ -> Debug.todo "Logout never returns") "elm:forceReLogin" Config.urlLogout
 
 
 {-| Check the response from the server and if return is not recoverable
