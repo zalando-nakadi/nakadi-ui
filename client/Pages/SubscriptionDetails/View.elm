@@ -107,7 +107,7 @@ detailsLayout id subscription model =
                             routeToUrl <|
                                 SubscriptionUpdateRoute { id = subscription.id }
                         ]
-                        [ i [ class "far fa-edit" ] [] ]
+                        [ i [ class "icon icon--edit" ] [] ]
                     , a
                         [ title "Clone Subscription"
                         , class "icon-link dc-icon dc-icon--interactive"
@@ -115,21 +115,21 @@ detailsLayout id subscription model =
                             routeToUrl <|
                                 SubscriptionCloneRoute { id = subscription.id }
                         ]
-                        [ i [ class "far fa-clone" ] [] ]
+                        [ i [ class "icon icon--clone" ] [] ]
                     , a
                         [ title "View as raw JSON"
                         , class "icon-link dc-icon dc-icon--interactive"
                         , target "_blank"
                         , href <| Config.urlNakadiApi ++ "subscriptions/" ++ subscription.id
                         ]
-                        [ i [ class "far fa-file-code" ] [] ]
+                        [ i [ class "icon icon--source" ] [] ]
                     , a
                         [ title "Monitoring Graphs"
                         , class "icon-link dc-icon dc-icon--interactive"
                         , target "_blank"
                         , href <| replace "{id}" subscription.id model.userStore.user.settings.subscriptionMonitoringUrl
                         ]
-                        [ i [ class "fas fa-chart-line" ] [] ]
+                        [ i [ class "icon icon--chart" ] [] ]
                     , starIcon OutAddToFavorite OutRemoveFromFavorite starredStore id
                     , span
                         [ onClick OpenDeletePopup

@@ -52,20 +52,20 @@ queryTabHeader settings model query =
                 , target "_blank"
                 , href <| Config.urlNakadiSqlApi ++ "queries/" ++ query.id
                 ]
-                [ i [ class "far fa-file-code" ] [] ]
+                [ i [ class "icon icon--source" ] [] ]
             , a
                 [ title "Query Monitoring Graphs"
                 , class "icon-link dc-icon dc-icon--interactive"
                 , target "_blank"
                 , href <| replace "{query}" query.id settings.queryMonitoringUrl
                 ]
-                [ i [ class "fas fa-chart-line" ] [] ]
+                [ i [ class "icon icon--chart" ] [] ]
             , button
                 [ onClick (CopyToClipboard query.sql)
                 , class "icon-link dc-icon dc-icon--interactive"
                 , title "Copy To Clipboard"
                 ]
-                [ i [ class "far fa-clipboard" ] [] ]
+                [ i [ class "icon icon--clipboard" ] [] ]
             , terminate
             ]
         , sqlView query.sql
