@@ -135,7 +135,7 @@ detailsLayout typeName eventType model =
                             routeToUrl <|
                                 EventTypeUpdateRoute { name = eventType.name }
                         ]
-                        [ i [ class "far fa-edit" ] [] ]
+                        [ i [ class "icon icon--edit" ] [] ]
                     , a
                         [ title "Clone Event Type"
                         , class "icon-link dc-icon dc-icon--interactive"
@@ -143,21 +143,21 @@ detailsLayout typeName eventType model =
                             routeToUrl <|
                                 EventTypeCloneRoute { name = eventType.name }
                         ]
-                        [ i [ class "far fa-clone" ] [] ]
+                        [ i [ class "icon icon--clone" ] [] ]
                     , a
                         [ title "View as raw JSON"
                         , class "icon-link dc-icon dc-icon--interactive"
                         , target "_blank"
                         , href <| Config.urlNakadiApi ++ "event-types/" ++ eventType.name
                         ]
-                        [ i [ class "far fa-file-code" ] [] ]
+                        [ i [ class "icon icon--source" ] [] ]
                     , a
                         [ title "Monitoring Graphs"
                         , class "icon-link dc-icon dc-icon--interactive"
                         , target "_blank"
                         , href <| replace "{et}" eventType.name model.userStore.user.settings.eventTypeMonitoringUrl
                         ]
-                        [ i [ class "fas fa-chart-line" ] [] ]
+                        [ i [ class "icon icon--chart" ] [] ]
                     , starIcon OutAddToFavorite OutRemoveFromFavorite model.starredEventTypesStore eventType.name
                     , deleteEventTypeButton
                     ]
@@ -484,7 +484,7 @@ schemaTab jsonEditorState schemasStore selectedVersion formatted effective event
                 , class "icon-link dc-icon dc-icon--interactive"
                 , title "Copy To Clipboard"
                 ]
-                [ i [ class "far fa-clipboard" ] [] ]
+                [ i [ class "icon icon--clipboard" ] [] ]
             ]
         , pre
             [ id "jsonEditor", class "schema-box" ]

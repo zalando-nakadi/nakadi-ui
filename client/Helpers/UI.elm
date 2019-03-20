@@ -215,7 +215,7 @@ refreshButton msg =
             , class "dc-icon dc-icon--interactive"
             , title "Refresh data"
             ]
-            [ i [ class "fas fa-sync fa-xs" ] [] ]
+            [ i [ class "icon icon--refresh" ] [] ]
         ]
 
 

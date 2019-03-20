@@ -1,5 +1,4 @@
 require('./assets/styles.css')
-require('./assets/fontawesome-all.js')
 require('./js/aceEditor')
 
 const express = require('./js/elmExpress')
