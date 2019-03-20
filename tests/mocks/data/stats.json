@@ -5,51 +5,27 @@
       "partitions": [
         {
           "partition": "0",
-          "state": "unassigned",
+          "state": "assigned",
           "unconsumed_events": 0,
-          "stream_id": ""
+          "consumer_lag_seconds": 0,
+          "stream_id": "7eb3759c-3a42-4246-9d4d-fe33a3a67b14",
+          "assignment_type": "direct"
         },
         {
           "partition": "1",
-          "state": "unassigned",
+          "state": "assigned",
           "unconsumed_events": 0,
-          "stream_id": ""
+          "consumer_lag_seconds": 0,
+          "stream_id": "7eb3759c-3a42-4246-9d4d-fe33a3a67b14",
+          "assignment_type": "direct"
         },
         {
           "partition": "2",
-          "state": "unassigned",
-          "unconsumed_events": 0,
-          "stream_id": ""
-        },
-        {
-          "partition": "3",
-          "state": "unassigned",
-          "unconsumed_events": 0,
-          "stream_id": ""
-        },
-        {
-          "partition": "4",
-          "state": "unassigned",
-          "unconsumed_events": 0,
-          "stream_id": ""
-        },
-        {
-          "partition": "5",
-          "state": "unassigned",
-          "unconsumed_events": 0,
-          "stream_id": ""
-        },
-        {
-          "partition": "6",
-          "state": "unassigned",
-          "unconsumed_events": 0,
-          "stream_id": ""
-        },
-        {
-          "partition": "7",
-          "state": "unassigned",
-          "unconsumed_events": 0,
-          "stream_id": ""
+          "state": "assigned",
+          "unconsumed_events": 3,
+          "consumer_lag_seconds": 123,
+          "stream_id": "7eb3759c-3a42-4246-9d4d-fe33a3a67b14",
+          "assignment_type": "direct"
         }
       ]
     }

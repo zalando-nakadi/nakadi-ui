@@ -38,29 +38,52 @@ app.get('/event-types/:name', (req, res) => {
 app.post('/event-types', (req, res) => {
 
     const expected = {
-        name: 'test.event-type_name',
-        owning_application: 'stups_nakadi-ui-elm',
-        category: 'business',
-        partition_strategy: 'random',
-        partition_key_fields: [],
-        ordering_key_fields: [],
-        compatibility_mode: 'forward',
-        audience: 'component-internal',
-        cleanup_policy: 'delete',
-        schema: {
-            type: 'json_schema',
-            schema: '{\n    "description": "Sample event type schema. It accepts any event.",\n    "type": "object",\n    "properties": {\n        "example_item": {\n            "type": "string"\n        },\n        "example_money": {\n            "$ref": "#/definitions/Money"\n        }\n    },\n    "required": [],\n    "definitions": {\n        "Money": {\n            "type": "object",\n            "properties": {\n                "amount": {\n                    "type": "number",\n                    "format": "decimal"\n                },\n                "currency": {\n                    "type": "string",\n                    "format": "iso-4217"\n                }\n            },\n            "required": [\n                "amount",\n                "currency"\n            ]\n        }\n    }\n}'
-        },
-        default_statistic: {
-            messages_per_minute: 100,
-            message_size: 100,
-            read_parallelism: 1,
-            write_parallelism: 1
-        },
-        options: {retention_time: 345600000},
-        authorization: {readers: [], writers: [], admins: []},
-        enrichment_strategies: ['metadata_enrichment']
-    };
+      'name': 'test.event-type_name',
+      'owning_application': 'stups_nakadi-ui-elm',
+      'category': 'business',
+      'partition_strategy': 'random',
+      'partition_key_fields': [],
+      'ordering_key_fields': [],
+      'compatibility_mode': 'forward',
+      'audience': 'component-internal',
+      'cleanup_policy': 'delete',
+      'schema': {
+        'type': 'json_schema',
+        'schema': '{\n    "description": "Sample event type schema. It accepts any event.",\n    "type": "object",\n    "properties": {\n        "example_item": {\n            "type": "string"\n        },\n        "example_money": {\n            "$ref": "#/definitions/Money"\n        }\n    },\n    "required": [],\n    "definitions": {\n        "Money": {\n            "type": "object",\n            "properties": {\n                "amount": {\n                    "type": "number",\n                    "format": "decimal"\n                },\n                "currency": {\n                    "type": "string",\n                    "format": "iso-4217"\n                }\n            },\n            "required": [\n                "amount",\n                "currency"\n            ]\n        }\n    }\n}'
+      },
+      'default_statistic': {
+        'messages_per_minute': 100,
+        'message_size': 100,
+        'read_parallelism': 1,
+        'write_parallelism': 1
+      },
+      'options': {
+        'retention_time': 345600000
+      },
+      'authorization': {
+        'readers': [
+          {
+            'data_type': 'user',
+            'value': 'fakeuser'
+          }
+        ],
+        'writers': [
+          {
+            'data_type': 'user',
+            'value': 'fakeuser'
+          }
+        ],
+        'admins': [
+          {
+            'data_type': 'user',
+            'value': 'fakeuser'
+          }
+        ]
+      },
+      'enrichment_strategies': [
+        'metadata_enrichment'
+      ]
+    }
 
     if (JSON.stringify(req.body) === JSON.stringify(expected)) {
         eventTypesData.push(req.body);
@@ -117,7 +140,26 @@ app.post('/subscriptions', (req, res) => {
         'owning_application': 'stups_nakadi-ui-elm',
         'read_from': 'end',
         'event_types': ['aruha.test-event.ver_5'],
-        'authorization': {'readers': [], 'writers': [], 'admins': []}
+        'authorization': {
+          'readers': [
+            {
+              'data_type': 'user',
+              'value': 'fakeuser'
+            }
+          ],
+          'writers': [
+            {
+              'data_type': 'user',
+              'value': 'fakeuser'
+            }
+          ],
+          'admins': [
+            {
+              'data_type': 'user',
+              'value': 'fakeuser'
+            }
+          ]
+        }
     };
 
     const response = {

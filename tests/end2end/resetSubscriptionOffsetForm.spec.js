@@ -8,8 +8,8 @@ describe('Reset subscription offset form', function() {
     it('should close on cancel click', function(done) {
 
         this.browser.login('#subscriptions/2151d17e-a6a2-4661-bdc8-010101010101')
-        .waitForVisible('a=Change',1000)
-        .click('a=Change')
+        .waitForVisible('button=Change',1000)
+        .click('button=Change')
         .waitForVisible('#subscriptionEditOffset',1000)
         .click('button=Cancel')
         .waitForVisible('span=000000000000000009',1000)
@@ -20,8 +20,8 @@ describe('Reset subscription offset form', function() {
     it('should change offset', function(done) {
 
         this.browser.login('#subscriptions/2151d17e-a6a2-4661-bdc8-010101010101')
-        .waitForVisible('a=Change',1000)
-        .click('a=Change')
+        .waitForVisible('button=Change',1000)
+        .click('button=Change')
         .waitForVisible('#subscriptionEditOffset',1000)
         .input('#subscriptionEditOffset', '000000000000000001')
         .click('button=Set offset')
@@ -33,8 +33,8 @@ describe('Reset subscription offset form', function() {
     it('should display the server error message', function(done) {
 
         this.browser.login('#subscriptions/2151d17e-a6a2-4661-bdc8-010101010101')
-        .waitForVisible('a=Change',1000)
-        .click('a=Change')
+        .waitForVisible('button=Change',1000)
+        .click('button=Change')
         .waitForVisible('#subscriptionEditOffset',1000)
         .input('#subscriptionEditOffset','crazy')
         .click('button=Set offset')

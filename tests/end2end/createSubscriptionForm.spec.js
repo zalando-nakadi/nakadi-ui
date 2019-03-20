@@ -77,6 +77,7 @@ describe('Create Subscription form', function() {
         const cursorsInput = '#subscriptionCreateFormFieldCursors';
 
         this.browser.login('#createsubscription')
+        .sleep(500) //waiting for data load from api
         .selectByValue(readFromInput, 'cursors')
         .isVisible(cursorsInput).then(function(visible) {
             expect(visible).toBeTruthy('The cursors field should be visible if the "read from" is "cursors".');
