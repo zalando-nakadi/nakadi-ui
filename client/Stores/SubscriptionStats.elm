@@ -5,8 +5,8 @@ import Constants exposing (emptyString)
 import Dict
 import Helpers.Store
 import Http
-import Json.Decode exposing (Decoder, field, int, list, map6, maybe, string, succeed)
-import Json.Decode.Pipeline exposing (required)
+import Json.Decode exposing (Decoder, field, int, list, map6, maybe, nullable, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required)
 
 
 type alias SubscriptionStats =
@@ -78,16 +78,12 @@ memberDecoder =
         |> required "partitions" (list partitionDecoder)
 
 
-
--- TODO use pipes
-
-
 partitionDecoder : Decoder SubscriptionStatsPartition
 partitionDecoder =
-    map6 SubscriptionStatsPartition
-        (field "partition" string)
-        (field "state" string)
-        (maybe (field "unconsumed_events" int))
-        (maybe (field "consumer_lag_seconds" int))
-        (maybe (field "assignment_type" string))
-        (maybe (field "stream_id" string))
+    succeed SubscriptionStatsPartition
+        |> required "partition" string
+        |> required "state" string
+        |> required "unconsumed_events" (nullable int)
+        |> required "consumer_lag_seconds" (nullable int)
+        |> required "assignment_type" (nullable string)
+        |> required "stream_id" (nullable string)
