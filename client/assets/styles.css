@@ -990,10 +990,7 @@ body {
 
 /*
 SVG icons was downloaded from https://fontawesome.com/icons
-TODO You must give appropriate credit,
-provide a link to the license, and indicate if changes were made.
-see https://fontawesome.com/license
-
+License: https://fontawesome.com/license/free
 */
 .icon--refresh {
     background-image: url("icons/sync-solid.svg");
