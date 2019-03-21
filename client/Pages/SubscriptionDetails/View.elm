@@ -32,7 +32,7 @@ import Routing.Models exposing (Route(..), routeToUrl)
 import Stores.Partition
 import Stores.Subscription exposing (Subscription)
 import Stores.SubscriptionStats
-import String.Extra exposing (replace)
+import String exposing (replace)
 
 
 view : AppModel -> Html Msg
@@ -263,7 +263,7 @@ renderType model stat =
 renderPartition : Model -> String -> Stores.SubscriptionStats.SubscriptionStatsPartition -> Html Msg
 renderPartition model eventTypeName partition =
     let
-        lag =
+        lagText =
             case partition.consumer_lag_seconds of
                 Nothing ->
                     "-"
@@ -279,10 +279,10 @@ renderPartition model eventTypeName partition =
                     else
                         " (" ++ periodToShortString (lag * 1000) ++ ")"
 
-        events =
+        eventsCountText =
             case partition.unconsumed_events of
                 Just events ->
-                    toString events ++ lag
+                    String.fromInt events ++ lagText
 
                 Nothing ->
                     "-"
@@ -332,7 +332,7 @@ renderPartition model eventTypeName partition =
             else
                 span []
                     [ span [] [ text offset, text " " ]
-                    , a [ onClick (EditOffset partitionKey offset), class "dc-link", href "javascript:undefined" ]
+                    , button [ onClick (EditOffset partitionKey offset), class "dc-btn--link" ]
                         [ text "Change" ]
                     ]
     in
@@ -344,7 +344,7 @@ renderPartition model eventTypeName partition =
             [ text (partition.state ++ " " ++ (partition.assignment_type |> Maybe.withDefault "")) ]
         , td
             [ class "dc-table__td" ]
-            [ text events ]
+            [ text eventsCountText ]
         , td
             [ class "dc-table__td" ]
             [ text (partition.stream_id |> Maybe.withDefault "-") ]
@@ -379,7 +379,7 @@ deletePopup model subscription appsInfoUrl =
             div []
                 [ div [ class "dc-overlay" ] []
                 , div [ class "dc-dialog" ]
-                    [ div [ class "dc-dialog__content", style [ ( "min-width", "600px" ) ] ]
+                    [ div [ class "dc-dialog__content", style "min-width" "600px" ]
                         [ div [ class "dc-dialog__body" ]
                             [ div [ class "dc-dialog__close" ]
                                 [ i

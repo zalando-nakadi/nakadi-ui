@@ -1,11 +1,11 @@
 module Tests.Routes exposing (all, parseLocationTest, routeTest)
 
 import Expect
-import Messages exposing (..)
 import Pages.EventTypeDetails.Models exposing (Tabs(..))
 import Routing.Helpers exposing (locationToRoute, routeToUrl)
 import Routing.Models exposing (Route(..))
 import Test exposing (Test, describe, test)
+import Url
 
 
 all : Test
@@ -21,29 +21,29 @@ all =
         , routeTest (EventTypeDetailsRoute { name = "some/id" } { tab = Just PartitionsTab, formatted = Just True, version = Just "1.1.1", effective = Nothing })
             "#types/some%2Fid?formatted=True&tab=PartitionsTab&version=1.1.1"
         , routeTest NotFoundRoute "#notfound"
-        , parseLocationTest "#"
+        , parseLocationTest ""
             HomeRoute
-        , parseLocationTest "#?some=some"
+        , parseLocationTest "?some=some"
             HomeRoute
-        , parseLocationTest "#types"
+        , parseLocationTest "types"
             (EventTypeListRoute { filter = Nothing, page = Nothing, sortBy = Nothing, sortReverse = Nothing })
-        , parseLocationTest "#types?filter=some"
+        , parseLocationTest "types?filter=some"
             (EventTypeListRoute { filter = Just "some", page = Nothing, sortBy = Nothing, sortReverse = Nothing })
-        , parseLocationTest "#types?page=1&filter=some"
+        , parseLocationTest "types?page=1&filter=some"
             (EventTypeListRoute { filter = Just "some", page = Just 1, sortBy = Nothing, sortReverse = Nothing })
-        , parseLocationTest "#types?page=1&filter=some&sortBy=name"
+        , parseLocationTest "types?page=1&filter=some&sortBy=name"
             (EventTypeListRoute { filter = Just "some", page = Just 1, sortBy = Just "name", sortReverse = Nothing })
-        , parseLocationTest "#types?page=1&filter=some&sortBy=name&reverse=True"
+        , parseLocationTest "types?page=1&filter=some&sortBy=name&reverse=True"
             (EventTypeListRoute { filter = Just "some", page = Just 1, sortBy = Just "name", sortReverse = Just True })
-        , parseLocationTest "#types/someid"
+        , parseLocationTest "types/someid"
             (EventTypeDetailsRoute { name = "someid" } { tab = Nothing, formatted = Nothing, version = Nothing, effective = Nothing })
-        , parseLocationTest "#types/someid?tab=aaa&formatted=1"
+        , parseLocationTest "types/someid?tab=aaa&formatted=1"
             (EventTypeDetailsRoute { name = "someid" } { tab = Nothing, formatted = Nothing, version = Nothing, effective = Nothing })
-        , parseLocationTest "#types/someid?tab=PartitionsTab&formatted=True"
+        , parseLocationTest "types/someid?tab=PartitionsTab&formatted=True"
             (EventTypeDetailsRoute { name = "someid" } { tab = Just PartitionsTab, formatted = Just True, version = Nothing, effective = Nothing })
-        , parseLocationTest "#notfound"
+        , parseLocationTest "notfound"
             NotFoundRoute
-        , parseLocationTest "#SomeThingCrazy"
+        , parseLocationTest "SomeThingCrazy"
             NotFoundRoute
         ]
 
@@ -60,17 +60,12 @@ parseLocationTest url expectedRoute =
         (\() ->
             let
                 location =
-                    { href = ""
-                    , host = ""
-                    , hostname = ""
-                    , protocol = ""
-                    , origin = ""
-                    , port_ = ""
-                    , pathname = ""
-                    , search = ""
-                    , hash = url
-                    , username = ""
-                    , password = ""
+                    { protocol = Url.Https
+                    , host = "localhost"
+                    , port_ = Nothing
+                    , path = ""
+                    , query = Nothing
+                    , fragment = Just url
                     }
 
                 route =

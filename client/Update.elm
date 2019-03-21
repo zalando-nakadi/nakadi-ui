@@ -1,12 +1,12 @@
 module Update exposing (update)
 
 import Debug exposing (log)
-import Helpers.Store as Store exposing (Msg(FetchAllDone, FetchData, SetParams))
-import Helpers.StoreLocal as StoreLocal exposing (Msg(FetchData))
+import Helpers.Store as Store exposing (Msg(..))
+import Helpers.StoreLocal as StoreLocal exposing (Msg(..))
 import Helpers.Task exposing (dispatch)
 import Messages exposing (Msg(..))
 import Models exposing (AppModel)
-import MultiSearch.Messages exposing (Msg(OutRedirect))
+import MultiSearch.Messages exposing (Msg(..))
 import MultiSearch.Update
 import Pages.EventTypeCreate.Messages
 import Pages.EventTypeCreate.Models
@@ -27,14 +27,14 @@ import Pages.SubscriptionDetails.Update as PageSubscriptionDetails
 import Pages.SubscriptionList.Messages as SubscriptionListPageMessages exposing (Msg(..))
 import Pages.SubscriptionList.Models
 import Pages.SubscriptionList.Update as PageSubscriptionList
-import Routing.Messages exposing (Msg(Redirect, RouteChanged, SetLocation))
+import Routing.Messages exposing (Msg(..))
 import Routing.Models exposing (Route(..))
 import Routing.Update
 import Stores.EventType
 import Stores.StarredEventTypes
 import Stores.StarredSubscriptions
 import Stores.Subscription
-import User.Messages exposing (Msg(LoginDone))
+import User.Messages
 import User.Update
 
 
@@ -47,14 +47,14 @@ update message model =
     if isInactivePageMsg message model.route then
         let
             a =
-                log "Rejected MSG" (String.left 200 (toString message))
+                log "Rejected MSG" (String.left 200 (Debug.toString message))
         in
         ( model, Cmd.none )
 
     else
         let
             a =
-                log "MSG" (String.left 200 (toString message))
+                log "MSG" (String.left 200 (Debug.toString message))
         in
         model
             |> updateComponents message
@@ -264,9 +264,9 @@ interComponentMessaging message ( model, cmd ) =
             )
     in
     case message of
-        UserMsg LoginDone ->
+        UserMsg User.Messages.LoginDone ->
             send
-                [ RoutingMsg (RouteChanged model.route)
+                [ RoutingMsg (OutRouteChanged model.route)
                 , EventTypeStoreMsg Store.FetchData
                 , SubscriptionStoreMsg Stores.Subscription.FetchData
                 , StarredEventTypesStoreMsg StoreLocal.FetchData
@@ -276,7 +276,7 @@ interComponentMessaging message ( model, cmd ) =
         MultiSearchMsg (OutRedirect route) ->
             urlRedirect route
 
-        EventTypeStoreMsg (FetchAllDone (Ok result)) ->
+        EventTypeStoreMsg (Store.FetchAllDone (Ok result)) ->
             let
                 messages =
                     case model.route of
@@ -425,7 +425,7 @@ interComponentMessaging message ( model, cmd ) =
                 _ ->
                     pass
 
-        RoutingMsg (RouteChanged location) ->
+        RoutingMsg (OutRouteChanged location) ->
             case model.newRoute of
                 EventTypeListRoute query ->
                     send [ EventTypeListMsg (EventTypeListPageMessages.OnRouteChange model.newRoute) ]

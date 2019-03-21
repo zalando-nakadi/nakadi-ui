@@ -1,10 +1,11 @@
 module Pages.SubscriptionCreate.Models exposing (Field(..), Model, Operation(..), allReadFrom, cloneValues, copyValues, defaultApplication, defaultValues, initialModel, readFrom)
 
+import Config exposing (appPreffix)
 import Constants exposing (emptyString)
 import Dict
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
-import Helpers.Store exposing (ErrorMessage, Status(Unknown))
+import Helpers.Store exposing (ErrorMessage, Status(..))
 import Http
 import MultiSearch.Models
 import Stores.Subscription
@@ -75,7 +76,7 @@ allReadFrom =
 
 defaultApplication : String
 defaultApplication =
-    "stups_nakadi-ui-elm"
+    appPreffix ++ "nakadi-ui-elm"
 
 
 defaultValues : ValuesDict

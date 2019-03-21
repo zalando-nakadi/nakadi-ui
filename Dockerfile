@@ -6,7 +6,7 @@ COPY server server
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 COPY webpack.config.prod.js webpack.config.prod.js
-COPY elm-package.json elm-package.json
+COPY elm.json elm.json
 RUN npm install && npm run build
 
 FROM registry.opensource.zalan.do/stups/node:8.9.4-alpine-34

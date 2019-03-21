@@ -4,8 +4,8 @@ import Config
 import Constants
 import Dict
 import Helpers.Store
-import Json.Decode exposing (Decoder, float, int, list, nullable, string)
-import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
+import Json.Decode exposing (Decoder, int, list, nullable, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required)
 import Stores.Authorization exposing (Authorization)
 import Stores.EventTypeSchema as Schema exposing (EventTypeSchema)
 
@@ -183,7 +183,7 @@ collectionDecoder =
 
 memberDecoder : Decoder EventType
 memberDecoder =
-    decode EventType
+    succeed EventType
         |> required "category" string
         |> required Constants.name string
         |> required "owning_application" (nullable string)
@@ -204,7 +204,7 @@ memberDecoder =
 
 defaultStatisticDecoder : Decoder EventTypeStatistics
 defaultStatisticDecoder =
-    decode EventTypeStatistics
+    succeed EventTypeStatistics
         |> required "messages_per_minute" int
         |> required "message_size" int
         |> required "read_parallelism" int
@@ -213,5 +213,5 @@ defaultStatisticDecoder =
 
 optionsDecoder : Decoder EventTypeOptions
 optionsDecoder =
-    decode EventTypeOptions
+    succeed EventTypeOptions
         |> optional "retention_time" (nullable int) Nothing

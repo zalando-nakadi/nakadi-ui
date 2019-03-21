@@ -37,7 +37,7 @@ import Stores.EventTypeValidation exposing (EventTypeValidationIssue)
 import Stores.Partition
 import Stores.Publisher
 import Stores.Subscription
-import String.Extra exposing (replace)
+import String exposing (replace)
 
 
 view : AppModel -> Html Msg
@@ -106,7 +106,7 @@ detailsLayout typeName eventType model =
             pageState.jsonEditor
 
         tabOptions =
-            { onChange = \tab -> TabChange tab
+            { onChange = \aTab -> TabChange aTab
             , notSelectedView = Just (div [] [ text "No tab selected" ])
             , class = Just "dc-column"
             , containerClass = Nothing
@@ -341,7 +341,7 @@ infoAnyToText : Maybe a -> Html msg
 infoAnyToText maybeInfo =
     case maybeInfo of
         Just info ->
-            text (toString info)
+            text (Debug.toString info)
 
         Nothing ->
             infoEmpty
@@ -367,10 +367,10 @@ infoStatisticsToText maybeStatistics =
     case maybeStatistics of
         Just stat ->
             div []
-                [ infoSubField "Messages/minute:" (toString stat.messages_per_minute)
-                , infoSubField "Message size:" (toString stat.message_size)
-                , infoSubField "Read parallelism:" (toString stat.read_parallelism)
-                , infoSubField "Write parallelism:" (toString stat.write_parallelism)
+                [ infoSubField "Messages/minute:" (String.fromInt stat.messages_per_minute)
+                , infoSubField "Message size:" (String.fromInt stat.message_size)
+                , infoSubField "Read parallelism:" (String.fromInt stat.read_parallelism)
+                , infoSubField "Write parallelism:" (String.fromInt stat.write_parallelism)
                 ]
 
         Nothing ->
@@ -411,7 +411,7 @@ schemaTab jsonEditorState schemasStore selectedVersion formatted effective event
 
                 Err error ->
                     div []
-                        [ Helpers.Panel.errorMessage "Json parsing error" (toString error)
+                        [ Helpers.Panel.errorMessage "Json parsing error" (Debug.toString error)
                         , text jsonString
                         ]
 
@@ -474,12 +474,12 @@ schemaTab jsonEditorState schemasStore selectedVersion formatted effective event
                     , type_ "checkbox"
                     ]
                     []
-            , label [ class "dc-label", for "effective", style [ ( "margin-right", "0" ) ] ]
+            , label [ class "dc-label", for "effective", style "margin-right" "0" ]
                 [ text "Effective schema " ]
             , helpIcon "Effective Schema" Help.schema BottomLeft
             ]
         , span [ class "schema-tab__formatted toolbar" ]
-            [ a
+            [ button
                 [ onClick (selectedSchema.schema |> copyToClipboardVal |> CopyToClipboard)
                 , class "icon-link dc-icon dc-icon--interactive"
                 , title "Copy To Clipboard"
@@ -544,7 +544,7 @@ renderPartition totalsStore name partition =
         totalLabel =
             case maybeTotal of
                 Just distance ->
-                    distance + 1 |> toString
+                    distance + 1 |> String.fromInt
 
                 Nothing ->
                     "Loading..."
@@ -599,7 +599,7 @@ renderPublishers name appsInfoUrl usersInfoUrl item =
     tr [ class "dc-table__tr" ]
         [ td [ class "dc-table__td" ]
             [ linkToAppOrUser appsInfoUrl usersInfoUrl item.name ]
-        , td [ class "dc-table__td" ] [ text (toString item.count) ]
+        , td [ class "dc-table__td" ] [ text (String.fromInt item.count) ]
         , td [ class "dc-table__td" ]
             []
         ]
@@ -644,7 +644,7 @@ renderConsumers name appsInfoUrl usersInfoUrl item =
     tr [ class "dc-table__tr" ]
         [ td [ class "dc-table__td" ]
             [ linkToAppOrUser appsInfoUrl usersInfoUrl item.name ]
-        , td [ class "dc-table__td" ] [ text (toString item.count) ]
+        , td [ class "dc-table__td" ] [ text (String.fromInt item.count) ]
         , td [ class "dc-table__td" ]
             []
         ]
@@ -776,7 +776,7 @@ deletePopup model eventType consumersStore subscriptionsStore appsInfoUrl usersI
             div []
                 [ div [ class "dc-overlay" ] []
                 , div [ class "dc-dialog" ]
-                    [ div [ class "dc-dialog__content", style [ ( "min-width", "600px" ) ] ]
+                    [ div [ class "dc-dialog__content", style "min-width" "600px" ]
                         [ div [ class "dc-dialog__body" ]
                             [ div [ class "dc-dialog__close" ]
                                 [ i
@@ -811,7 +811,7 @@ deletePopup model eventType consumersStore subscriptionsStore appsInfoUrl usersI
                             , p [ class "dc-p" ]
                                 [ text "Think twice, notify all consumers and producers."
                                 ]
-                            , div [ style [ ( "max-height", "400px" ), ( "overflow", "auto" ) ] ]
+                            , div [ style "max-height" "400px", style "overflow" "auto" ]
                                 [ consumers
                                 , subscriptions
                                 ]
@@ -841,7 +841,7 @@ deletePopup model eventType consumersStore subscriptionsStore appsInfoUrl usersI
             div []
                 [ div [ class "dc-overlay" ] []
                 , div [ class "dc-dialog" ]
-                    [ div [ class "dc-dialog__content", style [ ( "min-width", "600px" ) ] ]
+                    [ div [ class "dc-dialog__content", style "min-width" "600px" ]
                         [ div [ class "dc-dialog__body" ]
                             [ div [ class "dc-dialog__close" ]
                                 [ i
@@ -867,7 +867,7 @@ deletePopup model eventType consumersStore subscriptionsStore appsInfoUrl usersI
                                     [ text "Please read the rationale and possible solutions in this "
                                     , externalLink "document" model.userStore.user.settings.forbidDeleteUrl
                                     ]
-                                , div [ style [ ( "max-height", "200px" ), ( "overflow", "auto" ) ] ]
+                                , div [ style "max-height" "200px", style "overflow" "auto" ]
                                     [ consumers
                                     , subscriptions
                                     ]
@@ -982,7 +982,7 @@ validationSection icon title issues groupPoints =
         , div [ class "et-validation__col" ]
             [ div [ class "et-validation__label" ] [ text title ]
             , div [ class "et-validation__value" ]
-                [ text (toString groupPoints ++ " %")
+                [ text (String.fromInt groupPoints ++ " %")
                 ]
             ]
         ]
@@ -1006,7 +1006,7 @@ pie groupPoints icon =
         [ class "pie" ]
         [ div
             [ class ("pie__cover " ++ side)
-            , style [ ( "transform", "rotate(" ++ toString turn ++ "turn)" ) ]
+            , style "transform" ("rotate(" ++ String.fromFloat turn ++ "turn)")
             ]
             []
         , div

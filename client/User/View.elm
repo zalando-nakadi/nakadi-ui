@@ -3,10 +3,10 @@ module User.View exposing (currentLoginUrl, loginButton, requireAuth, userMenu, 
 import Config
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Http
 import Models exposing (AppModel)
 import Routing.Models exposing (routeToUrl)
 import Types exposing (AppHtml)
+import Url exposing (percentEncode)
 import User.Models exposing (Status(..))
 
 
@@ -62,7 +62,7 @@ loginButton model =
 
 currentLoginUrl : AppModel -> String
 currentLoginUrl model =
-    Config.urlLogin ++ "?returnTo=" ++ Http.encodeUri (Config.urlBase ++ routeToUrl model.route)
+    Config.urlLogin ++ "?returnTo=" ++ percentEncode (Config.urlBase ++ routeToUrl model.route)
 
 
 requireAuth : AppModel -> (AppModel -> AppHtml) -> AppHtml

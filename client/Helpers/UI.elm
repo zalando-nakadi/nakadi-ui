@@ -1,6 +1,6 @@
 module Helpers.UI exposing (PopupPosition(..), TabsOptions, bold, externalHtmlLink, externalLink, grid, helpIcon, highlightFound, link, linkHtmlToApp, linkHtmlToUser, linkToApp, linkToAppOrUser, linkToUser, man, mono, nbsp, newline, none, onChange, onKeyDown, onKeyUp, popup, refreshButton, searchInput, spec, starIcon, tabs)
 
-import Config
+import Config exposing (appPreffix)
 import Constants exposing (emptyString, starOff, starOn)
 import Helpers.StoreLocal as StoreLocal
 import Helpers.String
@@ -8,6 +8,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
+import Keyboard exposing (RawKey, eventKeyDecoder)
 import Maybe exposing (withDefault)
 
 
@@ -118,16 +119,16 @@ onChange msg =
     on "change" (Json.map msg <| Json.at [ "target", "value" ] Json.string)
 
 
-onKeyUp : (Int -> msg) -> Attribute msg
+onKeyUp : (RawKey -> msg) -> Attribute msg
 onKeyUp tagger =
     on "keyup" <|
-        Json.map tagger keyCode
+        Json.map tagger eventKeyDecoder
 
 
-onKeyDown : (Int -> msg) -> Attribute msg
+onKeyDown : (RawKey -> msg) -> Attribute msg
 onKeyDown tagger =
     on "keydown" <|
-        Json.map tagger keyCode
+        Json.map tagger eventKeyDecoder
 
 
 {-| Create html for search(filter) input
@@ -241,17 +242,17 @@ starIcon msgAdd msgRemove store id =
             [ text starOff ]
 
 
+appNameToAppId : String -> String
+appNameToAppId name =
+    if name |> String.startsWith appPreffix then
+        String.dropLeft (String.length appPreffix) name
+
+    else
+        name
+
+
 linkHtmlToApp : String -> String -> List (Html msg) -> Html msg
 linkHtmlToApp appsInfoUrl name content =
-    let
-        appNameToAppId : String -> String
-        appNameToAppId name =
-            if name |> String.startsWith "stups_" then
-                String.dropLeft 6 name
-
-            else
-                name
-    in
     externalHtmlLink (appsInfoUrl ++ appNameToAppId name) content
 
 
@@ -262,7 +263,7 @@ linkToApp appsInfoUrl name =
 
 linkToAppOrUser : String -> String -> String -> Html msg
 linkToAppOrUser appsInfoUrl usersInfoUrl name =
-    if name |> String.startsWith "stups_" then
+    if name |> String.startsWith appPreffix then
         linkToApp appsInfoUrl name
 
     else
@@ -343,4 +344,4 @@ none =
 
 nbsp : String
 nbsp =
-    " "
+    "\u{00A0}"

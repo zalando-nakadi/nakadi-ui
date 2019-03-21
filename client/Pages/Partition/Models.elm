@@ -108,9 +108,9 @@ queryToUrl : UrlQuery -> String
 queryToUrl query =
     queryMaybeToUrl <|
         Dict.fromList
-            [ ( "formatted", query.formatted |> Maybe.map toString )
+            [ ( "formatted", query.formatted |> Maybe.map Debug.toString )
             , ( "offset", query.offset )
-            , ( "size", query.size |> Maybe.map toString )
+            , ( "size", query.size |> Maybe.map String.fromInt )
             , ( Constants.filter, query.filter )
             , ( "selected", query.selected )
             ]

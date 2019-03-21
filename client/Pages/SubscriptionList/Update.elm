@@ -2,13 +2,13 @@ module Pages.SubscriptionList.Update exposing (modelToRoute, routeToModel, updat
 
 import Pages.SubscriptionList.Messages exposing (Msg(..))
 import Pages.SubscriptionList.Models exposing (..)
-import Routing.Models exposing (Route(SubscriptionListRoute))
+import Routing.Models exposing (Route(..))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
 update message model =
     let
-        ( newModel, cmd ) =
+        ( resultModel, resultCmd ) =
             case message of
                 NameFilterChanged filter ->
                     ( { model | filter = filter, page = 0 }, Cmd.none )
@@ -43,7 +43,7 @@ update message model =
                     in
                     ( newModel, Cmd.none )
     in
-    ( newModel, cmd, modelToRoute newModel )
+    ( resultModel, resultCmd, modelToRoute resultModel )
 
 
 routeToModel : Route -> Model -> Model

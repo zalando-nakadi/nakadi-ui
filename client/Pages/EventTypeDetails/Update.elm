@@ -9,10 +9,10 @@ import Helpers.Task exposing (dispatch)
 import Http
 import Pages.EventTypeDetails.Messages exposing (Msg(..))
 import Pages.EventTypeDetails.Models exposing (Model, Tabs(..), initialModel)
-import Pages.EventTypeDetails.PublishTab exposing (sendEvent)
+import Pages.EventTypeDetails.PublishTab
 import Pages.EventTypeDetails.QueryTab exposing (deleteQuery, loadQuery)
-import RemoteData exposing (RemoteData(Failure, Loading, NotAsked), isFailure, isSuccess)
-import Routing.Models exposing (Route(EventTypeDetailsRoute))
+import RemoteData exposing (RemoteData(..), isFailure, isSuccess)
+import Routing.Models exposing (Route(..))
 import Stores.Consumer
 import Stores.Cursor
 import Stores.CursorDistance
@@ -20,6 +20,7 @@ import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import Stores.Partition
 import Stores.Publisher
+import Url exposing (percentEncode)
 import User.Commands exposing (logoutIfExpired)
 import User.Models exposing (Settings)
 
@@ -30,7 +31,7 @@ update settings message model =
         deletePopup =
             model.deletePopup
 
-        ( newModel, cmd ) =
+        ( resultModel, resultCmd ) =
             case message of
                 OnRouteChange route ->
                     let
@@ -329,7 +330,7 @@ update settings message model =
                 OutRemoveFromFavorite typeName ->
                     ( model, Cmd.none )
     in
-    ( newModel, cmd, modelToRoute newModel )
+    ( resultModel, resultCmd, modelToRoute resultModel )
 
 
 modelToRoute : Model -> Route
@@ -379,7 +380,7 @@ callDelete name =
     Http.request
         { method = "DELETE"
         , headers = []
-        , url = Config.urlNakadiApi ++ "event-types/" ++ Http.encodeUri name
+        , url = Config.urlNakadiApi ++ "event-types/" ++ percentEncode name
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing

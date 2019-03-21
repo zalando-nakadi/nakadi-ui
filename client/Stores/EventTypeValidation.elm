@@ -4,8 +4,8 @@ import Config
 import Constants exposing (emptyString)
 import Dict
 import Helpers.Store
-import Json.Decode exposing (Decoder, field, float, int, list, nullable, string)
-import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
+import Json.Decode exposing (Decoder, field, int, list, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required)
 
 
 type alias EventTypeValidationIssue =
@@ -32,7 +32,7 @@ config params =
         eventType =
             Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-    { getKey = \index issue -> issue.group ++ ":" ++ toString index
+    { getKey = \index issue -> issue.group ++ ":" ++ String.fromInt index
     , url = Config.urlValidationApi ++ eventType
     , decoder = collectionDecoder
     , headers = []
@@ -72,7 +72,7 @@ collectionDecoder =
 
 memberDecoder : Decoder EventTypeValidationIssue
 memberDecoder =
-    decode EventTypeValidationIssue
+    succeed EventTypeValidationIssue
         |> required "id" int
         |> required "title" string
         |> required "message" string

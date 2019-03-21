@@ -6,8 +6,8 @@ import Dict
 import Helpers.Store
 import Helpers.String exposing (compareAsInt)
 import Http
-import Json.Decode exposing (Decoder, float, int, list, nullable, string)
-import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
+import Json.Decode exposing (Decoder, list, string, succeed)
+import Json.Decode.Pipeline exposing (required)
 
 
 type alias Partition =
@@ -69,7 +69,7 @@ collectionDecoder =
 
 memberDecoder : Decoder Partition
 memberDecoder =
-    decode Partition
+    succeed Partition
         |> required "oldest_available_offset" string
         |> required "newest_available_offset" string
         |> required "partition" string

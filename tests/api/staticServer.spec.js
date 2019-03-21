@@ -36,7 +36,7 @@ describe('Server functionality', function() {
         .expect(200, testDone(done));
     });
 
-    it('should return dotfiles', function(done) {
+    xit('should return dotfiles', function(done) {
         agent
         .get('/.well-known/schema-discovery')
         .expect(200, testDone(done));

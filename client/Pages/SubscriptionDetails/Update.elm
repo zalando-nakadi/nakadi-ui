@@ -1,28 +1,29 @@
 module Pages.SubscriptionDetails.Update exposing (callDelete, modelToRoute, routeToModel, setInputKey, setInputValue, submitOffset, update)
 
+import Browser.Dom
 import Config
 import Constants
 import Dict
-import Dom
 import Helpers.Store as Store exposing (loadStore, onFetchErr, onFetchOk, onFetchStart)
 import Helpers.Task exposing (dispatch)
 import Http
 import Json.Encode
-import Keyboard.Extra
+import Keyboard
 import Pages.SubscriptionDetails.Messages exposing (Msg(..))
 import Pages.SubscriptionDetails.Models exposing (Model, Tabs(..), initialModel)
-import Routing.Models exposing (Route(SubscriptionDetailsRoute))
+import Routing.Models exposing (Route(..))
 import Stores.Cursor
 import Stores.SubscriptionCursors exposing (fetchCursors)
-import Stores.SubscriptionStats exposing (config, fetchStats)
+import Stores.SubscriptionStats exposing (fetchStats)
 import Task
+import Url exposing (percentEncode)
 import User.Commands exposing (logoutIfExpired)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
 update message model =
     let
-        ( newModel, cmd ) =
+        ( resultModel, resultCmd ) =
             case message of
                 OnRouteChange route ->
                     let
@@ -151,7 +152,7 @@ update message model =
                 EditOffset partition offset ->
                     ( { model | editOffsetInput = Store.onFetchReset model.editOffsetInput }
                         |> setInputKey (Just partition)
-                    , Dom.focus "subscriptionEditOffset"
+                    , Browser.Dom.focus "subscriptionEditOffset"
                         |> Task.attempt (always (EditOffsetChange offset))
                     )
 
@@ -167,11 +168,11 @@ update message model =
                 OffsetKeyDown key ->
                     let
                         cmd =
-                            case Keyboard.Extra.fromCode key of
-                                Keyboard.Extra.Enter ->
+                            case Keyboard.anyKeyOriginal key of
+                                Just Keyboard.Enter ->
                                     dispatch EditOffsetSubmit
 
-                                Keyboard.Extra.Escape ->
+                                Just Keyboard.Escape ->
                                     dispatch EditOffsetCancel
 
                                 _ ->
@@ -209,7 +210,7 @@ update message model =
                 OutRemoveFromFavorite str ->
                     ( model, Cmd.none )
     in
-    ( newModel, cmd, modelToRoute newModel )
+    ( resultModel, resultCmd, modelToRoute resultModel )
 
 
 modelToRoute : Model -> Route
@@ -242,7 +243,7 @@ callDelete name =
     Http.request
         { method = "DELETE"
         , headers = []
-        , url = Config.urlNakadiApi ++ "subscriptions/" ++ Http.encodeUri name
+        , url = Config.urlNakadiApi ++ "subscriptions/" ++ percentEncode name
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing
@@ -283,15 +284,15 @@ submitOffset model =
             Http.jsonBody <|
                 Json.Encode.object
                     [ ( "items"
-                      , Json.Encode.list
-                            [ Stores.Cursor.subscriptionCursorEncoder cursor ]
+                      , Json.Encode.list Stores.Cursor.subscriptionCursorEncoder
+                            [ cursor ]
                       )
                     ]
     in
     Http.request
         { method = "PATCH"
         , headers = []
-        , url = Config.urlNakadiApi ++ "subscriptions/" ++ Http.encodeUri id ++ "/cursors"
+        , url = Config.urlNakadiApi ++ "subscriptions/" ++ percentEncode id ++ "/cursors"
         , body = body
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing

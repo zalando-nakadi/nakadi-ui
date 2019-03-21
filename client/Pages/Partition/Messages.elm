@@ -1,9 +1,9 @@
 module Pages.Partition.Messages exposing (Msg(..))
 
-import Char exposing (KeyCode)
 import Helpers.Http exposing (HttpStringResult)
 import Helpers.JsonEditor as JsonEditor
 import Http
+import Keyboard exposing (RawKey)
 import Routing.Models exposing (Route(..))
 import Stores.CursorDistance
 import Stores.Events exposing (Event, EventsResponse)
@@ -22,7 +22,7 @@ type Msg
     | SetOffset String
     | EventsLoaded (Result Http.Error EventsResponse)
     | InputOffset String
-    | OffsetKeyUp KeyCode
+    | OffsetKeyUp RawKey
     | InputSize String
     | InputFilter String
     | SelectEvent String

@@ -1,12 +1,11 @@
-module Stores.Consumer exposing (Consumer, Model, Msg, collectionDecoder, config, fetchConsumers, initialModel, memberDecoder, update)
+module Stores.Consumer exposing (Consumer, Model, Msg, collectionDecoder, config, initialModel, memberDecoder, update)
 
 import Config
 import Constants exposing (emptyString)
 import Dict
 import Helpers.Store
-import Http
-import Json.Decode exposing (Decoder, field, float, int, list, nullable, string)
-import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
+import Json.Decode exposing (Decoder, field, int, list, string, succeed)
+import Json.Decode.Pipeline exposing (required)
 
 
 type alias Consumer =
@@ -46,11 +45,6 @@ update =
     Helpers.Store.update config
 
 
-fetchConsumers : (Result Http.Error (List Consumer) -> msg) -> String -> Cmd msg
-fetchConsumers tagger name =
-    Helpers.Store.fetchAll tagger (config (Dict.singleton Constants.eventTypeName name))
-
-
 
 -- Decoders
 
@@ -62,6 +56,6 @@ collectionDecoder =
 
 memberDecoder : Decoder Consumer
 memberDecoder =
-    decode Consumer
+    succeed Consumer
         |> required "value" string
         |> required "count" int

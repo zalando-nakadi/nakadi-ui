@@ -1,24 +1,51 @@
 module Routing.Update exposing (makeCmdForNewRoute, update)
 
+import Browser exposing (UrlRequest(..))
+import Browser.Navigation as Nav exposing (Key)
+import Config
 import Constants exposing (emptyString)
-import Helpers.Http exposing (postString)
 import Helpers.Task exposing (dispatch)
 import Models exposing (AppModel)
 import Routing.Helpers exposing (locationToRoute, routeToUrl)
 import Routing.Messages exposing (Msg(..))
-import Routing.Models exposing (Route, routeToTitle)
+import Routing.Models exposing (Route)
+import Url
 
 
 update : Msg -> AppModel -> ( AppModel, Cmd Msg )
 update message model =
     case message of
+        UrlChangeRequested request ->
+            case request of
+                Internal location ->
+                    let
+                        -- Checking pseudo-external urls (like /api/*, /auth/*, etc)
+                        cmd =
+                            if location.path == Config.urlBase then
+                                location
+                                    |> locationToRoute
+                                    |> Redirect
+                                    |> dispatch
+
+                            else
+                                location
+                                    |> Url.toString
+                                    |> External
+                                    |> UrlChangeRequested
+                                    |> dispatch
+                    in
+                    ( model, cmd )
+
+                External url ->
+                    ( model, Nav.load url )
+
         Redirect route ->
             ( { model | newRoute = route }, Cmd.none )
 
         SetLocation route ->
             let
                 cmd =
-                    makeCmdForNewRoute model.route route
+                    makeCmdForNewRoute model.routerKey model.route route
             in
             ( { model | route = route }, cmd )
 
@@ -26,31 +53,17 @@ update message model =
             let
                 realUrlRoute =
                     locationToRoute location
-
-                changeRoute =
-                    if realUrlRoute == model.route then
-                        Cmd.none
-
-                    else
-                        dispatch (RouteChanged realUrlRoute)
             in
             ( { model | route = realUrlRoute, newRoute = realUrlRoute }
-            , changeRoute
+            , dispatch (OutRouteChanged realUrlRoute)
             )
 
-        RouteChanged route ->
-            let
-                updateTitle =
-                    postString TitleChanged "elm:title" (routeToTitle route)
-            in
-            ( model, updateTitle )
-
-        TitleChanged _ ->
+        OutRouteChanged route ->
             ( model, Cmd.none )
 
 
-makeCmdForNewRoute : Route -> Route -> Cmd Msg
-makeCmdForNewRoute oldRoute newRoute =
+makeCmdForNewRoute : Maybe Key -> Route -> Route -> Cmd Msg
+makeCmdForNewRoute routerKey oldRoute newRoute =
     let
         extractPath route =
             route
@@ -60,10 +73,20 @@ makeCmdForNewRoute oldRoute newRoute =
                 |> Maybe.withDefault emptyString
 
         cmdPushHistory route =
-            postString (always (RouteChanged route)) "elm:pushState" (routeToUrl route)
+            case routerKey of
+                Just key ->
+                    Nav.pushUrl key (routeToUrl route)
+
+                Nothing ->
+                    Cmd.none
 
         cmdReplaceHistory route =
-            postString (always (RouteChanged route)) "elm:replaceState" (routeToUrl route)
+            case routerKey of
+                Just key ->
+                    Nav.replaceUrl key (routeToUrl route)
+
+                Nothing ->
+                    Cmd.none
 
         oldPath =
             extractPath oldRoute

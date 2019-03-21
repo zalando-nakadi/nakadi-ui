@@ -1,12 +1,14 @@
 module Pages.SubscriptionCreate.Update exposing (authorizationFromSubscription, checkConsumerGroupFormat, checkCursors, checkEventTypesExist, cloneSubscription, formToRequestBody, isNotEmpty, post, put, searchConfig, searchEvenType, stringToJsonList, stringToList, update, updateSubscription, validate)
 
+import Browser.Dom exposing (focus)
 import Config
 import Constants exposing (emptyString)
+import Debug exposing (toString)
 import Dict
-import Dom
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Http exposing (getString)
+import Helpers.Regex
 import Helpers.Store as Store
 import Helpers.Task exposing (dispatch)
 import Http
@@ -14,7 +16,7 @@ import Json.Decode
 import Json.Encode as Json
 import List.Extra
 import MultiSearch.Messages
-import MultiSearch.Models exposing (Config, SearchItem(SearchItemEventType))
+import MultiSearch.Models exposing (Config, SearchItem(..))
 import MultiSearch.Update
 import Pages.SubscriptionCreate.Messages exposing (..)
 import Pages.SubscriptionCreate.Models exposing (..)
@@ -66,8 +68,8 @@ update message model eventTypeStore subscriptionStore user =
 
         Reset ->
             let
-                focus =
-                    Dom.focus "subscriptionCreateFormFieldConsumerGroup"
+                focusCmd =
+                    focus "subscriptionCreateFormFieldConsumerGroup"
                         |> Task.attempt FocusResult
 
                 authorization maybeId =
@@ -83,7 +85,7 @@ update message model eventTypeStore subscriptionStore user =
                     case model.operation of
                         Create ->
                             ( initialModel
-                            , [ focus, setAuthEditorCmd Nothing ]
+                            , [ focusCmd, setAuthEditorCmd Nothing ]
                             )
 
                         Update id ->
@@ -93,7 +95,7 @@ update message model eventTypeStore subscriptionStore user =
 
                         Clone id ->
                             ( cloneSubscription subscriptionStore id model
-                            , [ focus
+                            , [ focusCmd
                               , setAuthEditorCmd (Just id)
                               , loadCursorsCmd id
                               ]
@@ -194,8 +196,7 @@ update message model eventTypeStore subscriptionStore user =
                 cursors =
                     subModel
                         |> Store.items
-                        |> List.map Stores.Cursor.subscriptionCursorEncoder
-                        |> Json.list
+                        |> Json.list Stores.Cursor.subscriptionCursorEncoder
                         |> Json.encode 1
 
                 values =
@@ -241,7 +242,7 @@ checkConsumerGroupFormat model dict =
             model.values |> getValue FieldConsumerGroup |> String.trim
 
         pattern =
-            Regex.regex "^[-0-9a-zA-Z_]*$"
+            Helpers.Regex.fromString "^[-0-9a-zA-Z_]*$"
     in
     if Regex.contains pattern name then
         dict
@@ -287,7 +288,7 @@ checkCursors model dict =
             else
                 case decodedCursors of
                     Err error ->
-                        error
+                        Debug.toString error
 
                     Ok parsedCursors ->
                         emptyString
@@ -323,8 +324,7 @@ formToRequestBody model =
                 |> Json.Decode.decodeString
                     (Json.Decode.list Stores.Cursor.subscriptionCursorDecoder)
                 |> Result.withDefault []
-                |> List.map Stores.Cursor.subscriptionCursorEncoder
-                |> Json.list
+                |> Json.list Stores.Cursor.subscriptionCursorEncoder
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
@@ -391,8 +391,8 @@ put id body =
 stringToList : String -> List String
 stringToList str =
     str
-        |> Regex.split Regex.All (Regex.regex "[\\s\\n\\,]")
-        |> List.map (Regex.replace Regex.All (Regex.regex "['\"]") (\_ -> ""))
+        |> Regex.split (Helpers.Regex.fromString "[\\s\\n\\,]")
+        |> List.map (Regex.replace (Helpers.Regex.fromString "['\"]") (\_ -> ""))
         |> List.map String.trim
         |> List.filter (String.isEmpty >> not)
         |> List.Extra.unique
@@ -402,8 +402,7 @@ stringToJsonList : String -> Json.Value
 stringToJsonList str =
     str
         |> stringToList
-        |> List.map Json.string
-        |> Json.list
+        |> Json.list Json.string
 
 
 searchEvenType : Stores.EventType.Model -> String -> List SearchItem

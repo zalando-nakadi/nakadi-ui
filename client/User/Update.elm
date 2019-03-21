@@ -43,7 +43,7 @@ update message userStore =
         FetchAllDone (Err error) ->
             let
                 errorMsg =
-                    "Fail Loading User ! " ++ toString error
+                    "Fail Loading User ! " ++ Debug.toString error
             in
             ( { initialModel
                 | error = errorMsg

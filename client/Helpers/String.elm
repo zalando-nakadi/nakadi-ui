@@ -1,11 +1,11 @@
 module Helpers.String exposing (Params, cleanDateTime, compareAsInt, formatDateTime, getMaybeBool, getMaybeInt, getMaybeString, justOrCrash, parseParams, parseUrl, periodToShortString, periodToString, pluralCount, pseudoIntSort, queryMaybeToUrl, splitFound, stringToBool, toKeyValuePair, toPx)
 
 import Constants exposing (emptyString)
-import Date
 import Dict
-import Http
-import Regex
+import ISO8601
 import Strftime exposing (format)
+import Time
+import Url exposing (percentDecode, percentEncode)
 
 
 
@@ -33,8 +33,8 @@ splitFound whatStr whereStr =
         --highlight only first occurrence
         index =
             case List.head indexes of
-                Just index ->
-                    index
+                Just firstIndex ->
+                    firstIndex
 
                 Nothing ->
                     len
@@ -59,7 +59,7 @@ splitFound whatStr whereStr =
 
 pluralCount : Int -> String -> String
 pluralCount count label =
-    toString count
+    String.fromInt count
         ++ " "
         ++ label
         ++ (if count == 1 then
@@ -76,21 +76,21 @@ pluralCount count label =
 
 toPx : Int -> String
 toPx n =
-    toString n ++ "px"
+    String.fromInt n ++ "px"
 
 
 
 ---------- Maybe
 
 
-justOrCrash : String -> Maybe a -> a
+justOrCrash : String -> Maybe String -> String
 justOrCrash error maybeValue =
     case maybeValue of
         Just value ->
             value
 
         Nothing ->
-            Debug.crash error
+            Debug.log "ERROR:" error
 
 
 
@@ -135,7 +135,7 @@ toKeyValuePair : String -> Maybe ( String, String )
 toKeyValuePair segment =
     case String.split "=" segment of
         [ key, value ] ->
-            Maybe.map2 (,) (Http.decodeUri key) (Http.decodeUri value)
+            Maybe.map2 (\a b -> ( a, b )) (percentDecode key) (percentDecode value)
 
         _ ->
             Nothing
@@ -147,7 +147,7 @@ queryMaybeToUrl query =
         dictToKeyVal key maybeVal accumulator =
             case maybeVal of
                 Just val ->
-                    List.append accumulator [ Http.encodeUri key ++ "=" ++ Http.encodeUri val ]
+                    List.append accumulator [ percentEncode key ++ "=" ++ percentEncode val ]
 
                 Nothing ->
                     accumulator
@@ -194,10 +194,7 @@ stringToBool str =
 getMaybeInt : String -> Dict.Dict String String -> Maybe Int
 getMaybeInt name dict =
     Dict.get name dict
-        |> Maybe.andThen
-            (\val ->
-                String.toInt val |> Result.toMaybe
-            )
+        |> Maybe.andThen String.toInt
 
 
 
@@ -206,14 +203,19 @@ getMaybeInt name dict =
 
 formatDateTime : String -> String
 formatDateTime timestamp =
-    Date.fromString timestamp
-        |> Result.map (format Constants.userDateTimeFormat)
+    ISO8601.fromString timestamp
+        |> Result.map
+            (ISO8601.toPosix
+                >> format Constants.userDateTimeFormat Time.utc
+            )
         |> Result.withDefault timestamp
 
 
 cleanDateTime : String -> String
 cleanDateTime date =
-    Regex.replace Regex.All (Regex.regex "[TZ]") (\_ -> " ") date
+    date
+        |> String.replace "T" " "
+        |> String.replace "Z" " "
 
 
 periodToString : Int -> String
@@ -224,10 +226,10 @@ periodToString ms =
                 emptyString
 
             else if n > 1 then
-                toString n ++ " " ++ name ++ "s"
+                String.fromInt n ++ " " ++ name ++ "s"
 
             else
-                toString n ++ " " ++ name
+                String.fromInt n ++ " " ++ name
 
         msSecond =
             1000
@@ -248,7 +250,7 @@ periodToString ms =
             plural days "day"
 
         daysRem =
-            Basics.rem ms msDay
+            remainderBy msDay ms
 
         hours =
             daysRem // msHour
@@ -257,7 +259,7 @@ periodToString ms =
             plural hours "hour"
 
         hoursRem =
-            Basics.rem daysRem msHour
+            remainderBy msHour daysRem
 
         minutes =
             hoursRem // msMinute
@@ -266,7 +268,7 @@ periodToString ms =
             plural minutes "minute"
 
         minutesRem =
-            Basics.rem hoursRem msMinute
+            remainderBy msMinute hoursRem
 
         seconds =
             minutesRem // msSecond
@@ -275,7 +277,7 @@ periodToString ms =
             plural seconds "second"
 
         secondsRem =
-            Basics.rem minutesRem msSecond
+            remainderBy msSecond minutesRem
 
         milliseconds =
             secondsRem
@@ -296,7 +298,7 @@ periodToShortString ms =
                 emptyString
 
             else
-                toString n ++ name
+                String.fromInt n ++ name
 
         msSecond =
             1000
@@ -317,7 +319,7 @@ periodToShortString ms =
             format days "d"
 
         daysRem =
-            Basics.rem ms msDay
+            remainderBy msDay ms
 
         hours =
             daysRem // msHour
@@ -326,7 +328,7 @@ periodToShortString ms =
             format hours "h"
 
         hoursRem =
-            Basics.rem daysRem msHour
+            remainderBy msHour daysRem
 
         minutes =
             hoursRem // msMinute
@@ -335,7 +337,7 @@ periodToShortString ms =
             format minutes "m"
 
         minutesRem =
-            Basics.rem hoursRem msMinute
+            remainderBy msMinute hoursRem
 
         seconds =
             minutesRem // msSecond
@@ -344,7 +346,7 @@ periodToShortString ms =
             format seconds "s"
 
         secondsRem =
-            Basics.rem minutesRem msSecond
+            remainderBy msSecond minutesRem
 
         milliseconds =
             secondsRem
@@ -369,13 +371,13 @@ pseudoIntSort list =
 compareAsInt : String -> String -> Order
 compareAsInt a b =
     case String.toInt a of
-        Ok int1 ->
+        Just int1 ->
             case String.toInt b of
-                Ok int2 ->
+                Just int2 ->
                     compare int1 int2
 
-                Err e ->
+                Nothing ->
                     compare a b
 
-        Err e ->
+        Nothing ->
             compare a b

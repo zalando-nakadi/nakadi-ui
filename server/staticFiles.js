@@ -20,15 +20,11 @@ module.exports = function(productionMode) {
     let webpackConfig = require('../webpack.config.dev');
 
     const compiler = webpack(webpackConfig);
-    const compilerOptions = {
-        publicPath: webpackConfig.output.publicPath,
-        noInfo: true
-    };
 
     return [
-        webpackDevMiddleware(compiler, compilerOptions),
+        webpackDevMiddleware(compiler),
         webpackHotMiddleware(compiler, {
-            log: logger.log.bind(logger, "info")
+            dynamicPublicPath: true
         })
     ]
 };

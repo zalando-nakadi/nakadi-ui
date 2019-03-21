@@ -4,16 +4,16 @@ import Dict
 import Helpers.String exposing (parseUrl)
 import Html exposing (Html, a, text)
 import Html.Attributes exposing (class, href)
-import Navigation exposing (Location)
 import Routing.Models
     exposing
         ( PageLoader
         , ParsedUrl
-        , Route(NotFoundRoute)
+        , Route(..)
         , RouteConfig
         , routeToUrl
         , routingConfig
         )
+import Url exposing (Url)
 
 
 routeToUrl : Route -> String
@@ -37,13 +37,12 @@ internalLink name route =
     internalHtmlLink route [ text name ]
 
 
-locationToRoute : Location -> Route
+locationToRoute : Url -> Route
 locationToRoute location =
     let
         parsedUrl =
-            location.hash
-                --drop #
-                |> String.dropLeft 1
+            location.fragment
+                |> Maybe.withDefault ""
                 |> parseUrl
     in
     routingConfig
@@ -62,22 +61,22 @@ testRoute : ParsedUrl -> RouteConfig -> Maybe Route
 testRoute ( path, query ) ( pattern, toRoute ) =
     let
         -- Folds the template path to true/false collecting params on the way
-        isMatch templateFolder result =
+        isMatch templateFolder matchResult =
             let
                 fullStop =
                     { match = False, params = Dict.empty, rest = [] }
 
                 next =
-                    { result | rest = List.drop 1 result.rest }
+                    { matchResult | rest = List.drop 1 matchResult.rest }
 
                 key =
                     String.dropLeft 1 templateFolder
             in
-            case List.head result.rest of
+            case List.head matchResult.rest of
                 Just folderName ->
                     if templateFolder |> String.startsWith ":" then
                         { next
-                            | params = Dict.insert key folderName result.params
+                            | params = Dict.insert key folderName matchResult.params
                         }
 
                     else if folderName == templateFolder then

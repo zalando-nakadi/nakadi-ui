@@ -3,12 +3,12 @@ module Pages.Home.View exposing (card, getStatus, lastUpdatedSubscriptions, last
 import Config
 import Constants
 import Helpers.Store exposing (Status(..))
-import Helpers.StoreLocal exposing (Msg(Add, Remove))
+import Helpers.StoreLocal exposing (Msg(..))
 import Helpers.String exposing (formatDateTime)
 import Helpers.UI as UI
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Messages exposing (Msg(StarredEventTypesStoreMsg, StarredSubscriptionsStoreMsg))
+import Messages exposing (Msg(..))
 import Models exposing (AppModel)
 import Pages.EventTypeDetails.Models
 import Pages.EventTypeList.Models
@@ -21,7 +21,7 @@ import Types exposing (AppHtml)
 view : AppModel -> AppHtml
 view model =
     div []
-        [ div [ class "dc-row", style [ ( "margin-bottom", "16px" ) ] ]
+        [ div [ class "dc-row", style "margin-bottom" "16px" ]
             [ div [ class "dc-column " ]
                 [ div [ class "dc-card" ]
                     [ h4 [ class "dc-h4 dc--text-center" ]
@@ -46,11 +46,11 @@ view model =
                         , text " | "
                         , text "Event types: "
                         , span [ class "help-code" ]
-                            [ text (model.eventTypeStore |> Helpers.Store.size |> toString) ]
+                            [ text (model.eventTypeStore |> Helpers.Store.size |> String.fromInt) ]
                         , text " | "
                         , text "Subscriptions: "
                         , span [ class "help-code" ]
-                            [ text (model.subscriptionStore |> Helpers.Store.size |> toString) ]
+                            [ text (model.subscriptionStore |> Helpers.Store.size |> String.fromInt) ]
                         , text " | "
                         , UI.externalLink " Monitoring " model.userStore.user.settings.monitoringUrl
                         , text " | "

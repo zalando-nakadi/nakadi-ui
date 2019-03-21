@@ -3,10 +3,10 @@ module User.Commands exposing (fetchAll, logout, logoutIfExpired, memberDecoder,
 import Config
 import Constants exposing (emptyString)
 import Helpers.Http exposing (postString)
-import Http exposing (Error(BadStatus))
-import Json.Decode as Decode exposing (..)
-import Json.Decode.Pipeline exposing (decode, optional, required)
-import User.Messages exposing (Msg(FetchAllDone))
+import Http exposing (Error(..))
+import Json.Decode as Decode exposing (Decoder, bool, maybe, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required)
+import User.Messages exposing (Msg(..))
 import User.Models exposing (Settings, User)
 
 
@@ -17,7 +17,7 @@ fetchAll =
 
 memberDecoder : Decode.Decoder (Maybe User)
 memberDecoder =
-    decode User
+    succeed User
         |> required Constants.id string
         |> required Constants.name string
         |> required "settings" settingsDecoder
@@ -26,7 +26,7 @@ memberDecoder =
 
 settingsDecoder : Decoder Settings
 settingsDecoder =
-    decode Settings
+    succeed Settings
         |> required "nakadiApiUrl" string
         |> optional "appsInfoUrl" string emptyString
         |> optional "usersInfoUrl" string emptyString
@@ -44,19 +44,15 @@ settingsDecoder =
 
 {-| Redirect browser to logout
 This function never actually returns
-but to be a function in Elm it must accept some dummy argument
 -}
-logout : a -> Cmd msg
-logout dummy =
-    postString (\r -> Debug.crash "Logout performed") "elm:forceReLogin" Config.urlLogout
+logout : Cmd msg
+logout =
+    postString (\_ -> Debug.todo "Logout never returns") "elm:forceReLogin" Config.urlLogout
 
 
 {-| Check the response from the server and if return is not recoverable
 (like expired credentials) redirect browser to logout.
 This way it's cleaning all cached data and redirects the user back to the login page.
-Normally, invalid access token checked on Nakadi UI server and it sends code 401
-But if proxy works with Nakadi directly (without checking the access token) then
-Nakadi sends code 400 with the special body content
 -}
 logoutIfExpired : Http.Error -> Cmd msg
 logoutIfExpired error =
@@ -64,14 +60,7 @@ logoutIfExpired error =
         BadStatus response ->
             case response.status.code of
                 401 ->
-                    logout "dummy"
-
-                400 ->
-                    if response.body |> String.contains "\"Access Token not valid\"" then
-                        logout "dummy"
-
-                    else
-                        Cmd.none
+                    logout
 
                 _ ->
                     Cmd.none

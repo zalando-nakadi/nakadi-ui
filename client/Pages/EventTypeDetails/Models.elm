@@ -3,10 +3,10 @@ module Pages.EventTypeDetails.Models exposing (Model, Tabs(..), UrlParams, UrlQu
 import Constants exposing (emptyString)
 import Dict exposing (get)
 import Helpers.JsonEditor as JsonEditor
-import Helpers.Store exposing (ErrorMessage, Status(Unknown))
+import Helpers.Store exposing (ErrorMessage, Status(..))
 import Helpers.String exposing (getMaybeBool, justOrCrash, queryMaybeToUrl)
 import Pages.EventTypeDetails.PublishTab
-import RemoteData exposing (RemoteData(NotAsked), WebData)
+import RemoteData exposing (RemoteData(..), WebData)
 import Stores.Consumer
 import Stores.CursorDistance
 import Stores.EventTypeSchema
@@ -115,9 +115,9 @@ queryToUrl : UrlQuery -> String
 queryToUrl query =
     queryMaybeToUrl <|
         Dict.fromList
-            [ ( "formatted", query.formatted |> Maybe.map toString )
-            , ( "effective", query.effective |> Maybe.map toString )
-            , ( "tab", query.tab |> Maybe.map toString )
+            [ ( "formatted", query.formatted |> Maybe.map Debug.toString )
+            , ( "effective", query.effective |> Maybe.map Debug.toString )
+            , ( "tab", query.tab |> Maybe.map Debug.toString )
             , ( "version", query.version )
             ]
 

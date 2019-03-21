@@ -6,8 +6,8 @@ import Dict
 import Helpers.Store as Store
 import Helpers.Task exposing (dispatch)
 import Http
-import Json.Decode exposing (..)
-import Json.Decode.Pipeline exposing (..)
+import Json.Decode exposing (Decoder, at, list, map, maybe, nullable, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required)
 import Stores.Authorization exposing (Authorization)
 import User.Commands exposing (logoutIfExpired)
 
@@ -107,7 +107,7 @@ fetchNext next =
 
 pageDecoder : Decoder Page
 pageDecoder =
-    decode Page
+    succeed Page
         |> required "items" (list memberDecoder)
         |> required "_links" linksDecoder
 
@@ -119,7 +119,7 @@ linksDecoder =
 
 memberDecoder : Decoder Subscription
 memberDecoder =
-    decode Subscription
+    succeed Subscription
         |> required Constants.id string
         |> required "owning_application" string
         |> required "event_types" (list string)

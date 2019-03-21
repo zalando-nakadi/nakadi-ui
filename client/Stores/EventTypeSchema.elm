@@ -4,8 +4,8 @@ import Config
 import Constants exposing (emptyString)
 import Dict
 import Helpers.Store
-import Json.Decode exposing (Decoder, field, float, int, list, nullable, string)
-import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
+import Json.Decode exposing (Decoder, field, list, nullable, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required)
 
 
 type alias EventTypeSchema =
@@ -58,7 +58,7 @@ collectionDecoder =
 
 memberDecoder : Decoder EventTypeSchema
 memberDecoder =
-    decode EventTypeSchema
+    succeed EventTypeSchema
         |> required "schema" string
         |> optional "version" (nullable string) Nothing
         |> optional "created_at" (nullable string) Nothing

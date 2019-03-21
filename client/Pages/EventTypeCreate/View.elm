@@ -1,11 +1,11 @@
 module Pages.EventTypeCreate.View exposing (FormSetup, accessEditor, schemaEditor, view, viewForm, viewFormClone, viewFormCreate, viewFormUpdate)
 
-import Config
+import Config exposing (appPreffix)
 import Constants exposing (emptyString)
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Panel
-import Helpers.Store as Store exposing (Status(Loading))
+import Helpers.Store as Store exposing (Status(..))
 import Helpers.UI exposing (PopupPosition(..), externalLink, none, onChange)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -194,8 +194,8 @@ viewForm model setup =
                 FieldOwningApplication
                 OnInput
                 "Owning Application"
-                "Example: stups_price-updater"
-                "App name registered in YourTurn with 'stups_' prefix"
+                ("Example: " ++ appPreffix ++ "price-updater")
+                ("App name registered in YourTurn with '" ++ appPreffix ++ "' prefix")
                 Help.owningApplication
                 Required
                 Enabled
@@ -246,7 +246,7 @@ viewForm model setup =
                 Help.defaultStatistic
                 Optional
                 partitionNumberEditing
-                (List.range 1 Config.maxPartitionNumber |> List.map toString)
+                (List.range 1 Config.maxPartitionNumber |> List.map String.fromInt)
             , textInput formModel
                 FieldOrderingKeyFields
                 OnInput

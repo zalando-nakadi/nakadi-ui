@@ -1,7 +1,7 @@
 module Stores.Cursor exposing (Cursor, SubscriptionCursor, cursorDecoder, cursorEncoder, cursorHeader, subscriptionCursorDecoder, subscriptionCursorEncoder)
 
 import Json.Decode as Json exposing (..)
-import Json.Decode.Pipeline exposing (decode, required)
+import Json.Decode.Pipeline exposing (required)
 import Json.Encode
 
 
@@ -20,7 +20,7 @@ type alias SubscriptionCursor =
 
 cursorDecoder : Decoder Cursor
 cursorDecoder =
-    decode Cursor
+    succeed Cursor
         |> required "partition" string
         |> required "offset" string
 
@@ -35,7 +35,7 @@ cursorEncoder cursor =
 
 subscriptionCursorDecoder : Decoder SubscriptionCursor
 subscriptionCursorDecoder =
-    decode SubscriptionCursor
+    succeed SubscriptionCursor
         |> required "event_type" string
         |> required "partition" string
         |> required "offset" string

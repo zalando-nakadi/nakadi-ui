@@ -2,7 +2,7 @@ module Pages.EventTypeCreate.Query exposing (daysToRetentionTimeJson, helpSql, p
 
 {--------------- View -----------------}
 
-import Config
+import Config exposing (appPreffix)
 import Constants
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
@@ -48,8 +48,8 @@ viewQueryForm model =
                 FieldOwningApplication
                 OnInput
                 "Owning Application"
-                "Example: stups_price-updater"
-                "App name registered in YourTurn with 'stups_' prefix"
+                ("Example: " ++ appPreffix ++ "price-updater")
+                ("App name registered in YourTurn with '" ++ appPreffix ++ "' prefix")
                 Help.owningApplication
                 Required
                 Enabled
@@ -230,8 +230,7 @@ stringToJsonList str =
         |> String.split ","
         |> List.map String.trim
         |> List.filter (String.isEmpty >> not)
-        |> List.map Json.string
-        |> Json.list
+        |> Json.list Json.string
 
 
 daysToRetentionTimeJson : ValuesDict -> Json.Value
@@ -239,7 +238,7 @@ daysToRetentionTimeJson values =
     values
         |> getValue FieldRetentionTime
         |> String.toInt
-        |> Result.withDefault defaultRetentionDays
+        |> Maybe.withDefault defaultRetentionDays
         |> (*) Constants.msInDay
         |> Json.int
 

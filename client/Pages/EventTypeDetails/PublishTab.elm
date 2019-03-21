@@ -1,8 +1,6 @@
 module Pages.EventTypeDetails.PublishTab exposing (Model, Msg(..), eventsTemplate, initialModel, publishTab, sendEvent, showRemoteDataStatus, update)
 
 import Config
-import Constants exposing (isoDateTimeFormat)
-import Date exposing (Date)
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
 import Helpers.Panel exposing (renderError, warningMessage)
 import Helpers.Store exposing (errorToViewRecord)
@@ -11,12 +9,13 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
+import ISO8601 exposing (fromPosix)
 import Json.Decode
 import RemoteData exposing (RemoteData(..), WebData, isLoading)
 import Result
-import Strftime exposing (format)
-import String.Extra
 import Task
+import Time exposing (Posix, toMillis, utc)
+import Url exposing (percentEncode)
 
 
 type Msg
@@ -25,7 +24,7 @@ type Msg
     | SendEventResponse (WebData String)
     | SendEventReset
     | SetPublishTemplate
-    | SetPublishTemplateWithTime Date
+    | SetPublishTemplateWithTime Posix
 
 
 type alias Model =
@@ -56,15 +55,15 @@ update message model name =
         SendEventReset ->
             ( { model | sendEventResponse = NotAsked, editEvent = "" }, Cmd.none )
 
-        SetPublishTemplateWithTime date ->
+        SetPublishTemplateWithTime posix ->
             let
                 editEvent =
-                    eventsTemplate date
+                    eventsTemplate posix
             in
             ( { model | editEvent = editEvent }, Cmd.none )
 
         SetPublishTemplate ->
-            ( model, Date.now |> Task.perform SetPublishTemplateWithTime )
+            ( model, Time.now |> Task.perform SetPublishTemplateWithTime )
 
 
 publishTab : Model -> Html Msg
@@ -83,7 +82,7 @@ publishTab model =
                         ""
 
                     Err err ->
-                        err
+                        Debug.toString err
 
         isDisabled =
             isLoading model.sendEventResponse
@@ -122,7 +121,7 @@ Example:
         , p [ class "dc--text-less-important" ] [ text "Expectd JSON array of events. Example: [{\"order_id\": \"1052\"}, {\"order_id\": \"8364\"}]" ]
         , div []
             [ pre
-                [ class "ace-edit", style [ ( "height", "400px" ) ] ]
+                [ class "ace-edit", style "height" "400px" ]
                 [ node "ace-editor"
                     [ value model.editEvent
                     , onChange EditEvent
@@ -142,14 +141,16 @@ Example:
         ]
 
 
-eventsTemplate : Date -> String
-eventsTemplate date =
+eventsTemplate : Posix -> String
+eventsTemplate posix =
     let
         timeStr =
-            format isoDateTimeFormat date
+            posix
+                |> fromPosix
+                |> ISO8601.toString
 
         eid =
-            toString (9000 - Date.millisecond date)
+            String.fromInt (9000 - toMillis utc posix)
     in
     """
 [
@@ -162,8 +163,8 @@ eventsTemplate date =
     }
 ]
 """
-        |> String.Extra.replace "{timeStr}" timeStr
-        |> String.Extra.replace "{eid}" eid
+        |> String.replace "{timeStr}" timeStr
+        |> String.replace "{eid}" eid
 
 
 sendEvent : (WebData String -> msg) -> String -> String -> Cmd msg
@@ -173,7 +174,7 @@ sendEvent tagger name event =
             Http.request
                 { method = "POST"
                 , headers = []
-                , url = Config.urlNakadiApi ++ "event-types/" ++ Http.encodeUri name ++ "/events"
+                , url = Config.urlNakadiApi ++ "event-types/" ++ percentEncode name ++ "/events"
                 , body = Http.jsonBody val
                 , expect = Http.expectString
                 , timeout = Nothing
@@ -183,7 +184,7 @@ sendEvent tagger name event =
                 |> Cmd.map tagger
 
         Err err ->
-            Debug.log ("event JSON decode error:" ++ err) Cmd.none
+            Debug.log ("event JSON decode error:" ++ Debug.toString err) Cmd.none
 
 
 showRemoteDataStatus : WebData String -> Html Msg

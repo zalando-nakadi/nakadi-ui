@@ -1,6 +1,6 @@
 module MultiSearch.Messages exposing (Msg(..))
 
-import Char exposing (..)
+import Keyboard exposing (Key)
 import MultiSearch.Models exposing (SearchItem)
 import Routing.Models exposing (Route)
 
@@ -8,7 +8,7 @@ import Routing.Models exposing (Route)
 type Msg
     = Selected SearchItem
     | FilterChanged String
-    | Key KeyCode
+    | KeyPress Key
     | Refresh
     | ClearInput
     | ShowAll

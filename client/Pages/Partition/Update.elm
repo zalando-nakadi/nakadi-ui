@@ -8,7 +8,7 @@ import Helpers.Store as Store exposing (onFetchErr, onFetchOk, onFetchStart)
 import Helpers.Task exposing (dispatch)
 import Http
 import Json.Decode
-import Keyboard.Extra
+import Keyboard
 import Pages.Partition.Messages exposing (Msg(..))
 import Pages.Partition.Models
     exposing
@@ -20,19 +20,20 @@ import Pages.Partition.Models
         , initialPageSize
         , isPartitionEmpty
         )
-import Routing.Models exposing (Route(PartitionRoute))
+import Routing.Models exposing (Route(..))
 import Stores.Cursor
 import Stores.CursorDistance
 import Stores.Events exposing (fetchEvents)
 import Stores.Partition exposing (Partition, fetchPartitions)
 import Stores.ShiftedCursor
+import Url exposing (percentEncode)
 import User.Commands exposing (logoutIfExpired)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Route )
 update message model =
     let
-        ( newModel, cmd ) =
+        ( resultModel, resultCmd ) =
             case message of
                 OnRouteChange route ->
                     let
@@ -93,6 +94,7 @@ update message model =
                                     { model
                                         | partitionsStore = onFetchOk newStore
                                         , eventsStore = Stores.Events.initialModel
+                                        , totalStore = Store.initialModel
                                     }
 
                                 justCalculateTotalCmd partition =
@@ -115,7 +117,11 @@ update message model =
                                     else
                                         calculateTotalCmd
                             in
-                            ( newModel, cmd )
+                            if isPartitionEmpty newModel then
+                                ( newModel, Cmd.none )
+
+                            else
+                                ( newModel, calculateTotalCmd )
 
                         Err error ->
                             ( { model | partitionsStore = onFetchErr model.partitionsStore error }
@@ -174,7 +180,7 @@ update message model =
                             Stores.ShiftedCursor.ShiftedCursor
                                 model.partition
                                 model.offset
-                                -initialPageSize
+                                -backOffsetSize
                                 |> Stores.ShiftedCursor.fetchShiftedCursors Store.FetchAllDone model.name
                                 |> Cmd.map PageBackCursorStoreMsg
 
@@ -329,18 +335,19 @@ update message model =
                 OffsetKeyUp key ->
                     let
                         cmd =
-                            if Keyboard.Extra.Enter == Keyboard.Extra.fromCode key then
-                                dispatch (SetOffset model.offset)
+                            case Keyboard.whitespaceKey key of
+                                Just Keyboard.Enter ->
+                                    dispatch (SetOffset model.offset)
 
-                            else
-                                Cmd.none
+                                _ ->
+                                    Cmd.none
                     in
                     ( model, cmd )
 
                 InputSize value ->
                     let
                         size =
-                            value |> String.toInt |> Result.withDefault initialModel.size
+                            value |> String.toInt |> Maybe.withDefault initialModel.size
                     in
                     ( { model | size = size }, dispatch LoadPartitions )
 
@@ -394,7 +401,7 @@ update message model =
                             Http.stringBody "" ("[" ++ rows ++ "]")
 
                         url =
-                            "elm:downloadAs?format=application/json&filename=" ++ Http.encodeUri filename
+                            "elm:downloadAs?format=application/json&filename=" ++ percentEncode filename
 
                         startDownload =
                             Http.post url body Json.Decode.string
@@ -412,7 +419,7 @@ update message model =
                     in
                     ( { model | jsonEditorState = newSubModel }, Cmd.map JsonEditorMsg newSubMsg )
     in
-    ( newModel, cmd, modelToRoute newModel )
+    ( resultModel, resultCmd, modelToRoute resultModel )
 
 
 normalizeOffset : Model -> String -> String

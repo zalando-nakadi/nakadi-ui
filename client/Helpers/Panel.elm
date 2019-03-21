@@ -12,7 +12,7 @@ none =
 
 panel : Int -> String -> List (Html msg) -> Html msg
 panel gridSize title desc =
-    div [ class ("dc-column  dc-column dc-column--small-" ++ toString gridSize) ]
+    div [ class ("dc-column  dc-column dc-column--small-" ++ String.fromInt gridSize) ]
         [ div [ class "dc-card dc-column__contents" ]
             [ h3 [ class "dc-h3 dc--text-center" ] [ text title ]
             , hr [ class "dc-divider" ] []
@@ -24,7 +24,7 @@ panel gridSize title desc =
 simplePanel : Int -> String -> List (Html msg) -> Html msg
 simplePanel gridSize title desc =
     div [ class "page dc-row dc-row--align--center " ]
-        [ div [ class ("dc-column  dc-column dc-column--small-" ++ toString gridSize) ]
+        [ div [ class ("dc-column  dc-column dc-column--small-" ++ String.fromInt gridSize) ]
             [ div [ class "dc-card dc-column__contents" ]
                 [ h3 [ class "dc-h3 dc--text-center" ] [ text title ]
                 , hr [ class "dc-divider" ] []
@@ -154,7 +154,7 @@ loadingStatus store mainView =
                     (ErrorMessage 0
                         "Unknown error happened!"
                         "Looks like internal UI error."
-                        (toString store)
+                        (Debug.toString store)
                     )
                 |> renderError
 
@@ -178,7 +178,7 @@ submitStatus store mainView =
                         (ErrorMessage 0
                             "An unknown error happened!"
                             "It looks like an internal UI error."
-                            (toString store)
+                            (Debug.toString store)
                         )
                     |> renderError
                 , mainView
@@ -215,7 +215,7 @@ renderError error =
                     [ text error.message
                     , div [ tabindex 0, class "more-btn" ]
                         [ pre [ class "more-details dc-card" ]
-                            [ text ("Status code: " ++ toString error.code ++ "\n")
+                            [ text ("Status code: " ++ String.fromInt error.code ++ "\n")
                             , text error.details
                             ]
                         , div [ tabindex 0, class "more-close" ] [ text "Less" ]

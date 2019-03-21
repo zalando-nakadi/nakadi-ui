@@ -1,12 +1,11 @@
 module MultiSearch.Update exposing (clearInput, defaultConfig, itemToRoute, moveSelected, onEnter, onKeyDown, removeFocus, scrollTo, scrollToView, search, setFocus, update)
 
+import Browser.Dom as Dom
 import Constants exposing (emptyString)
-import Dom
-import Dom.Scroll
 import Helpers.Store as Store
 import Helpers.StoreLocal as StoreLocal
 import Helpers.Task exposing (dispatch)
-import Keyboard.Extra exposing (Key(ArrowDown, ArrowUp, Enter, Escape, PageDown, PageUp))
+import Keyboard exposing (Key(..))
 import Models exposing (AppModel)
 import MultiSearch.Messages exposing (..)
 import MultiSearch.Models exposing (..)
@@ -53,7 +52,7 @@ update config message state =
         FilterChanged filter ->
             ( { state | selected = 0, filter = filter |> String.trim }, dispatch Refresh )
 
-        Key key ->
+        KeyPress key ->
             onKeyDown config key state
 
         ClearInput ->
@@ -87,7 +86,7 @@ clearInput config =
         |> Task.attempt (always (FilterChanged emptyString))
 
 
-onKeyDown : Config -> Int -> Model -> ( Model, Cmd Msg )
+onKeyDown : Config -> Key -> Model -> ( Model, Cmd Msg )
 onKeyDown config key state =
     let
         oneUp =
@@ -106,7 +105,7 @@ onKeyDown config key state =
             pageSize
 
         ( selected, cmd ) =
-            case Keyboard.Extra.fromCode key of
+            case key of
                 ArrowUp ->
                     moveSelected config oneUp state
 
@@ -168,8 +167,8 @@ onEnter state =
 
 scrollToView : Config -> Int -> Cmd Msg
 scrollToView config index =
-    Dom.Scroll.y config.dropdownId
-        |> Task.andThen (scrollTo config index)
+    Dom.getViewportOf config.dropdownId
+        |> Task.andThen (\info -> scrollTo config index info.scene.height)
         |> Task.attempt (always NoOp)
 
 
@@ -195,7 +194,7 @@ scrollTo config index scrollPosition =
         Task.succeed ()
 
     else
-        Dom.Scroll.toY config.dropdownId (toFloat newScroll)
+        Dom.setViewportOf config.dropdownId 0 (toFloat newScroll)
 
 
 itemToRoute : SearchItem -> Route

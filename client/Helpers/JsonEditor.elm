@@ -41,7 +41,7 @@ Example:
 
              Err error ->
                  div [class "error"]
-                     [ text "Json parsing error" (toString error)
+                     [ text "Json parsing error" (Debug.toString error)
                      , text json
                      ]
 
@@ -109,12 +109,12 @@ view collapsedDict json =
 -- Helpers
 
 
-stringToJsonValue : String -> Result String JsonValue
+stringToJsonValue : String -> Result Error JsonValue
 stringToJsonValue jsonString =
     decodeString jsonValueDecoder jsonString
 
 
-valueToJsonValue : Value -> Result String JsonValue
+valueToJsonValue : Value -> Result Error JsonValue
 valueToJsonValue value =
     decodeValue jsonValueDecoder value
 
@@ -122,7 +122,7 @@ valueToJsonValue value =
 jsonValueDecoder : Decoder JsonValue
 jsonValueDecoder =
     oneOf
-        [ keyValuePairs (lazy (\_ -> jsonValueDecoder)) |> map (ValueObject << List.reverse)
+        [ keyValuePairs (lazy (\_ -> jsonValueDecoder)) |> map ValueObject
         , list (lazy (\_ -> jsonValueDecoder)) |> map ValueArray
         , int |> map ValueInt
         , float |> map ValueFloat
@@ -158,7 +158,7 @@ jsonValueSet key value obj =
             case isReplace list of
                 Just a ->
                     list
-                        |> List.Extra.replaceIf byKey ( key, value )
+                        |> List.Extra.setIf byKey ( key, value )
                         |> ValueObject
 
                 Nothing ->
@@ -184,7 +184,7 @@ jsonValueSetFirst key value obj =
             case isReplace list of
                 Just a ->
                     list
-                        |> List.Extra.replaceIf byKey ( key, value )
+                        |> List.Extra.setIf byKey ( key, value )
                         |> ValueObject
 
                 Nothing ->
@@ -221,8 +221,7 @@ jsonValueToValue json =
 
         ValueArray array ->
             array
-                |> List.map jsonValueToValue
-                |> Json.Encode.list
+                |> Json.Encode.list jsonValueToValue
 
         ValueString str ->
             Json.Encode.string str
@@ -318,10 +317,10 @@ jsonValueToHtml json =
             span [ class "json-string" ] [ text ("\"" ++ str ++ "\"") ]
 
         ValueFloat number ->
-            span [ class "json-float" ] [ text (toString number) ]
+            span [ class "json-float" ] [ text (String.fromFloat number) ]
 
         ValueInt number ->
-            span [ class "json-int" ] [ text (toString number) ]
+            span [ class "json-int" ] [ text (String.fromInt number) ]
 
         ValueBool bool ->
             span [ class "json-bool" ]
@@ -341,8 +340,8 @@ jsonValueToHtml json =
 jsonValueToCollapsibleHtml : Model -> String -> JsonValue -> Html.Html Msg
 jsonValueToCollapsibleHtml collapsedDict path json =
     let
-        isCollapsed path =
-            Dict.get path collapsedDict |> Maybe.withDefault False
+        isCollapsed apath =
+            Dict.get apath collapsedDict |> Maybe.withDefault False
 
         isCollapsible v =
             case v of
@@ -362,10 +361,10 @@ jsonValueToCollapsibleHtml collapsedDict path json =
 
                 itemsText =
                     if count == 1 then
-                        toString count ++ " item"
+                        "1 item"
 
                     else
-                        toString count ++ " items"
+                        String.fromInt count ++ " items"
             in
             span [ class "json-placeholder" ] [ text itemsText ]
 
@@ -399,7 +398,7 @@ jsonValueToCollapsibleHtml collapsedDict path json =
         renderArrayItem array index value =
             let
                 nextPath =
-                    path ++ "[" ++ toString index ++ "]"
+                    path ++ "[" ++ String.fromInt index ++ "]"
             in
             renderListItem nextPath array index "" value
 
@@ -480,10 +479,10 @@ jsonValueToCollapsibleHtml collapsedDict path json =
             span [ class "json-string" ] [ text ("\"" ++ str ++ "\"") ]
 
         ValueFloat number ->
-            span [ class "json-float" ] [ text (toString number) ]
+            span [ class "json-float" ] [ text (String.fromFloat number) ]
 
         ValueInt number ->
-            span [ class "json-int" ] [ text (toString number) ]
+            span [ class "json-int" ] [ text (String.fromInt number) ]
 
         ValueBool bool ->
             span [ class "json-bool" ]

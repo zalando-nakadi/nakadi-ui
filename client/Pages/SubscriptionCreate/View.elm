@@ -1,10 +1,11 @@
 module Pages.SubscriptionCreate.View exposing (FormSetup, accessEditor, eventTypesEditor, view, viewForm, viewFormClone, viewFormCreate, viewFormUpdate)
 
+import Config exposing (appPreffix)
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Http exposing (httpErrorToString)
 import Helpers.Panel
-import Helpers.Store as Store exposing (Status(Loading))
+import Helpers.Store as Store exposing (Status(..))
 import Helpers.UI exposing (none)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -133,8 +134,8 @@ viewForm model setup =
                 FieldOwningApplication
                 OnInput
                 "Owning Application"
-                "Example: stups_price-updater"
-                "App name registered in YourTurn with 'stups_' prefix"
+                ("Example: " ++ appPreffix ++ "price-updater")
+                ("App name registered in YourTurn with '" ++ appPreffix ++ "' prefix")
                 Help.owningApplication
                 Required
                 (if updateMode then
@@ -232,7 +233,7 @@ eventTypesEditor isDisabled model =
 
         eventTypeList =
             model.eventTypeStore
-                |> Helpers.Store.items
+                |> Store.items
                 |> List.map (\et -> option [ value et.name ] [])
     in
     inputFrame FieldEventTypes

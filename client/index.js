@@ -12,17 +12,12 @@ express(window, router => {
   router.post('localStorage', (req, res) =>
       res.ok(window.localStorage.setItem(req.params.get('key'), req.body)))
 
-  router.post('title', (req, res) =>
-      res.ok(document.title = req.body))
-
+  // Redirect never resolves as it reload the whole page.
+  // We use it instead of Elm load() because we need current URL
+  // It is very tricky to get current URL in Elm an push it to all levels
+  // where logoutIfExpired function used (any request basically)
   router.post('forceReLogin', (req, res) =>
-      res.ok(document.location.href = `${req.body}?returnTo=${encodeURIComponent(document.location.href)}`))
-
-  router.post('pushState', (req, res) =>
-      res.ok(history.pushState({}, '', req.body)))
-
-  router.post('replaceState', (req, res) =>
-      res.ok(history.replaceState({}, '', req.body)))
+      document.location.href = `${req.body}?returnTo=${encodeURIComponent(document.location.href)}`)
 
   router.post('copyToClipboard', (req, res) => {
     const el = document.createElement('textarea')
@@ -45,7 +40,7 @@ express(window, router => {
 
     const file = document.getElementById(id).files[0]
     if (file.size > 2000000) {
-      return res.error('Selected file is too big. 2mb max.')
+      return res.error('Selected file is too big. 2MB Max.')
     }
     reader.readAsText(file)
   })
@@ -72,5 +67,5 @@ express(window, router => {
 })
 
 
-const Elm = require('./Main')
-Elm.Main.fullscreen()
+const {Elm} = require('./Main.elm')
+Elm.Main.init()

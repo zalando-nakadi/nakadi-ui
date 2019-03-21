@@ -1,16 +1,14 @@
 module Pages.EventTypeCreate.Models exposing (Field(..), Model, Operation(..), defaultApplication, defaultRetentionDays, defaultSchema, defaultSql, defaultValues, initialModel, loadValues)
 
+import Config exposing (appPreffix)
 import Constants exposing (emptyString)
 import Dict
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
-import Helpers.Store exposing (ErrorMessage, Status(Unknown))
+import Helpers.Store exposing (ErrorMessage, Status(..))
 import Stores.EventType
     exposing
         ( EventType
-        , allCategories
-        , allModes
-        , audiences
         , categories
         , cleanupPolicies
         , compatibilityModes
@@ -73,7 +71,7 @@ defaultRetentionDays =
 
 defaultApplication : String
 defaultApplication =
-    "stups_nakadi-ui-elm"
+    appPreffix ++ "nakadi-ui-elm"
 
 
 defaultValues : ValuesDict
@@ -85,7 +83,7 @@ defaultValues =
     , ( FieldPartitionsNumber, "1" )
     , ( FieldPartitionKeyFields, emptyString )
     , ( FieldOrderingKeyFields, emptyString )
-    , ( FieldRetentionTime, toString defaultRetentionDays )
+    , ( FieldRetentionTime, String.fromInt defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
     , ( FieldSql, defaultSql )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
@@ -109,7 +107,7 @@ loadValues eventType =
                 |> (*) (1 / toFloat Constants.msInDay)
                 |> Basics.ceiling
                 |> Basics.clamp 2 4
-                |> toString
+                |> String.fromInt
     in
     defaultValues
         |> setValue FieldName eventType.name

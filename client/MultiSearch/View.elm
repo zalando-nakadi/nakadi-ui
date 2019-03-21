@@ -7,6 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
+import Keyboard exposing (Key(..), anyKeyUpper, eventKeyDecoder)
 import MultiSearch.Messages exposing (..)
 import MultiSearch.Models exposing (..)
 
@@ -48,20 +49,28 @@ view config model =
         , ul
             [ id config.dropdownId
             , class "multi-search__dropdown dc-list dc-suggest"
-            , style [ ( "max-height", config.dropdownHeight |> toPx ) ]
+            , style "max-height" (config.dropdownHeight |> toPx)
             ]
             (renderSuggestions config model.filter model.filtered model.selected model.showAll)
         ]
 
 
-{-| VirtualDom in elm can't conditionally preventDefault
-<https://github.com/elm-lang/html/issues/66>
-so page down will scroll whole page and scroll search results together :(
--}
+rawKeyToMsg rawKey =
+    let
+        key =
+            anyKeyUpper rawKey |> Maybe.withDefault Spacebar
+
+        -- We want to prevent the whole page to scroll if we navigate inside popup
+        prevent =
+            key == ArrowUp || key == ArrowDown || key == PageUp || key == PageDown
+    in
+    ( KeyPress key, prevent )
+
+
 onKeyDown : Attribute Msg
 onKeyDown =
-    on "keydown" <|
-        Json.map (\key -> Key key) keyCode
+    preventDefaultOn "keydown" <|
+        Json.map rawKeyToMsg eventKeyDecoder
 
 
 renderSuggestions : Config -> String -> List SearchItem -> Int -> Bool -> List (Html Msg)
@@ -96,7 +105,7 @@ renderSuggestions config filter list selected showAll =
 
             moreText =
                 if moreCount > 1 then
-                    "Show " ++ toString moreCount ++ " more results"
+                    "Show " ++ String.fromInt moreCount ++ " more results"
 
                 else
                     "Show one more result"
@@ -181,7 +190,7 @@ renderResultItem config filter selected listIndex searchItem =
     in
     li
         [ class ("multi-search__item dc-suggest__item dc-link" ++ isSelected)
-        , style [ ( "height", config.itemHeight |> toPx ) ]
+        , style "height" (config.itemHeight |> toPx)
         , onClick <| Selected searchItem
         ]
         resultItem

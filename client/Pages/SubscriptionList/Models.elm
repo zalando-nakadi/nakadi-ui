@@ -4,7 +4,7 @@ import Basics
 import Constants exposing (emptyString)
 import Dict exposing (get)
 import Helpers.String exposing (getMaybeBool, getMaybeInt, getMaybeString, queryMaybeToUrl)
-import Maybe exposing (withDefault)
+import Maybe
 
 
 initialModel : Model
@@ -51,7 +51,7 @@ queryToUrl query =
     queryMaybeToUrl <|
         Dict.fromList
             [ ( Constants.filter, query.filter )
-            , ( Constants.page, query.page |> Maybe.map toString )
+            , ( Constants.page, query.page |> Maybe.map Debug.toString )
             , ( Constants.sortBy, query.sortBy )
-            , ( Constants.reverse, query.sortReverse |> Maybe.map toString )
+            , ( Constants.reverse, query.sortReverse |> Maybe.map Debug.toString )
             ]

@@ -1,4 +1,4 @@
-module Constants exposing (emptyString, eventTypeName, filter, id, isoDateTimeFormat, msInDay, name, noneLabel, page, reverse, sortBy, starOff, starOn, userDateTimeFormat)
+module Constants exposing (emptyString, eventTypeName, filter, id, msInDay, name, noneLabel, page, reverse, sortBy, starOff, starOn, userDateTimeFormat)
 
 
 msInDay : Int
@@ -9,11 +9,6 @@ msInDay =
 userDateTimeFormat : String
 userDateTimeFormat =
     "%b %d %Y, %-I:%M %p"
-
-
-isoDateTimeFormat : String
-isoDateTimeFormat =
-    "%Y-%m-%dT%H:%M:%SZ"
 
 
 emptyString : String

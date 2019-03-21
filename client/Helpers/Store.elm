@@ -1,4 +1,4 @@
-module Helpers.Store exposing (Config, ErrorMessage, Id, Model, Msg(..), Status(..), cmdIfDone, decodeError, empty, errorDecoder, errorToViewRecord, fetchAll, get, has, initialModel, items, loadStore, onFetchErr, onFetchOk, onFetchReset, onFetchStart, responseToString, size, update)
+module Helpers.Store exposing (Config, ErrorMessage, Id, Model, Msg(..), Status(..), cmdIfDone, decodeError, empty, errorDecoder, errorToViewRecord, fetchAll, get, has, initialModel, isLoading, items, loadStore, onFetchErr, onFetchOk, onFetchReset, onFetchStart, responseToString, size, update)
 
 import Constants exposing (emptyString)
 import Dict
@@ -113,6 +113,11 @@ has key store =
 size : Model entity -> Int
 size store =
     Dict.size store.dict
+
+
+isLoading : Model entity -> Bool
+isLoading store =
+    store.status == Loading
 
 
 update :

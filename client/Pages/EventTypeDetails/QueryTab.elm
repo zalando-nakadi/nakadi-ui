@@ -12,7 +12,8 @@ import Pages.EventTypeDetails.Messages exposing (..)
 import Pages.EventTypeDetails.Models exposing (Model)
 import RemoteData exposing (WebData)
 import Stores.Query exposing (Query, queryDecoder)
-import String.Extra exposing (replace)
+import String exposing (replace)
+import Url exposing (percentEncode)
 import User.Models exposing (Settings)
 
 
@@ -59,7 +60,7 @@ queryTabHeader settings model query =
                 , href <| replace "{query}" query.id settings.queryMonitoringUrl
                 ]
                 [ i [ class "fas fa-chart-line" ] [] ]
-            , a
+            , button
                 [ onClick (CopyToClipboard query.sql)
                 , class "icon-link dc-icon dc-icon--interactive"
                 , title "Copy To Clipboard"
@@ -103,7 +104,7 @@ sqlView sql =
 
 loadQuery : (WebData Query -> msg) -> String -> Cmd msg
 loadQuery tagger id =
-    Http.get (Config.urlNakadiSqlApi ++ "queries/" ++ Http.encodeUri id) queryDecoder
+    Http.get (Config.urlNakadiSqlApi ++ "queries/" ++ percentEncode id) queryDecoder
         |> RemoteData.sendRequest
         |> Cmd.map tagger
 
@@ -143,7 +144,7 @@ deleteQueryPopup model query =
             div []
                 [ div [ class "dc-overlay" ] []
                 , div [ class "dc-dialog" ]
-                    [ div [ class "dc-dialog__content", style [ ( "min-width", "600px" ) ] ]
+                    [ div [ class "dc-dialog__content", style "min-width" "600px" ]
                         [ div [ class "dc-dialog__body" ]
                             [ div [ class "dc-dialog__close" ]
                                 [ i
@@ -206,7 +207,7 @@ deleteQuery tagger id =
     Http.request
         { method = "DELETE"
         , headers = []
-        , url = Config.urlNakadiSqlApi ++ "queries/" ++ Http.encodeUri id
+        , url = Config.urlNakadiSqlApi ++ "queries/" ++ percentEncode id
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (always (Ok ()))
         , timeout = Nothing

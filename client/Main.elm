@@ -1,36 +1,41 @@
 module Main exposing (init, locationToMessage, main, subs)
 
+import Browser
+import Browser.Navigation exposing (Key)
 import Helpers.Task exposing (dispatch)
+import Json.Decode exposing (Value)
 import Messages exposing (Msg(..))
 import Models
-import Navigation
 import Routing.Helpers exposing (locationToRoute)
 import Routing.Messages exposing (Msg(..))
 import Update
+import Url exposing (Url)
 import User.Messages exposing (Msg(..))
 import View
 
 
-main : Program Never Models.AppModel Messages.Msg
+main : Program Value Models.AppModel Messages.Msg
 main =
-    Navigation.program locationToMessage
+    Browser.application
         { init = init
         , view = View.view
         , update = Update.update
         , subscriptions = subs
+        , onUrlRequest = \request -> RoutingMsg (UrlChangeRequested request)
+        , onUrlChange = locationToMessage
         }
 
 
-locationToMessage : Navigation.Location -> Messages.Msg
+locationToMessage : Url -> Messages.Msg
 locationToMessage location =
     RoutingMsg (OnLocationChange location)
 
 
-init : Navigation.Location -> ( Models.AppModel, Cmd Messages.Msg )
-init location =
+init : Value -> Url -> Key -> ( Models.AppModel, Cmd Messages.Msg )
+init flags location key =
     let
         model =
-            Models.initialModel
+            Models.initialModel (Just key)
 
         loadUser =
             dispatch (UserMsg FetchData)

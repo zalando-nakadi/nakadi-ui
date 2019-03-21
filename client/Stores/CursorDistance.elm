@@ -5,8 +5,8 @@ import Constants exposing (emptyString)
 import Dict
 import Helpers.Store
 import Http
-import Json.Decode exposing (Decoder, int, list)
-import Json.Decode.Pipeline exposing (decode, required)
+import Json.Decode exposing (Decoder, int, list, succeed)
+import Json.Decode.Pipeline exposing (required)
 import Json.Encode
 import Stores.Cursor exposing (Cursor, cursorEncoder)
 
@@ -46,7 +46,7 @@ config params =
         eventType =
             Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-    { getKey = \index item -> toString index
+    { getKey = \index item -> String.fromInt index
     , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/cursor-distances"
     , decoder = collectionDecoder
     , headers = []
@@ -71,8 +71,7 @@ fetchDistance tagger name cursorDistanceQueryList =
 
         body =
             cursorDistanceQueryList
-                |> List.map cursorDistanceQueryEncoder
-                |> Json.Encode.list
+                |> Json.Encode.list cursorDistanceQueryEncoder
     in
     Http.request
         { method = "POST"
@@ -97,7 +96,7 @@ collectionDecoder =
 
 cursorDistanceDecoder : Decoder CursorDistance
 cursorDistanceDecoder =
-    decode CursorDistance
+    succeed CursorDistance
         |> required "initial_cursor" Stores.Cursor.cursorDecoder
         |> required "final_cursor" Stores.Cursor.cursorDecoder
         |> required "distance" int

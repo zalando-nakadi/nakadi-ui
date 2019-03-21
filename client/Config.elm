@@ -1,4 +1,4 @@
-module Config exposing (maxPartitionNumber, offsetStringLength, urlBase, urlLogin, urlLogout, urlLogsApi, urlManual, urlNakadiApi, urlNakadiSqlApi, urlUser, urlValidationApi)
+module Config exposing (appPreffix, maxPartitionNumber, urlBase, urlLogin, urlLogout, urlLogsApi, urlManual, urlNakadiApi, urlNakadiSqlApi, urlUser, urlValidationApi)
 
 
 urlBase : String
@@ -46,11 +46,11 @@ urlManual =
     "https://nakadi.io/manual.html"
 
 
-offsetStringLength : Int
-offsetStringLength =
-    18
-
-
 maxPartitionNumber : Int
 maxPartitionNumber =
     32
+
+
+appPreffix : String
+appPreffix =
+    "stups_"

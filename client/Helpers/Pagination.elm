@@ -85,18 +85,18 @@ listToPage tagger maybeFilter maybeComparator rowRenderer pageIndex pageSize lis
 
             else
                 "Records: "
-                    ++ toString firstVisibleIndex
+                    ++ String.fromInt firstVisibleIndex
                     ++ "-"
-                    ++ toString lastVisibleIndex
+                    ++ String.fromInt lastVisibleIndex
                     ++ (if total == filteredListSize then
                             emptyString
 
                         else
-                            " Filtered: " ++ toString filteredListSize
+                            " Filtered: " ++ String.fromInt filteredListSize
                        )
 
         status =
-            recordsStatus ++ " Total: " ++ toString total
+            recordsStatus ++ " Total: " ++ String.fromInt total
 
         marginPagesLeft =
             3
@@ -205,7 +205,7 @@ renderButtons : (Int -> msg) -> List Buttons -> Html msg
 renderButtons tagger list =
     let
         toLabel index =
-            toString (index + 1)
+            String.fromInt (index + 1)
 
         btnClass =
             "pagination-btn dc-btn dc-pagination-btn"

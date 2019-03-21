@@ -5,7 +5,7 @@ import Constants exposing (emptyString)
 import Dict
 import Helpers.Store
 import Http
-import Json.Decode exposing (Decoder, float, int, list, nullable, string)
+import Json.Decode exposing (Decoder, list)
 import Json.Encode
 import Stores.Cursor exposing (Cursor)
 
@@ -40,7 +40,7 @@ config params =
         eventType =
             Dict.get Constants.eventTypeName params |> Maybe.withDefault emptyString
     in
-    { getKey = \index item -> toString index
+    { getKey = \index item -> String.fromInt index
     , url = Config.urlNakadiApi ++ "event-types/" ++ eventType ++ "/shifted-cursors"
     , decoder = collectionDecoder
     , headers = []
@@ -64,7 +64,7 @@ fetchShiftedCursors tagger name shiftedCursor =
             config (Dict.singleton Constants.eventTypeName name)
 
         body =
-            Json.Encode.list [ shiftedCursorEncoder shiftedCursor ]
+            Json.Encode.list shiftedCursorEncoder [ shiftedCursor ]
     in
     Http.request
         { method = "POST"

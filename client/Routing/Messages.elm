@@ -1,14 +1,13 @@
 module Routing.Messages exposing (Msg(..))
 
-import Helpers.Http exposing (HttpStringResult)
-import Navigation exposing (Location)
-import Result
+import Browser exposing (UrlRequest)
 import Routing.Models exposing (Route)
+import Url exposing (Url)
 
 
 type Msg
-    = OnLocationChange Location
-    | RouteChanged Route
+    = OnLocationChange Url
+    | UrlChangeRequested UrlRequest
+    | OutRouteChanged Route
     | SetLocation Route
     | Redirect Route
-    | TitleChanged HttpStringResult
