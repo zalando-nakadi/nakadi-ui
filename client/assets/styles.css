@@ -490,6 +490,7 @@ body {
 .event-list__pager-btn {
     width: 40px;
     height: 36px;
+    padding: 0;
 }
 
 .event-list__navigator {
@@ -966,4 +967,66 @@ body {
 .flash-msg {
     opacity: 0;
     transition: opacity 1s 2s;
+}
+
+.icon {
+    background: white no-repeat center;
+    width: 16px;
+    height: 16px;
+    display: block;
+    margin: 6px auto;
+    opacity: 0.6;
+    transition: 0.1s transform;
+}
+
+.icon:hover {
+    transform: scale(1.1);
+}
+
+[disabled] > .icon,
+.icon.icon--disabled {
+    transform: none;
+}
+
+/*
+SVG icons was downloaded from https://fontawesome.com/icons
+License: https://fontawesome.com/license/free
+*/
+.icon--refresh {
+    background-image: url("icons/sync-solid.svg");
+}
+
+.icon--source {
+    background-image: url("icons/file-code-regular.svg");
+}
+
+.icon--chart {
+    background-image: url("icons/chart-line-solid.svg");
+}
+.icon--edit {
+    background-image: url("icons/edit-regular.svg");
+}
+
+.icon--clone {
+    background-image: url("icons/clone-regular.svg");
+}
+
+.icon--clipboard {
+    background-image: url("icons/clipboard-regular.svg");
+}
+
+.icon--backward {
+    background-image: url("icons/backward-solid.svg");
+}
+
+.icon--step-backward {
+    background-image: url("icons/step-backward-solid.svg");
+}
+
+.icon--forward {
+    background-image: url("icons/forward-solid.svg");
+}
+
+.icon--step-forward {
+    background-image: url("icons/step-forward-solid.svg");
 }

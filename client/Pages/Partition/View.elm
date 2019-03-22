@@ -261,8 +261,8 @@ pager partitionPage =
     in
     div
         []
-        [ offsetButton "fa fa-step-backward" "Load oldest posible events i.e. BEGIN" maybeOldest
-        , offsetButton "fa fa-backward" "Load one page back in time" maybePageBackOffset
+        [ offsetButton "icon icon--backward" "Load oldest posible events i.e. BEGIN" maybeOldest
+        , offsetButton "icon icon--step-backward" "Load one page back in time" maybePageBackOffset
         , input
             [ onInput InputOffset
             , UI.onKeyUp OffsetKeyUp
@@ -287,9 +287,9 @@ pager partitionPage =
             , option [ value "10000", class "dc-option" ] [ text "10,000 Events" ]
             , option [ value "100000", class "dc-option" ] [ text "100,000 Events" ]
             ]
-        , button [ onClick LoadEvents, class "event-list__pager-btn dc-btn" ] [ i [ class "fa fa-sync" ] [] ]
-        , offsetButton "fa fa-forward" "Load one page forward in time" maybeLatestLoadedOffset
-        , offsetButton "fa fa-step-forward" "Load newest events" maybeNewestOffset
+        , button [ onClick LoadEvents, class "event-list__pager-btn dc-btn" ] [ i [ class "icon icon--refresh" ] [] ]
+        , offsetButton "icon icon--forward" "Load one page forward in time" maybeLatestLoadedOffset
+        , offsetButton "icon icon--step-forward" "Load newest events" maybeNewestOffset
         ]
 
 
@@ -485,7 +485,7 @@ viewEventDetails maybeSelectedEvent formatted jsonEditorState =
                             , class "icon-link dc-icon dc-icon--interactive"
                             , title "Copy To Clipboard"
                             ]
-                            [ i [ class "far fa-clipboard" ] [] ]
+                            [ i [ class "icon icon--clipboard" ] [] ]
                         ]
                     ]
                 , pre [ class "event-details__json-view" ]
