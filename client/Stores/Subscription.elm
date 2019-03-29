@@ -19,7 +19,7 @@ type alias Subscription =
     , event_types : List String
     , consumer_group : String
     , created_at : String
-    , -- enum "begin", "end"
+    , -- enum "begin", "end", "cursors"
       read_from : String
     , initial_cursors : Maybe (List SubscriptionCursor)
     , authorization : Maybe Authorization
