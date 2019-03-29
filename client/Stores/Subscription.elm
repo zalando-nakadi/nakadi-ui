@@ -9,6 +9,7 @@ import Http
 import Json.Decode exposing (Decoder, at, list, map, maybe, nullable, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 import Stores.Authorization exposing (Authorization)
+import Stores.Cursor exposing (SubscriptionCursor, subscriptionCursorDecoder)
 import User.Commands exposing (logoutIfExpired)
 
 
@@ -20,6 +21,7 @@ type alias Subscription =
     , created_at : String
     , -- enum "begin", "end"
       read_from : String
+    , initial_cursors : Maybe (List SubscriptionCursor)
     , authorization : Maybe Authorization
     }
 
@@ -126,4 +128,5 @@ memberDecoder =
         |> optional "consumer_group" string "default"
         |> required "created_at" string
         |> optional "read_from" string "end"
+        |> optional "initial_cursors" (nullable (list subscriptionCursorDecoder)) Nothing
         |> optional "authorization" (nullable Stores.Authorization.collectionDecoder) Nothing
