@@ -7,7 +7,9 @@ import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Store exposing (ErrorMessage, Status(..))
 import Http
+import Json.Encode
 import MultiSearch.Models
+import Stores.Cursor exposing (subscriptionCursorEncoder)
 import Stores.Subscription
 import Stores.SubscriptionCursors
 
@@ -94,6 +96,12 @@ copyValues subscription =
     [ ( FieldConsumerGroup, subscription.consumer_group )
     , ( FieldOwningApplication, subscription.owning_application )
     , ( FieldReadFrom, subscription.read_from )
+    , ( FieldCursors
+      , subscription.initial_cursors
+            |> Maybe.withDefault []
+            |> Json.Encode.list subscriptionCursorEncoder
+            |> Json.Encode.encode 0
+      )
     , ( FieldEventTypes, subscription.event_types |> String.join "\n" )
     ]
         |> toValuesDict
