@@ -83,7 +83,7 @@ partitionDecoder =
     succeed SubscriptionStatsPartition
         |> required "partition" string
         |> required "state" string
-        |> required "unconsumed_events" (nullable int)
-        |> required "consumer_lag_seconds" (nullable int)
-        |> required "assignment_type" (nullable string)
-        |> required "stream_id" (nullable string)
+        |> optional "unconsumed_events" (nullable int) Nothing
+        |> optional "consumer_lag_seconds" (nullable int) Nothing
+        |> optional "assignment_type" (nullable string) Nothing
+        |> optional "stream_id" (nullable string) Nothing
