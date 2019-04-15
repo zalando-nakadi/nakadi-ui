@@ -674,7 +674,7 @@ subscriptionsPanel eventType subscriptionsStore appsInfoUrl =
             ]
         , div [ class "consumer-tab__list" ]
             [ Helpers.Panel.loadingStatus subscriptionsStore <|
-                grid [ "Consuming application", "Subscription ID", "Consumer group", "" ]
+                grid [ "Owning application", "Subscription ID", "Consumer group", "" ]
                     (subscriptionsList
                         |> List.map (renderSubscription eventType.name appsInfoUrl)
                     )
