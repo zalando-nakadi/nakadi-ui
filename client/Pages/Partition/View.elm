@@ -349,7 +349,7 @@ navigation partitionPage =
                 |> String.fromFloat
 
         titleText =
-            "Total "
+            "Total ≤"
                 ++ total
                 ++ " events in this partition. Loaded "
                 ++ String.fromInt loaded
