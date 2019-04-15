@@ -21,7 +21,7 @@ import MultiSearch.Update
 import Pages.SubscriptionCreate.Messages exposing (..)
 import Pages.SubscriptionCreate.Models exposing (..)
 import Regex
-import Stores.Authorization exposing (Authorization, userAuthorization)
+import Stores.Authorization exposing (Authorization, emptyAuthorization, userAuthorization)
 import Stores.Cursor
 import Stores.EventType
 import Stores.Subscription
@@ -72,11 +72,14 @@ update message model eventTypeStore subscriptionStore user =
                     focus "subscriptionCreateFormFieldConsumerGroup"
                         |> Task.attempt FocusResult
 
-                authorization maybeId =
-                    authorizationFromSubscription maybeId subscriptionStore user.id
+                userAuth =
+                    userAuthorization user.id
 
-                setAuthEditorCmd maybeId =
-                    dispatch (AccessEditorMsg (AccessEditor.Set (authorization maybeId)))
+                authorization maybeId defaultAuth =
+                    authorizationFromSubscription maybeId subscriptionStore defaultAuth
+
+                setAuthEditorCmd maybeId defaultAuth =
+                    dispatch (AccessEditorMsg (AccessEditor.Set (authorization maybeId defaultAuth)))
 
                 loadCursorsCmd id =
                     dispatch (CursorsStoreMsg (Store.SetParams [ ( Constants.id, id ) ]))
@@ -85,18 +88,18 @@ update message model eventTypeStore subscriptionStore user =
                     case model.operation of
                         Create ->
                             ( initialModel
-                            , [ focusCmd, setAuthEditorCmd Nothing ]
+                            , [ focusCmd, setAuthEditorCmd Nothing userAuth ]
                             )
 
                         Update id ->
                             ( updateSubscription subscriptionStore id model
-                            , [ setAuthEditorCmd (Just id) ]
+                            , [ setAuthEditorCmd (Just id) emptyAuthorization ]
                             )
 
                         Clone id ->
                             ( cloneSubscription subscriptionStore id model
                             , [ focusCmd
-                              , setAuthEditorCmd (Just id)
+                              , setAuthEditorCmd (Just id) userAuth
                               , loadCursorsCmd id
                               ]
                             )
@@ -455,9 +458,9 @@ cloneSubscription subscriptionStore id model =
     { initialModel | values = values, cursorsStore = model.cursorsStore, operation = model.operation }
 
 
-authorizationFromSubscription : Maybe String -> Stores.Subscription.Model -> String -> Authorization
-authorizationFromSubscription maybeId subscriptionsStore userId =
+authorizationFromSubscription : Maybe String -> Stores.Subscription.Model -> Authorization -> Authorization
+authorizationFromSubscription maybeId subscriptionsStore defaultAuthz =
     maybeId
         |> Maybe.andThen (\id -> Store.get id subscriptionsStore)
         |> Maybe.andThen .authorization
-        |> Maybe.withDefault (userAuthorization userId)
+        |> Maybe.withDefault defaultAuthz

@@ -134,13 +134,24 @@ memberDecoder permission =
         |> resolve
 
 
+isEmpty : Authorization -> Bool
+isEmpty authorization =
+    List.isEmpty authorization.readers
+        && List.isEmpty authorization.writers
+        && List.isEmpty authorization.admins
+
+
 encoder : Authorization -> Encode.Value
 encoder authorization =
-    Encode.object
-        [ ( "readers", Encode.list encodeAttribute authorization.readers )
-        , ( "writers", Encode.list encodeAttribute authorization.writers )
-        , ( "admins", Encode.list encodeAttribute authorization.admins )
-        ]
+    if isEmpty authorization then
+        Encode.null
+
+    else
+        Encode.object
+            [ ( "readers", Encode.list encodeAttribute authorization.readers )
+            , ( "writers", Encode.list encodeAttribute authorization.writers )
+            , ( "admins", Encode.list encodeAttribute authorization.admins )
+            ]
 
 
 encoderReadAdmin : Authorization -> Encode.Value
