@@ -20,6 +20,7 @@ import Pages.Partition.Messages exposing (..)
 import Pages.Partition.Models exposing (Model, getOldestNewestOffsets, isPartitionEmpty)
 import Routing.Helpers exposing (internalLink)
 import Routing.Models exposing (Route(..))
+import Stores.EventType exposing (cleanupPolicies)
 import Stores.Events
 
 
@@ -31,6 +32,14 @@ view model =
 
         partition =
             model.partitionPage.partition
+
+        compacted =
+            Store.get name model.eventTypeStore
+                |> Maybe.map
+                    (\e ->
+                        e.cleanup_policy == cleanupPolicies.compact
+                    )
+                |> Maybe.withDefault False
     in
     div [ class "main-content dc-card" ]
         [ div [ class "dc-row" ]
@@ -55,17 +64,14 @@ view model =
                 ]
             ]
         , div [ class "dc-row dc-row--align--justify" ]
-            [ eventsView model.partitionPage
+            [ eventsView model.partitionPage compacted
             ]
         ]
 
 
-eventsView : Model -> Html Msg
-eventsView partitionPage =
+eventsView : Model -> Bool -> Html Msg
+eventsView partitionPage compacted =
     let
-        loadedPageSize =
-            partitionPage.size
-
         filterKey =
             partitionPage.filter |> String.trim
 
@@ -173,7 +179,7 @@ eventsView partitionPage =
         [ div [ class "event-list__container" ]
             [ div [ class "dc-row" ]
                 [ pager partitionPage
-                , navigation partitionPage
+                , navigation compacted partitionPage
                 ]
             , div [ class "dc-row" ]
                 [ searchInput InputFilter "Filter events. Example: \"eid\":\"555-49-54\"" filterKey
@@ -303,9 +309,16 @@ offsetButton label hint maybeOffset =
             button [ disabled True, class "event-list__pager-btn dc-btn dc-btn--disabled ", title hint ] [ i [ class label ] [] ]
 
 
-navigation : Model -> Html Msg
-navigation partitionPage =
+navigation : Bool -> Model -> Html Msg
+navigation compacted partitionPage =
     let
+        compactedSign =
+            if compacted then
+                "≤ "
+
+            else
+                ""
+
         maybeDistance =
             partitionPage.totalStore
                 |> Store.get "0"
@@ -349,7 +362,8 @@ navigation partitionPage =
                 |> String.fromFloat
 
         titleText =
-            "Total ≤"
+            "Total "
+                ++ compactedSign
                 ++ total
                 ++ " events in this partition. Loaded "
                 ++ String.fromInt loaded
@@ -374,7 +388,9 @@ navigation partitionPage =
     div [ class "event-list__navigator" ]
         [ div []
             [ small [ class "event-list__navigator-min-offset" ] [ text minOffset ]
-            , small [ class "event-list__navigator-total" ] [ text ("Total: " ++ total) ]
+            , small [ class "event-list__navigator-total" ]
+                [ text ("Total: " ++ compactedSign ++ total)
+                ]
             , small [ class "event-list__navigator-max-offset" ] [ text maxOffset ]
             ]
         , div
