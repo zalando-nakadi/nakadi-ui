@@ -1,4 +1,4 @@
-module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, compatibilityMode, consumers, createdAt, defaultStatistic, enrichmentStrategies, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
+module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, createdAt, defaultStatistic, enrichmentStrategies, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
 
 import Config exposing (appPreffix)
 import Helpers.UI exposing (..)
@@ -435,6 +435,22 @@ cleanupPolicy =
     , newline
     , bold "Default: "
     , mono "delete"
+    , newline
+    , man "#definition_EventType*cleanup_policy"
+    ]
+
+
+cleanupPolicyCompact : List (Html msg)
+cleanupPolicyCompact =
+    [ text "For this event type 'Total' represents the number of "
+    , bold "published"
+    , text " events."
+    , newline
+    , text "Because the event type was created with the cleanup policy "
+    , bold "compact"
+    , text " the total number of events after compaction is equal or less"
+    , text " than the number of published events."
+    , newline
     , newline
     , man "#definition_EventType*cleanup_policy"
     ]

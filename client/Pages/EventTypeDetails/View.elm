@@ -520,7 +520,7 @@ partitionsTab eventType partitionStore totalsStore =
                 grid [ "Partition ID", "Oldest offset", "Newest offset", "Total", "" ]
                     (partitionsList
                         |> Stores.Partition.sortPartitionsList
-                        |> List.map (renderPartition totalsStore eventType.name)
+                        |> List.map (renderPartition totalsStore eventType)
                     )
             ]
         ]
@@ -528,18 +528,30 @@ partitionsTab eventType partitionStore totalsStore =
 
 {-| Create Html representation of one partition list item
 -}
-renderPartition : Stores.CursorDistance.Model -> String -> Stores.Partition.Partition -> Html Msg
-renderPartition totalsStore name partition =
+renderPartition : Stores.CursorDistance.Model -> EventType -> Stores.Partition.Partition -> Html Msg
+renderPartition totalsStore eventType partition =
     let
         route =
             PartitionRoute
-                { name = name, partition = partition.partition }
+                { name = eventType.name, partition = partition.partition }
                 Pages.Partition.Models.emptyQuery
 
         maybeTotal =
             totalsStore
                 |> Store.get partition.partition
                 |> Maybe.map .distance
+
+        compactionLabel =
+            if eventType.cleanup_policy == cleanupPolicies.compact then
+                span []
+                    [ text " or less"
+                    , helpIcon "Event type is compacted"
+                        Help.cleanupPolicyCompact
+                        BottomLeft
+                    ]
+
+            else
+                none
 
         totalLabel =
             case maybeTotal of
@@ -556,7 +568,7 @@ renderPartition totalsStore name partition =
         , td [ class "dc-table__td" ] [ text partition.oldest_available_offset ]
         , td [ class "dc-table__td" ] [ text partition.newest_available_offset ]
         , td [ class "dc-table__td" ]
-            [ text totalLabel ]
+            [ text totalLabel, compactionLabel ]
         , td
             [ class "dc-table__td" ]
             [ a
