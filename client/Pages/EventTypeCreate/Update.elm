@@ -17,7 +17,7 @@ import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
 import Pages.EventTypeCreate.Query exposing (submitQueryCreate)
 import Regex
-import Stores.Authorization exposing (Authorization, userAuthorization)
+import Stores.Authorization exposing (Authorization, emptyAuthorization, userAuthorization)
 import Stores.EventType exposing (categories, partitionStrategies)
 import Stores.Partition
 import Task
@@ -103,16 +103,16 @@ update message model eventTypeStore user =
                 authorization =
                     case model.operation of
                         Create ->
-                            authorizationFromEventType Nothing eventTypeStore user.id
+                            authorizationFromEventType Nothing eventTypeStore (userAuthorization user.id)
 
                         Update name ->
-                            authorizationFromEventType (Just name) eventTypeStore user.id
+                            authorizationFromEventType (Just name) eventTypeStore emptyAuthorization
 
                         Clone name ->
-                            authorizationFromEventType (Just name) eventTypeStore user.id
+                            authorizationFromEventType (Just name) eventTypeStore (userAuthorization user.id)
 
                         CreateQuery ->
-                            authorizationFromEventType Nothing eventTypeStore user.id
+                            authorizationFromEventType Nothing eventTypeStore (userAuthorization user.id)
 
                 loadPartitionsCmd =
                     case model.operation of
@@ -193,12 +193,12 @@ formValuesFromEventType name eventTypeStore =
             loadValues eventType
 
 
-authorizationFromEventType : Maybe String -> Stores.EventType.Model -> String -> Authorization
-authorizationFromEventType maybeName eventTypeStore userId =
+authorizationFromEventType : Maybe String -> Stores.EventType.Model -> Authorization -> Authorization
+authorizationFromEventType maybeName eventTypeStore defaultAuthz =
     maybeName
         |> Maybe.andThen (\name -> Store.get name eventTypeStore)
         |> Maybe.andThen .authorization
-        |> Maybe.withDefault (userAuthorization userId)
+        |> Maybe.withDefault defaultAuthz
 
 
 validate : Model -> Stores.EventType.Model -> Model
