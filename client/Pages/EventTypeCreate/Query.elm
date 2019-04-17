@@ -1,23 +1,27 @@
-module Pages.EventTypeCreate.Query exposing (daysToRetentionTimeJson, helpSql, post, sqlAccessEditor, sqlEditor, stringToJsonList, submitQueryCreate, viewQueryForm)
+module Pages.EventTypeCreate.Query exposing (daysToRetentionTimeJson, helpSql, post, sqlAccessEditor, sqlEditor, stringToJsonList, submitQueryCreate, submitTestQuery, viewQueryForm)
 
 {--------------- View -----------------}
 
 import Config exposing (appPreffix)
 import Constants
+import Dict
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
+import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
 import Helpers.Panel
 import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 import Http
+import Json.Decode exposing (Decoder, field)
 import Json.Encode as Json
 import Models exposing (AppModel)
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
 import Pages.EventTypeDetails.Help as Help
 import Stores.Authorization exposing (Authorization)
-import Stores.EventType exposing (allAudiences, categories, cleanupPolicies)
+import Stores.EventType exposing (EventType, allAudiences, categories, cleanupPolicies)
 
 
 viewQueryForm : AppModel -> Html Msg
@@ -136,6 +140,10 @@ viewQueryForm model =
 
 sqlEditor : Model -> Html Msg
 sqlEditor formModel =
+    let
+        isDisabled =
+            not (Dict.isEmpty formModel.validationErrors)
+    in
     inputFrame FieldSql "SQL Query" "" helpSql Required formModel <|
         div []
             [ div [ class "dc-btn-group" ] []
@@ -149,6 +157,15 @@ sqlEditor formModel =
                     ]
                     []
                 ]
+            , if isDisabled then
+                none
+
+              else
+                div []
+                    [ button [ class "dc-btn", disabled isDisabled, onClick TestQuery ] [ text "Validate SQL Query" ]
+                    , Helpers.Panel.loadingStatus formModel.testQuery <|
+                        eventTypePreview formModel.testQuery.eventType
+                    ]
             ]
 
 
@@ -165,12 +182,46 @@ sqlAccessEditor appsInfoUrl usersInfoUrl formModel =
         formModel.accessEditor
 
 
+eventTypePreview : Maybe EventType -> Html Msg
+eventTypePreview maybeEventType =
+    case maybeEventType of
+        Nothing ->
+            none
+
+        Just eventType ->
+            div []
+                [ div [ class "dc--island-100" ] []
+                , span [ class "dc--text-success" ]
+                    [ text "SQL Query is valid. Resulting schema:" ]
+                , pre
+                    [ class "ace-edit" ]
+                    [ node "ace-editor"
+                        [ value (eventType.schema.schema |> prettyPrintJson)
+                        , attribute "theme" "ace/theme/dawn"
+                        , attribute "mode" "ace/mode/json"
+                        , attribute "readonly" "true"
+                        ]
+                        []
+                    ]
+                ]
+
+
 
 {-------------- Update ----------------}
 
 
 submitQueryCreate : Model -> Cmd Msg
 submitQueryCreate model =
+    model |> encodeQuery |> post
+
+
+submitTestQuery : Model -> Cmd Msg
+submitTestQuery model =
+    model |> encodeQuery |> postTest
+
+
+encodeQuery : Model -> Json.Value
+encodeQuery model =
     let
         orderingKeyFields =
             model.values
@@ -203,11 +254,8 @@ submitQueryCreate model =
             , ( "sql", asString FieldSql )
             , ( "authorization", auth )
             ]
-
-        body =
-            Json.object fields
     in
-    post body
+    Json.object fields
 
 
 post : Json.Value -> Cmd Msg
@@ -222,6 +270,25 @@ post body =
         , withCredentials = False
         }
         |> Http.send SubmitResponse
+
+
+postTest : Json.Value -> Cmd Msg
+postTest body =
+    Http.request
+        { method = "POST"
+        , headers = []
+        , url = Config.urlNakadiSqlApi ++ "test-queries"
+        , body = Http.jsonBody body
+        , expect = Http.expectJson testResultDecoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> Http.send TestQueryResponse
+
+
+testResultDecoder : Decoder EventType
+testResultDecoder =
+    field "output_event_request" Stores.EventType.memberDecoder
 
 
 stringToJsonList : String -> Json.Value

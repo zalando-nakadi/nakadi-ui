@@ -48,6 +48,11 @@ type alias Model =
         , error : Maybe ErrorMessage
         , accessEditor : AccessEditor.Model
         , partitionsStore : Stores.Partition.Model
+        , testQuery :
+            { status : Status
+            , error : Maybe ErrorMessage
+            , eventType : Maybe EventType
+            }
         }
 
 
@@ -61,6 +66,11 @@ initialModel =
     , error = Nothing
     , accessEditor = AccessEditor.initialModel
     , partitionsStore = Stores.Partition.initialModel
+    , testQuery =
+        { status = Unknown
+        , error = Nothing
+        , eventType = Nothing
+        }
     }
 
 
