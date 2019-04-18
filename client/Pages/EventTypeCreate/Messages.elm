@@ -4,6 +4,7 @@ import Browser.Dom
 import Helpers.AccessEditor as AccessEditor
 import Http
 import Pages.EventTypeCreate.Models exposing (Field, Operation)
+import Stores.EventType exposing (EventType)
 import Stores.Partition
 
 
@@ -18,5 +19,7 @@ type Msg
     | OnRouteChange Operation
     | FocusResult (Result Browser.Dom.Error ())
     | SubmitResponse (Result Http.Error ())
+    | TestQuery
+    | TestQueryResponse (Result Http.Error EventType)
     | OutEventTypeCreated String
     | PartitionsStoreMsg Stores.Partition.Msg

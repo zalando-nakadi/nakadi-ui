@@ -15,7 +15,7 @@ import Json.Decode
 import Json.Encode as Json
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
-import Pages.EventTypeCreate.Query exposing (submitQueryCreate)
+import Pages.EventTypeCreate.Query exposing (submitQueryCreate, submitTestQuery)
 import Regex
 import Stores.Authorization exposing (Authorization, emptyAuthorization, userAuthorization)
 import Stores.EventType exposing (categories, partitionStrategies)
@@ -171,6 +171,32 @@ update message model eventTypeStore user =
 
                 Err error ->
                     ( Store.onFetchErr model error, Cmd.none )
+
+        TestQuery ->
+            let
+                testQuery =
+                    Store.onFetchStart model.testQuery
+            in
+            ( { model | testQuery = testQuery }, submitTestQuery model )
+
+        TestQueryResponse result ->
+            case result of
+                Ok eventType ->
+                    let
+                        testQueryFinished =
+                            Store.onFetchOk model.testQuery
+
+                        testQuery =
+                            { testQueryFinished | eventType = Just eventType }
+                    in
+                    ( { model | testQuery = testQuery }, Cmd.none )
+
+                Err error ->
+                    let
+                        testQuery =
+                            Store.onFetchErr model.testQuery error
+                    in
+                    ( { model | testQuery = testQuery }, Cmd.none )
 
         OnRouteChange operation ->
             ( { model | operation = operation }, dispatch Reset )
