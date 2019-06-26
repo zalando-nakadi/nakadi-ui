@@ -267,8 +267,8 @@ pager partitionPage =
     in
     div
         []
-        [ offsetButton "icon icon--backward" "Load oldest posible events i.e. BEGIN" maybeOldest
-        , offsetButton "icon icon--step-backward" "Load one page back in time" maybePageBackOffset
+        [ offsetButton "icon icon--step-backward" "Load oldest posible events i.e. BEGIN" maybeOldest
+        , offsetButton "icon icon--backward" "Load one page back in time" maybePageBackOffset
         , input
             [ onInput InputOffset
             , UI.onKeyUp OffsetKeyUp
