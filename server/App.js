@@ -31,7 +31,7 @@ module.exports = function App(config) {
     .get('/health', getHealth)
     .use(logger.init)
     .use(sessions(config.cookie))
-    .use(bodyParser.json())
+    .use(bodyParser.json({limit: '50mb'}))
     .use(auth(config.auth, config.settings))
     .use(analytics(config.analytics, logger))
     .use('/api/logs', authentication, logsApi(config.logsApi))
