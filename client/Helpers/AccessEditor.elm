@@ -444,7 +444,11 @@ rowWrite config record =
 
           else
             none
-        , checkboxWrite Admin record
+        -- If record key not of type all but permission is alreay set, show checkbox for admin
+        , if not (record.key == All && not (hasPermission Admin record)) then
+            checkboxWrite Admin record
+          else
+            none
         , case record.key of
             All ->
                 none

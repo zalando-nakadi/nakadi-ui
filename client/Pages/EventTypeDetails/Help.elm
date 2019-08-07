@@ -502,8 +502,7 @@ authorization =
     , newline
     , text "An attribute for authorization. This object includes a data type, which represents the type of the attribute "
     , text "attribute (which data types are allowed depends on which authorization plugin is deployed, and how it is "
-    , text "configured), and a value. A wildcard can be represented with data type '*', and value '*'. It means that all "
-    , text "authenticated users are allowed to perform an operation."
+    , text "configured), and a value. Wildcards are not allowed for admins of event types and subscriptions."
     , newline
     , newline
     , bold "Key: "
