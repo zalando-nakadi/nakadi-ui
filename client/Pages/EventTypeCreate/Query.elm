@@ -242,10 +242,12 @@ encodeQuery model =
                 |> getValue field
                 |> String.trim
                 |> Json.string
+
         asBool field =
             model.values
                 |> getValue field
                 |> stringToBool
+
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
                 |> Stores.Authorization.encoderReadAdmin
@@ -303,19 +305,23 @@ testResultDecoder : Decoder EventType
 testResultDecoder =
     field "output_event_request" Stores.EventType.memberDecoder
 
-getBool : String-> Bool
+
+getBool : String -> Bool
 getBool str =
-    if(str == "false") then
+    if str == "false" then
         False
+
     else
-       True
+        True
+
 
 stringToBool : String -> Json.Value
 stringToBool str =
-            str
-             |> String.trim
-             |> getBool
-             |> Json.bool
+    str
+        |> String.trim
+        |> getBool
+        |> Json.bool
+
 
 stringToJsonList : String -> Json.Value
 stringToJsonList str =

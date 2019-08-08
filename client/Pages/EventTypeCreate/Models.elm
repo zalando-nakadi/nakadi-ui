@@ -78,12 +78,15 @@ defaultRetentionDays : Int
 defaultRetentionDays =
     4
 
-defaultEnvelope : Bool-> String
+
+defaultEnvelope : Bool -> String
 defaultEnvelope bool =
-    if(not bool) then
+    if not bool then
         "false"
+
     else
-       "true"
+        "true"
+
 
 defaultApplication : String
 defaultApplication =

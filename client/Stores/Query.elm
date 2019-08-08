@@ -1,6 +1,6 @@
-module Stores.Query exposing (Query, queryDecoder, boolToString)
+module Stores.Query exposing (Query, boolToString, queryDecoder)
 
-import Json.Decode exposing (Decoder, string, succeed, bool)
+import Json.Decode exposing (Decoder, bool, string, succeed)
 import Json.Decode.Pipeline exposing (required)
 
 
@@ -19,9 +19,10 @@ queryDecoder =
         |> required "envelope" bool
 
 
-boolToString : Bool-> String
+boolToString : Bool -> String
 boolToString bool =
-    if(not bool) then
+    if not bool then
         "false"
+
     else
-       "true"
+        "true"
