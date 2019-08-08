@@ -68,6 +68,15 @@ viewQueryForm model =
                 [ cleanupPolicies.compact
                 , cleanupPolicies.delete
                 ]
+            , selectInput formModel
+                FieldEnvelope
+                OnInput
+                "Envelope"
+                ""
+                Help.envelope
+                Optional
+                Enabled
+                [ "true", "false" ]
             , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.compact then
                 textInput formModel
                     FieldPartitionCompactionKeyField
@@ -233,7 +242,10 @@ encodeQuery model =
                 |> getValue field
                 |> String.trim
                 |> Json.string
-
+        asBool field =
+            model.values
+                |> getValue field
+                |> stringToBool
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
                 |> Stores.Authorization.encoderReadAdmin
@@ -253,6 +265,7 @@ encodeQuery model =
               )
             , ( "sql", asString FieldSql )
             , ( "authorization", auth )
+            , ( "envelope", asBool FieldEnvelope )
             ]
     in
     Json.object fields
@@ -290,6 +303,19 @@ testResultDecoder : Decoder EventType
 testResultDecoder =
     field "output_event_request" Stores.EventType.memberDecoder
 
+getBool : String-> Bool
+getBool str =
+    if(str == "false") then
+        False
+    else
+       True
+
+stringToBool : String -> Json.Value
+stringToBool str =
+            str
+             |> String.trim
+             |> getBool
+             |> Json.bool
 
 stringToJsonList : String -> Json.Value
 stringToJsonList str =

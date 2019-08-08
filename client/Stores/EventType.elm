@@ -1,10 +1,10 @@
-module Stores.EventType exposing (EventType, EventTypeOptions, EventTypeStatistics, Model, Msg, allAudiences, allCategories, allCleanupPolicies, allModes, audiences, categories, cleanupPolicies, collectionDecoder, compatibilityModes, config, defaultStatisticDecoder, initialModel, memberDecoder, optionsDecoder, partitionStrategies, update)
+module Stores.EventType exposing (EventType, EventTypeOptions, EventTypeStatistics, Model, Msg, allAudiences, allCategories, allCleanupPolicies, allModes, audiences, categories, cleanupPolicies, collectionDecoder, compatibilityModes, config, defaultStatisticDecoder, initialModel, memberDecoder, optionsDecoder, partitionStrategies, update, envelope)
 
 import Config
 import Constants
 import Dict
 import Helpers.Store
-import Json.Decode exposing (Decoder, int, list, nullable, string, succeed)
+import Json.Decode exposing (Decoder, int, list, nullable, string, succeed, bool)
 import Json.Decode.Pipeline exposing (optional, required)
 import Stores.Authorization exposing (Authorization)
 import Stores.EventTypeSchema as Schema exposing (EventTypeSchema)
@@ -34,6 +34,7 @@ type alias EventType =
       audience : Maybe String
     , created_at : Maybe String
     , updated_at : Maybe String
+    , envelope : Maybe Bool
     }
 
 
@@ -57,7 +58,9 @@ type alias Model =
 type alias Msg =
     Helpers.Store.Msg EventType
 
-
+envelope: Bool
+envelope =
+    True
 categories :
     { undefined : String
     , data : String
@@ -88,7 +91,6 @@ partitionStrategies =
     , hash = "hash"
     , user_defined = "user_defined"
     }
-
 
 compatibilityModes :
     { forward : String
@@ -200,6 +202,7 @@ memberDecoder =
         |> optional "audience" (nullable string) Nothing
         |> optional "created_at" (nullable string) Nothing
         |> optional "updated_at" (nullable string) Nothing
+        |> optional "envelope" (nullable bool) Nothing
 
 
 defaultStatisticDecoder : Decoder EventTypeStatistics

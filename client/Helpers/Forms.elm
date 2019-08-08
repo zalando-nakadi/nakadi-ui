@@ -1,4 +1,4 @@
-module Helpers.Forms exposing (ErrorsDict, FormModel, Locking(..), Requirement(..), ValuesDict, areaInput, buttonPanel, getError, getValue, inputFrame, inputId, maybeSetListValue, maybeSetValue, selectInput, setValue, textInput, toValuesDict, validationClass, validationMessage)
+module Helpers.Forms exposing (ErrorsDict, FormModel, Locking(..), Requirement(..), ValuesDict, areaInput, buttonPanel, getError, getValue, inputFrame, inputId, maybeSetListValue, maybeSetValue, maybeSetBoolValue, selectInput, setValue, textInput, toValuesDict, validationClass, validationMessage)
 
 import Debug exposing (toString)
 import Dict
@@ -235,7 +235,25 @@ setValue : field -> String -> ValuesDict -> ValuesDict
 setValue field value values =
     Dict.insert (toString field) value values
 
+boolToString : Bool-> String
+boolToString bool =
+    if(not bool) then
+        "false"
+    else
+       "true"
 
+setBoolValue : field -> Bool -> ValuesDict -> ValuesDict
+setBoolValue field value values =
+            Dict.insert (toString field) (boolToString value) values
+
+
+maybeSetBoolValue : field -> Maybe Bool -> ValuesDict -> ValuesDict
+maybeSetBoolValue field maybeValue values =
+    case maybeValue of
+        Just value ->
+            setBoolValue field value values
+        Nothing ->
+            values
 maybeSetValue : field -> Maybe String -> ValuesDict -> ValuesDict
 maybeSetValue field maybeValue values =
     case maybeValue of

@@ -35,7 +35,7 @@ type Field
     | FieldRetentionTime
     | FieldCompatibilityMode
     | FieldSchema
-    | FieldAccess
+    | FieldEnvelope
     | FieldAudience
     | FieldCleanupPolicy
     | FieldSql
@@ -78,6 +78,12 @@ defaultRetentionDays : Int
 defaultRetentionDays =
     4
 
+defaultEnvelope : Bool-> String
+defaultEnvelope bool =
+    if(not bool) then
+        "false"
+    else
+       "true"
 
 defaultApplication : String
 defaultApplication =
@@ -96,6 +102,7 @@ defaultValues =
     , ( FieldRetentionTime, String.fromInt defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
     , ( FieldSql, defaultSql )
+    , ( FieldEnvelope, defaultEnvelope True )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
     , ( FieldAudience, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
@@ -127,6 +134,7 @@ loadValues eventType =
         |> maybeSetListValue FieldPartitionKeyFields eventType.partition_key_fields
         |> maybeSetListValue FieldOrderingKeyFields eventType.ordering_key_fields
         |> maybeSetValue FieldCompatibilityMode eventType.compatibility_mode
+        |> maybeSetBoolValue FieldEnvelope eventType.envelope
         |> setValue FieldSchema eventType.schema.schema
         |> setValue FieldRetentionTime retentionTime
         |> maybeSetValue FieldAudience eventType.audience
