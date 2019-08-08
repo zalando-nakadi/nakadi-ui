@@ -11,7 +11,7 @@ import Http
 import Pages.EventTypeDetails.Messages exposing (..)
 import Pages.EventTypeDetails.Models exposing (Model)
 import RemoteData exposing (WebData)
-import Stores.Query exposing (Query, queryDecoder)
+import Stores.Query exposing (Query, queryDecoder, boolToString)
 import String exposing (replace)
 import Url exposing (percentEncode)
 import User.Models exposing (Settings)
@@ -45,6 +45,8 @@ queryTabHeader settings model query =
         , helpIcon "Nakadi SQL" queryHelp BottomRight
         , label [ class "query-tab__label" ] [ text " Status: " ]
         , span [ class statClass ] [ text "active" ]
+        , label [ class "query-tab__label" ] [ text " Envelope: " ]
+        , span [] [text  (boolToString query.envelope)]
         , span [ class "query-tab__value toolbar" ]
             [ a
                 [ title "View Query as raw JSON"

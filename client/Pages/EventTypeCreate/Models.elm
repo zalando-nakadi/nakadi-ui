@@ -134,7 +134,6 @@ loadValues eventType =
         |> maybeSetListValue FieldPartitionKeyFields eventType.partition_key_fields
         |> maybeSetListValue FieldOrderingKeyFields eventType.ordering_key_fields
         |> maybeSetValue FieldCompatibilityMode eventType.compatibility_mode
-        |> maybeSetBoolValue FieldEnvelope eventType.envelope
         |> setValue FieldSchema eventType.schema.schema
         |> setValue FieldRetentionTime retentionTime
         |> maybeSetValue FieldAudience eventType.audience
