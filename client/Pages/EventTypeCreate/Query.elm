@@ -9,6 +9,7 @@ import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
 import Helpers.Panel
+import Helpers.String exposing (stringToBool)
 import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -74,7 +75,7 @@ viewQueryForm model =
                 "Envelope"
                 ""
                 Help.envelope
-                Optional
+                Required
                 Enabled
                 [ "true", "false" ]
             , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.compact then
@@ -246,7 +247,7 @@ encodeQuery model =
         asBool field =
             model.values
                 |> getValue field
-                |> stringToBool
+                |> stringToBoolValue
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
@@ -306,20 +307,11 @@ testResultDecoder =
     field "output_event_request" Stores.EventType.memberDecoder
 
 
-getBool : String -> Bool
-getBool str =
-    if str == "false" then
-        False
-
-    else
-        True
-
-
-stringToBool : String -> Json.Value
-stringToBool str =
+stringToBoolValue : String -> Json.Value
+stringToBoolValue str =
     str
         |> String.trim
-        |> getBool
+        |> stringToBool
         |> Json.bool
 
 

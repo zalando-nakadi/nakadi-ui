@@ -6,6 +6,7 @@ import Dict
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Store exposing (ErrorMessage, Status(..))
+import Helpers.String exposing (boolToString)
 import Stores.EventType
     exposing
         ( EventType
@@ -79,15 +80,6 @@ defaultRetentionDays =
     4
 
 
-defaultEnvelope : Bool -> String
-defaultEnvelope bool =
-    if not bool then
-        "false"
-
-    else
-        "true"
-
-
 defaultApplication : String
 defaultApplication =
     appPreffix ++ "nakadi-ui-elm"
@@ -105,7 +97,7 @@ defaultValues =
     , ( FieldRetentionTime, String.fromInt defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
     , ( FieldSql, defaultSql )
-    , ( FieldEnvelope, defaultEnvelope True )
+    , ( FieldEnvelope, boolToString True )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
     , ( FieldAudience, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
