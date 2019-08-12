@@ -265,6 +265,7 @@ validate model eventTypeStore =
                         |> checkNameFormat model
                         |> isNotEmpty FieldName model
                         |> isNotEmpty FieldSql model
+                        |> isNotEmpty FieldEnvelope model
                         |> isNotEmpty FieldOwningApplication model
                         |> isNotEmpty FieldAudience model
     in

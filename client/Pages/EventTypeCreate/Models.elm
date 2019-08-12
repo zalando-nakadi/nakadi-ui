@@ -6,6 +6,7 @@ import Dict
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.Store exposing (ErrorMessage, Status(..))
+import Helpers.String exposing (boolToString)
 import Stores.EventType
     exposing
         ( EventType
@@ -35,7 +36,7 @@ type Field
     | FieldRetentionTime
     | FieldCompatibilityMode
     | FieldSchema
-    | FieldAccess
+    | FieldEnvelope
     | FieldAudience
     | FieldCleanupPolicy
     | FieldSql
@@ -96,6 +97,7 @@ defaultValues =
     , ( FieldRetentionTime, String.fromInt defaultRetentionDays )
     , ( FieldSchema, defaultSchema )
     , ( FieldSql, defaultSql )
+    , ( FieldEnvelope, boolToString True )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
     , ( FieldAudience, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )

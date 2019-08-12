@@ -48,6 +48,7 @@ Example:
 -}
 
 import Dict exposing (Dict)
+import Helpers.String exposing (boolToString)
 import Html exposing (li, span, text, ul)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
@@ -324,14 +325,7 @@ jsonValueToHtml json =
 
         ValueBool bool ->
             span [ class "json-bool" ]
-                [ text
-                    (if bool then
-                        "true"
-
-                     else
-                        "false"
-                    )
-                ]
+                [ text (boolToString bool) ]
 
         ValueNull ->
             span [ class "json-null" ] [ text "null" ]

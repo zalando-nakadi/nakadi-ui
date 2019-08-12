@@ -1,4 +1,4 @@
-module Helpers.String exposing (Params, cleanDateTime, compareAsInt, formatDateTime, getMaybeBool, getMaybeInt, getMaybeString, justOrCrash, parseParams, parseUrl, periodToShortString, periodToString, pluralCount, pseudoIntSort, queryMaybeToUrl, splitFound, stringToBool, toKeyValuePair, toPx)
+module Helpers.String exposing (Params, boolToString, cleanDateTime, compareAsInt, formatDateTime, getMaybeBool, getMaybeInt, getMaybeString, justOrCrash, parseParams, parseUrl, periodToShortString, periodToString, pluralCount, pseudoIntSort, queryMaybeToUrl, splitFound, stringToBool, stringToMaybeBool, toKeyValuePair, toPx)
 
 import Constants exposing (emptyString)
 import Dict
@@ -170,7 +170,7 @@ queryMaybeToUrl query =
 
 getMaybeBool : String -> Dict.Dict String String -> Maybe Bool
 getMaybeBool name dict =
-    Dict.get name dict |> Maybe.andThen stringToBool
+    Dict.get name dict |> Maybe.andThen stringToMaybeBool
 
 
 getMaybeString : String -> Dict.Dict String String -> Maybe String
@@ -178,8 +178,26 @@ getMaybeString name dict =
     Dict.get name dict
 
 
-stringToBool : String -> Maybe Bool
+boolToString : Bool -> String
+boolToString bool =
+    if bool then
+        "true"
+
+    else
+        "false"
+
+
+stringToBool : String -> Bool
 stringToBool str =
+    if str == "false" then
+        False
+
+    else
+        True
+
+
+stringToMaybeBool : String -> Maybe Bool
+stringToMaybeBool str =
     case String.toLower str of
         "true" ->
             Just True

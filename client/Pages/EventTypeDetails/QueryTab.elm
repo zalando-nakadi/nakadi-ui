@@ -3,11 +3,13 @@ module Pages.EventTypeDetails.QueryTab exposing (deleteQuery, deleteQueryPopup, 
 import Config
 import Helpers.Panel exposing (renderError)
 import Helpers.Store exposing (errorToViewRecord)
+import Helpers.String exposing (boolToString)
 import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
+import Pages.EventTypeDetails.Help as Help
 import Pages.EventTypeDetails.Messages exposing (..)
 import Pages.EventTypeDetails.Models exposing (Model)
 import RemoteData exposing (WebData)
@@ -45,6 +47,9 @@ queryTabHeader settings model query =
         , helpIcon "Nakadi SQL" queryHelp BottomRight
         , label [ class "query-tab__label" ] [ text " Status: " ]
         , span [ class statClass ] [ text "active" ]
+        , helpIcon "Envelope" Help.envelope BottomRight
+        , label [ class "query-tab__label" ] [ text " Envelope: " ]
+        , span [] [ text (boolToString query.envelope) ]
         , span [ class "query-tab__value toolbar" ]
             [ a
                 [ title "View Query as raw JSON"

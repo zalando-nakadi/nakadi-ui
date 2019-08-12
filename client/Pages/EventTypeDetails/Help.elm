@@ -1,4 +1,4 @@
-module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, createdAt, defaultStatistic, enrichmentStrategies, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
+module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
 
 import Config exposing (appPreffix)
 import Helpers.UI exposing (..)
@@ -526,5 +526,21 @@ partitionCompactionKeyField =
     , newline
     , bold "Key: "
     , mono "partion_compaction_key_field"
+    , bold "optional"
+    ]
+
+
+envelope : List (Html msg)
+envelope =
+    [ text "This field is which allows user to choose if the output event-type’s schema is enveloped within the table"
+    , text "alias name. If set to false, the schema of the output event types is same as the input event type and"
+    , text "the events present in the input event type are published/filtered to the output event type without"
+    , text " any modification."
+    , newline
+    , bold "This field is by default set to True "
+    , newline
+    , newline
+    , bold "Key: "
+    , mono "envelope"
     , bold "optional"
     ]

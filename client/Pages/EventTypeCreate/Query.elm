@@ -9,6 +9,7 @@ import Helpers.AccessEditor as AccessEditor
 import Helpers.Forms exposing (..)
 import Helpers.JsonPrettyPrint exposing (prettyPrintJson)
 import Helpers.Panel
+import Helpers.String exposing (stringToBool)
 import Helpers.UI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -68,6 +69,15 @@ viewQueryForm model =
                 [ cleanupPolicies.compact
                 , cleanupPolicies.delete
                 ]
+            , selectInput formModel
+                FieldEnvelope
+                OnInput
+                "Envelope"
+                ""
+                Help.envelope
+                Required
+                Enabled
+                [ "true", "false" ]
             , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.compact then
                 textInput formModel
                     FieldPartitionCompactionKeyField
@@ -234,6 +244,11 @@ encodeQuery model =
                 |> String.trim
                 |> Json.string
 
+        asBool field =
+            model.values
+                |> getValue field
+                |> stringToBoolValue
+
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
                 |> Stores.Authorization.encoderReadAdmin
@@ -253,6 +268,7 @@ encodeQuery model =
               )
             , ( "sql", asString FieldSql )
             , ( "authorization", auth )
+            , ( "envelope", asBool FieldEnvelope )
             ]
     in
     Json.object fields
@@ -289,6 +305,14 @@ postTest body =
 testResultDecoder : Decoder EventType
 testResultDecoder =
     field "output_event_request" Stores.EventType.memberDecoder
+
+
+stringToBoolValue : String -> Json.Value
+stringToBoolValue str =
+    str
+        |> String.trim
+        |> stringToBool
+        |> Json.bool
 
 
 stringToJsonList : String -> Json.Value
