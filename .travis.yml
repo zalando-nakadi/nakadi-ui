@@ -14,13 +14,12 @@ cache:
     - $HOME/.npm # https://stackoverflow.com/a/42523517/1148249
 
 before_install:
-  - # start your web application and listen on `localhost`
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 script:
   - elm-format --validate .
   - npm run test:ci
-  - docker build -t nakadi/nakadi-ui .
+  - docker build -t "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" .
   - docker tag "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" nakadi/nakadi-ui:latest
 
 deploy:
