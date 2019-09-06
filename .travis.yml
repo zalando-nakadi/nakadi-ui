@@ -1,3 +1,4 @@
+dist: trusty
 sudo: false
 language: elm
 addons:
@@ -12,12 +13,15 @@ cache:
     - $HOME/.elm
     - $HOME/.npm # https://stackoverflow.com/a/42523517/1148249
 
+before_install:
+  - # start your web application and listen on `localhost`
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+
 script:
-  - npm install
   - elm-format --validate .
   - npm run test:ci
   - docker build -t nakadi/nakadi-ui .
-  - docker tag "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" ${IMAGE}:latest
+  - docker tag "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" nakadi/nakadi-ui:latest
 
 deploy:
   provider: script
