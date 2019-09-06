@@ -479,7 +479,7 @@ body {
 
 .event-list__content {
     max-width: calc(100vw - 150px);
-    height: calc(100vh - 330px);
+    height: calc(100vh - 380px);
     overflow: auto;
 }
 
@@ -498,6 +498,7 @@ body {
     position: relative;
     margin: 0 10px;
     height: 40px;
+    width: 100%;
 }
 
 .event-list__navigator-bar-total {
@@ -558,6 +559,10 @@ body {
 
     .event-details__json-view {
         height: calc(100vh - 346px);
+    }
+
+    .event-list__navigator {
+        width: auto;
     }
 }
 
