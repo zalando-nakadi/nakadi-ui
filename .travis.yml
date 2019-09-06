@@ -1,5 +1,10 @@
 sudo: false
 language: elm
+addons:
+  chrome: stable
+
+services:
+  - docker
 
 cache:
   directories: # so subsequent builds run faster
@@ -8,5 +13,15 @@ cache:
     - $HOME/.npm # https://stackoverflow.com/a/42523517/1148249
 
 script:
+  - npm install
   - elm-format --validate .
-  - npm run test:client
+  - npm run test:ci
+  - docker build -t nakadi/nakadi-ui .
+  - docker tag "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" ${IMAGE}:latest
+
+deploy:
+  provider: script
+  script:
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && bash docker push nakadi/nakadi-ui
+  on:
+    branch: master
