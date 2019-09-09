@@ -8,8 +8,8 @@ function getBrowser() {
 
   chromedriver.start([
     '--url-base=wd/hub',
-    `--port=${PORT}`
-    //uncomment for debug '--verbose'
+    `--port=${PORT}`,
+    '--verbose'
   ])
 
   const inCI = process.env['CI']
@@ -31,7 +31,10 @@ function getBrowser() {
 
   const chromium = '/usr/bin/chromium-browser'
   if (fs.existsSync(chromium)) {
+    console.log("chromium-browser found.")
     opts.desiredCapabilities.binary = chromium
+  } else {
+    console.log("chromium-browser not found, using default chrome.")
   }
 
   return webdriverio.remote(opts).init()
