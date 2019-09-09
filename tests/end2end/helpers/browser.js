@@ -15,7 +15,11 @@ function getBrowser() {
   const inCI = process.env['CI']
 
   const args = inCI ?
-      ['--headless', '--no-sandbox', '--single-process']
+      ['--headless',
+        '--no-sandbox',
+        '--single-process',
+        '--disable-software-rasterizer'
+      ]
       : []
 
   const opts = {
