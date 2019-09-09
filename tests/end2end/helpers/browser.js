@@ -17,8 +17,7 @@ function getBrowser() {
   const args = inCI ?
       ['--headless',
         '--no-sandbox',
-        '--single-process',
-        '--disable-software-rasterizer'
+        '--single-process'
       ]
       : []
 
@@ -26,7 +25,6 @@ function getBrowser() {
     port: PORT,
     desiredCapabilities: {
       browserName: 'chrome',
-      binary: '',
       chromeOptions: {
         args
       }
