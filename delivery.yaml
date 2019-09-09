@@ -1,13 +1,13 @@
 version: "2017-09-20"
 pipeline:
   - id: build
-    overlay: ci/nodejs-12
+    overlay: ci/nodejs-10
     cache:
       paths:
         - ~/.npm
+        - ~/.elm
         - ./elm-stuff
         - ./node_modules
-        - ~/.elm
     type: script
     commands:
       - desc: Install deps
