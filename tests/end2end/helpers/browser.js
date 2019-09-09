@@ -8,8 +8,7 @@ function getBrowser() {
 
   chromedriver.start([
     '--url-base=wd/hub',
-    `--port=${PORT}`,
-    '--verbose'
+    `--port=${PORT}`
   ])
 
   const inCI = process.env['CI']
