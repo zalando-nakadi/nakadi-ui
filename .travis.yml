@@ -1,6 +1,5 @@
 dist: bionic
 sudo: false
-language: elm
 addons:
   apt:
     packages:
@@ -15,10 +14,11 @@ cache:
     - $HOME/.elm
     - $HOME/.npm # https://stackoverflow.com/a/42523517/1148249
 before_install:
-  - chromium-browser --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - chromium-browser --headless --disable-dev-shm-usage --no-sandbox --disable-software-rasterizer --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 script:
   - elm-format --validate .
+  - npm run build
   - npm run test:ci
   - docker build -t "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" .
   - docker tag "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" nakadi/nakadi-ui:latest
