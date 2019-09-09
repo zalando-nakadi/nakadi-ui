@@ -1,5 +1,6 @@
 dist: bionic
 sudo: false
+language: node_js
 addons:
   apt:
     packages:
@@ -17,7 +18,7 @@ before_install:
   - chromium-browser --headless --disable-dev-shm-usage --no-sandbox --disable-software-rasterizer --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 script:
-  - elm-format --validate .
+  - npm run validate
   - npm run build
   - npm run test:ci
   - docker build -t "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" .
