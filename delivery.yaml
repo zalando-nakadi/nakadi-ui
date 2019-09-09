@@ -13,7 +13,7 @@ pipeline:
       - desc: Install deps
         cmd: |
           apt-get update
-          apt-get install chromium-browser
+          apt-get -yq --no-install-suggests --no-install-recommends install chromium-browser
           npm ci
 
       - desc: Validate formatting

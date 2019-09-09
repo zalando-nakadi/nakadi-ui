@@ -14,6 +14,9 @@ cache:
     - elm-stuff
     - $HOME/.elm
     - $HOME/.npm # https://stackoverflow.com/a/42523517/1148249
+before_install:
+  - chromeium-browser --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+
 script:
   - elm-format --validate .
   - npm run test:ci
