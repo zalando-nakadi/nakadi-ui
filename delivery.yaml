@@ -1,0 +1,39 @@
+version: "2017-09-20"
+pipeline:
+  - id: build
+    overlay: ci/nodejs-12
+    cache:
+      paths:
+        - ~/.npm
+        - ./elm-stuff
+        - ./node_modules
+        - ~/.elm
+    type: script
+    commands:
+      - desc: Install deps
+        cmd: |
+          apt-get update
+          apt-get install chromium-browser
+          npm ci
+
+      - desc: Validate formatting
+        cmd: |
+          npm run validate
+
+      - desc: Run tests
+        cmd: |
+          npm run test:ci
+
+      - desc: Build docker image
+        cmd: |
+          IMAGE=registry-write.opensource.zalan.do/aruha/nakadi-ui:${CDP_BUILD_VERSION}
+          docker build --pull=false -t $IMAGE .
+
+      - desc: Push docker image if master
+        cmd: |
+          # Only master
+          if [ -z "$CDP_PULL_REQUEST_NUMBER" ]; then
+            docker push $IMAGE
+          else
+            echo "Skipping non master"
+          fi

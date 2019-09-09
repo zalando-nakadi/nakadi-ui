@@ -15,7 +15,8 @@
     "test:ci": "CI=true npm test",
     "test": "npm run test:client && npm run test:server",
     "test:client": "elm-test",
-    "test:server": "istanbul cover --include-all-sources tests/runner.js"
+    "test:server": "istanbul cover --include-all-sources tests/runner.js",
+    "validate": "elm-format --validate ."
   },
   "repository": {
     "type": "git",
