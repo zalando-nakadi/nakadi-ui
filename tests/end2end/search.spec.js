@@ -28,7 +28,6 @@ describe('MultiSearch', function() {
             ], 'wrong elements found');
         })
         //not found message
-
         .sleep()
         .setValue('#multiSearch-input','crazy-input')
         .sleep()
