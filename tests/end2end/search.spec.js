@@ -17,7 +17,7 @@ describe('MultiSearch', function() {
         })
         //Normal search result
 
-        .input('#multiSearch-input', 'ver_6')
+        .setValue('#multiSearch-input', 'ver_6')
         .getText('#multiSearch-dropdown .multi-search__item-name').then(function(items) {
             expect(items).toEqual([
                 'aruha.test-event-test1.ver_6',
@@ -28,7 +28,7 @@ describe('MultiSearch', function() {
             ], 'wrong elements found');
         })
         //not found message
-        .input('#multiSearch-input','crazy-input')
+        .setValue('#multiSearch-input','crazy-input')
         .getText('#multiSearch-dropdown').then(function(text) {
             expect(text).toContain('Nothing found for: crazy-input')
         })
@@ -40,7 +40,7 @@ describe('MultiSearch', function() {
 
         this.browser.login()
         .click('#multiSearch-input')
-        .input('#multiSearch-input', 'ver_6')
+        .setValue('#multiSearch-input', 'ver_6')
         .click('#multiSearch-dropdown', '=aruha.test-event-test3.ver_6')
         .getUrl().then(function(url) {
             expect(url).toContain('#types/aruha.test-event-test3.ver_6')
@@ -53,7 +53,7 @@ describe('MultiSearch', function() {
 
         this.browser.login()
         .click('#multiSearch-input')
-        .input('#multiSearch-input', 'ver_6')
+        .setValue('#multiSearch-input', 'ver_6')
 
         .addValue('#multiSearch-input', 'Enter')
 
@@ -68,7 +68,7 @@ describe('MultiSearch', function() {
 
         this.browser.login()
         .click('#multiSearch-input')
-        .input('#multiSearch-input', '_6')
+        .setValue('#multiSearch-input', '_6')
 
         .addValue('#multiSearch-input', 'ArrowDown')
         .addValue('#multiSearch-input', 'ArrowDown')
@@ -89,7 +89,7 @@ describe('MultiSearch', function() {
 
         this.browser.login()
         .click('#multiSearch-input')
-        .input('#multiSearch-input', '_6')
+        .setValue('#multiSearch-input', '_6')
 
         .addValue('#multiSearch-input', 'PageDown')
         .addValue('#multiSearch-input', 'Enter')
@@ -105,7 +105,7 @@ describe('MultiSearch', function() {
 
         this.browser.login()
         .click('#multiSearch-input')
-        .input('#multiSearch-input', 'ver_6')
+        .setValue('#multiSearch-input', 'ver_6')
         .addValue('#multiSearch-input', 'ArrowDown')
         .addValue('#multiSearch-input', 'ArrowDown')
         .addValue('#multiSearch-input', 'PageUp')

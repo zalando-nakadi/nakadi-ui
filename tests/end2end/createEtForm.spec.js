@@ -18,7 +18,7 @@ describe('Create Event type form', function() {
         .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be disabled by default')
         })
-        .input('#eventTypeCreateFormFieldName', eventTypeName)
+        .setValue('#eventTypeCreateFormFieldName', eventTypeName)
         .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be still disabled if name is set but no Audience selected')
         })
@@ -39,7 +39,7 @@ describe('Create Event type form', function() {
     it('should check for required fields', function(done) {
 
         this.browser.login('#createtype')
-        .input('#eventTypeCreateFormFieldOwningApplication', ' ')
+        .setValue('#eventTypeCreateFormFieldOwningApplication', ' ')
         .isVisible('.form-create__field-fieldname .dc--text-error').then(function(visible) {
             expect(visible).toBeTruthy('Should show error if the name is empty.');
         })
@@ -58,7 +58,7 @@ describe('Create Event type form', function() {
         const eventTypeName = 'aruha.test-event.ver_5';
 
         this.browser.login('#createtype')
-        .input('#eventTypeCreateFormFieldName', eventTypeName)
+        .setValue('#eventTypeCreateFormFieldName', eventTypeName)
         .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be disabled if error.')
         })

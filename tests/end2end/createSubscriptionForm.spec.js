@@ -20,8 +20,8 @@ describe('Create Subscription form', function() {
         .isEnabled('button=Create Subscription').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be disabled by default')
         })
-        .input('#subscriptionCreateFormFieldConsumerGroup', 'test-group')
-        .input('#subscriptionCreateFormFieldEventTypes', eventTypeName)
+        .setValue('#subscriptionCreateFormFieldConsumerGroup', 'test-group')
+        .setValue('#subscriptionCreateFormFieldEventTypes', eventTypeName)
         .isEnabled('button=Create Subscription').then(function(enabled) {
             expect(enabled).toBeTruthy('Submit btn should be enabled if name is set')
         })
@@ -38,7 +38,7 @@ describe('Create Subscription form', function() {
     it('should check for required fields', function(done) {
 
         this.browser.login('#createsubscription')
-        .input('#subscriptionCreateFormFieldOwningApplication', ' ')
+        .setValue('#subscriptionCreateFormFieldOwningApplication', ' ')
         .isVisible('.form-create__field-fieldeventtypes .dc--text-error').then(function(visible) {
             expect(visible).toBeTruthy('Should show error if the event type name is empty.');
         })
@@ -58,10 +58,10 @@ describe('Create Subscription form', function() {
         const eventTypeName2 = 'aruha.test-event-test5.ver_6';
 
         this.browser.login('#createsubscription')
-        .input('#addEventType-input', eventTypeName)
+        .setValue('#addEventType-input', eventTypeName)
         .waitForVisible('#addEventType-dropdown .multi-search__item--selected')
         .click('b=aruha.test-event.ver_5')
-        .input('#addEventType-input', eventTypeName2)
+        .setValue('#addEventType-input', eventTypeName2)
         .waitForVisible('#addEventType-dropdown .multi-search__item--selected')
         .click('b=aruha.test-event-test5.ver_6')
         .getValue('#subscriptionCreateFormFieldEventTypes').then(function(value) {
@@ -100,7 +100,7 @@ describe('Create Subscription form', function() {
         const eventTypeName = 'crazy-type';
 
         this.browser.login('#createsubscription')
-        .input('#subscriptionCreateFormFieldEventTypes', eventTypeName)
+        .setValue('#subscriptionCreateFormFieldEventTypes', eventTypeName)
         .isVisible('.form-create__field-fieldeventtypes .dc--text-error').then(function(visible) {
             expect(visible).toBeTruthy('Should show error if the event type name is empty.');
         })
@@ -118,11 +118,11 @@ describe('Create Subscription form', function() {
 
         this.browser.login('#createsubscription')
         .selectByValue(readFromInput, 'cursors')
-        .input('#subscriptionCreateFormFieldCursors', cursorsCorrect)
+        .setValue('#subscriptionCreateFormFieldCursors', cursorsCorrect)
         .isVisible('.form-create__field-fieldcursors .dc--text-error').then(function(visible) {
             expect(visible).toBeFalsy('Should NOT show error for correct format.');
         })
-        .input('#subscriptionCreateFormFieldCursors', cursorsIncorrect)
+        .setValue('#subscriptionCreateFormFieldCursors', cursorsIncorrect)
         .isVisible('.form-create__field-fieldcursors .dc--text-error').then(function(visible) {
             expect(visible).toBeTruthy('Should NOT show error for correct format.');
         })

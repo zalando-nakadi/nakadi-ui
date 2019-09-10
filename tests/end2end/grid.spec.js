@@ -42,7 +42,7 @@ describe('DataGrid', function() {
         this.browser.login('#types')
         .waitForVisible('.grid__table-container', 1000)
         .click('#gridFilterSearch')
-        .input('#gridFilterSearch', "ver_6")
+        .setValue('#gridFilterSearch', "ver_6")
         .getText('.grid__table-container .dc-table__td').then(function(text) {
             expect(text.filter(txt => txt.startsWith('aruha.'))).toEqual([
                 'aruha.test-event-test1.ver_6',
