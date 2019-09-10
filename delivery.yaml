@@ -9,6 +9,8 @@ pipeline:
         - ./elm-stuff
         - ./node_modules
     type: script
+    env:
+      IMAGE: "registry-write.opensource.zalan.do/aruha/nakadi-ui:${CDP_BUILD_VERSION}"
     commands:
       - desc: Install deps
         cmd: |
@@ -28,7 +30,6 @@ pipeline:
 
       - desc: Build docker image
         cmd: |
-          IMAGE=registry-write.opensource.zalan.do/aruha/nakadi-ui:${CDP_BUILD_VERSION}
           docker build --pull=false -t $IMAGE .
 
       - desc: Push docker image if master
