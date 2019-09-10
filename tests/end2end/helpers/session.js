@@ -44,16 +44,6 @@ module.exports = {
             })
         });
 
-        // workaround for chromedriver loosing some chars
-        // similar to this issue https://github.com/angular/protractor/issues/698
-        this.browser.input ||
-        this.browser.addCommand("input", function async(selector, value) {
-            let chars = value.split('');
-            return chars.reduce((res, char) => {
-                return res.keys(char).sleep(50);
-            }, this.setValue(selector, ''))
-        });
-
         this.browser.login ||
         this.browser.addCommand("login", function async(url) {
             return this.url(baseUrl + (url || ''))

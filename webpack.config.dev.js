@@ -2,7 +2,6 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
@@ -26,7 +25,6 @@ module.exports = {
       chunkFilename: '[id].css'
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new FaviconsWebpackPlugin('./client/assets/logo.svg'),
     new CopyWebpackPlugin([{
       context: './client/assets/static/',
       from: '**/*',
@@ -36,6 +34,7 @@ module.exports = {
     }]),
     new HtmlWebpackPlugin({
       title: 'Nakadi UI',
+      favicon: './client/assets/favicon.png',
       //tests fail if this is true
       cache: false
     })
@@ -56,7 +55,7 @@ module.exports = {
       test: /\.css$/,
       use: [MiniCssExtractPlugin.loader, 'css-loader']
     }, {
-      test: /\.(png|jpg|gif|svg|ttf|otf|eot|svg|woff2?)(\?.*)?$/,
+      test: /\.(png|jpg|gif|svg|ttf|otf|eot|woff2?)(\?.*)?$/,
       loader: 'url-loader?limit=100000'
     }, {
       test: /\.elm$/,

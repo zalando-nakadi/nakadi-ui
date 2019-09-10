@@ -1,4 +1,4 @@
-FROM node:10.7.0-stretch as builder
+FROM registry.opensource.zalan.do/stups/node:10.16.0-alpine-46 as builder
 WORKDIR /src
 
 COPY client client
@@ -9,7 +9,7 @@ COPY webpack.config.prod.js webpack.config.prod.js
 COPY elm.json elm.json
 RUN npm install && npm run build
 
-FROM registry.opensource.zalan.do/stups/node:8.9.4-alpine-34
+FROM registry.opensource.zalan.do/stups/node:10.16.0-alpine-46
 MAINTAINER Sergii Kamenskyi <sergukam@sergukam.com>
 LABEL Description="This Nakadi UI does not check auth by default. Please use Auth plugins for use in production."
 
