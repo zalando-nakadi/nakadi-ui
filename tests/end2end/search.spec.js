@@ -28,7 +28,10 @@ describe('MultiSearch', function() {
             ], 'wrong elements found');
         })
         //not found message
+
+        .sleep()
         .setValue('#multiSearch-input','crazy-input')
+        .sleep()
         .getText('#multiSearch-dropdown').then(function(text) {
             expect(text).toContain('Nothing found for: crazy-input')
         })
