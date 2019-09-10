@@ -1,7 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
@@ -18,14 +17,14 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css'
     }),
-    new FaviconsWebpackPlugin('./client/assets/logo.svg'),
     new CopyWebpackPlugin([{
       context: './client/assets/static/',
       from: '**/*',
       dot: true
     }]),
     new HtmlWebpackPlugin({
-      title: 'Nakadi UI'
+      title: 'Nakadi UI',
+      favicon: 'client/assets/favicon.png'
     })
   ],
   module: {
