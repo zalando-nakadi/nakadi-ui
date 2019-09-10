@@ -24,7 +24,7 @@ module.exports = {
     }]),
     new HtmlWebpackPlugin({
       title: 'Nakadi UI',
-      favicon: 'client/assets/favicon.png'
+      favicon: './client/assets/favicon.png'
     })
   ],
   module: {
@@ -44,7 +44,7 @@ module.exports = {
       test: /\.css$/,
       use: [MiniCssExtractPlugin.loader, 'css-loader']
     }, {
-      test: /\.(png|jpg|gif|svg|ttf|otf|eot|svg|woff2?)(\?.*)?$/,
+      test: /\.(png|jpg|gif|svg|ttf|otf|eot|woff2?)(\?.*)?$/,
       loader: 'url-loader?limit=100000'
     }, {
       test: /\.elm$/,
