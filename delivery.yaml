@@ -31,9 +31,8 @@ pipeline:
 
       - desc: Push docker image if master
         cmd: |
-          # Only master
           if [ -z "$CDP_PULL_REQUEST_NUMBER" ]; then
             docker push $IMAGE
           else
-            echo "Skipping non master"
+            echo "Skipping non-master builds."
           fi
