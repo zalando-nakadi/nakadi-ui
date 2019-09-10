@@ -16,7 +16,6 @@ describe('Create Subscription form', function() {
         .sleep(300) //waiting for the menu animation to finish
         .click('a=Subscription')
         .waitForVisible('h4=Create Subscription', 10000)
-        .click('#subscriptionCreateFormFieldConsumerGroup')
         .isEnabled('button=Create Subscription').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be disabled by default')
         })
@@ -64,6 +63,7 @@ describe('Create Subscription form', function() {
         .setValue('#addEventType-input', eventTypeName2)
         .waitForVisible('#addEventType-dropdown .multi-search__item--selected')
         .click('b=aruha.test-event-test5.ver_6')
+        .sleep()
         .getValue('#subscriptionCreateFormFieldEventTypes').then(function(value) {
             const expected = `${eventTypeName}\n${eventTypeName2}`;
             expect(value).toBe(expected, 'Should be newline-separated names');

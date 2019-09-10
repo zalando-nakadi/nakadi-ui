@@ -17,9 +17,6 @@ describe('Create Event type form', function() {
         .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be disabled by default')
         })
-        .sleep()
-        .click('#eventTypeCreateFormFieldName')
-        .sleep()
         .setValue('#eventTypeCreateFormFieldName', eventTypeName)
         .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be still disabled if name is set but no Audience selected')
