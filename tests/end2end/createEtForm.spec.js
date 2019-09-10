@@ -14,10 +14,12 @@ describe('Create Event type form', function() {
         .click('button=Create')
         .click('a=Event Type')
         .waitForVisible('h4=Create Event Type', 1000)
-        .click('#eventTypeCreateFormFieldName')
         .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be disabled by default')
         })
+        .sleep()
+        .click('#eventTypeCreateFormFieldName')
+        .sleep()
         .setValue('#eventTypeCreateFormFieldName', eventTypeName)
         .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be still disabled if name is set but no Audience selected')
