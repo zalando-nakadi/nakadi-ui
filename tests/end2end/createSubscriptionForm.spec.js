@@ -38,6 +38,7 @@ describe('Create Subscription form', function() {
 
         this.browser.login('#createsubscription')
         .setValue('#subscriptionCreateFormFieldOwningApplication', ' ')
+        .sleep()
         .isVisible('.form-create__field-fieldeventtypes .dc--text-error').then(function(visible) {
             expect(visible).toBeTruthy('Should show error if the event type name is empty.');
         })
