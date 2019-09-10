@@ -16,8 +16,7 @@ pipeline:
           apt-get -yq --no-install-suggests --no-install-recommends install chromium-browser
           # Fix for problem with permissions elm-format
           # https://github.com/avh4/elm-format/issues/554
-          sudo npm install elm-format --unsafe-perm=true
-          npm ci
+          npm ci --unsafe-perm=true
 
       - desc: Validate formatting
         cmd: |
