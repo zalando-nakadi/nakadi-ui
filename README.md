@@ -1,6 +1,8 @@
 # Nakadi UI
 A web-based graphical user interface to [Nakadi Event Broker](https://nakadi.io)
 
+[![Build Status](https://travis-ci.org/zalando-nakadi/nakadi-ui.svg?branch=master)](https://travis-ci.org/zalando-nakadi/nakadi-ui)
+
 ## Overview
 Nakadi UI is a single page web application that uses the Nakadi API.
 It provides a self-service user interface (SSUI) for event producers and consumers.
