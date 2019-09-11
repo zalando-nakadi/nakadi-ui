@@ -24,7 +24,7 @@ describe('Reset subscription offset form', function() {
         .click('button=Change')
         .waitForVisible('#subscriptionEditOffset',1000)
         .setValue('#subscriptionEditOffset', '000000000000000001')
-        .sleep()
+        .sleep(500) //valiadition and animation
         .click('button=Set offset')
         .waitForVisible('span=000000000000000001', 5000)
         .catch(fail)

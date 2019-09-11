@@ -10,7 +10,7 @@ pipeline:
         - ./node_modules
     type: script
     env:
-      IMAGE: "registry-write.opensource.zalan.do/aruha/nakadi-ui:${CDP_BUILD_VERSION}"
+      IMAGE: "registry-write.opensource.zalan.do/aruha/nakadi-ui"
     commands:
       - desc: Install deps
         cmd: |
@@ -30,12 +30,12 @@ pipeline:
 
       - desc: Build docker image
         cmd: |
-          docker build --pull=false -t $IMAGE .
+          docker build --pull=false -t "$IMAGE:${CDP_BUILD_VERSION}" .
 
       - desc: Push docker image if master
         cmd: |
           if [ -z "$CDP_PULL_REQUEST_NUMBER" ]; then
-            docker push $IMAGE
+            docker push "$IMAGE:${CDP_BUILD_VERSION}"
           else
             echo "Skipping non-master builds."
           fi
