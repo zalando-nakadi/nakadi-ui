@@ -1,9 +1,10 @@
 module Pages.TeamDetails.Messages exposing (Msg(..))
 
-import Http
+import Helpers.Store as Store
 import Routing.Models exposing (Route)
+import Stores.TeamDetails exposing (TeamDetail)
 
 
 type Msg
     = OnRouteChange Route
-    | Done (Result Http.Error String)
+    | TeamDetailStoreMsg (Store.Msg TeamDetail)
