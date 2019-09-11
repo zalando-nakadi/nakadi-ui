@@ -73,6 +73,10 @@ view model =
                 [ ul [ class "home__list-with-date dc-list dc-list--is-scrollable" ]
                     (lastUpdatedSubscriptions model)
                 ]
+            , card "Teams: "
+                [ ul [ class "home__list-with-date dc-list dc-list--is-scrollable" ]
+                    (top10Teams model)
+                ]
             ]
         ]
 
@@ -185,6 +189,19 @@ lastUpdatedTypes model =
                     ]
             )
 
+top10Teams: AppModel -> List (Html msg)
+top10Teams model =
+    model.teamStore
+        |> Helpers.Store.items
+        |> List.take 10
+        |> List.map
+            (\team ->
+                li [ class "dc-list__item" ]
+                    [ UI.externalLink team.name team.id
+                    , span [ class "panel--right-float", title team.id ]
+                        [ text (formatDateTime team.id) ]
+                    ]
+            )
 
 lastUpdatedSubscriptions : AppModel -> List (Html msg)
 lastUpdatedSubscriptions model =

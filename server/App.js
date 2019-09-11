@@ -12,6 +12,7 @@ const logger = require('./logger');
 const auth = require('./auth');
 const nakadiApi = require('./nakadiApi');
 const nakadiSqlApi = require('./nakadiSqlApi');
+const teamsApi = require('./teamsApi');
 const logsApi = require('./logsApi');
 const validationApi = require('./validationApi');
 const staticFiles = require('./staticFiles');
@@ -34,6 +35,7 @@ module.exports = function App(config) {
     .use(bodyParser.json({limit: '50mb'}))
     .use(auth(config.auth, config.settings))
     .use(analytics(config.analytics, logger))
+    .use('/api/teams', authentication, teamsApi(config))
     .use('/api/logs', authentication, logsApi(config.logsApi))
     .use('/api/nakadi', authentication, nakadiApi(config))
     .use('/api/nakadi-sql', authentication, nakadiSqlApi(config))

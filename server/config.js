@@ -26,6 +26,7 @@ exports = module.exports = function createConfiguration(env) {
         },
 
         settings: {
+            teamInfoUrl: optional('TEAM_INFO_URL', env, ''),
             appsInfoUrl: optional('APPS_INFO_URL', env, ''),
             usersInfoUrl: optional('USERS_INFO_URL', env, ''),
             nakadiApiUrl: required('NAKADI_API_URL', env),

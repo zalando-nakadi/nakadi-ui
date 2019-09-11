@@ -1,10 +1,13 @@
-module Config exposing (appPreffix, maxPartitionNumber, urlBase, urlLogin, urlLogout, urlLogsApi, urlManual, urlNakadiApi, urlNakadiSqlApi, urlUser, urlValidationApi)
+module Config exposing (appPreffix, maxPartitionNumber, urlBase, urlLogin, urlLogout, urlTeamApi, urlLogsApi, urlManual, urlNakadiApi, urlNakadiSqlApi, urlUser, urlValidationApi)
 
 
 urlBase : String
 urlBase =
     "/"
 
+urlTeamApi : String
+urlTeamApi =
+    urlBase ++ "api/teams/"
 
 urlNakadiApi : String
 urlNakadiApi =

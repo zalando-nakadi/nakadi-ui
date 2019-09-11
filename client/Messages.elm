@@ -12,6 +12,7 @@ import Pages.SubscriptionList.Messages
 import Routing.Messages
 import Stores.EventType
 import Stores.Subscription
+import Stores.Team
 import User.Messages
 
 
@@ -27,6 +28,7 @@ type Msg
     | MultiSearchMsg MultiSearch.Messages.Msg
     | EventTypeStoreMsg Stores.EventType.Msg
     | SubscriptionStoreMsg Stores.Subscription.Msg
+    | TeamStoreMsg Stores.Team.Msg
     | SubscriptionCreateMsg Pages.SubscriptionCreate.Messages.Msg
     | StarredEventTypesStoreMsg Helpers.StoreLocal.Msg
     | StarredSubscriptionsStoreMsg Helpers.StoreLocal.Msg

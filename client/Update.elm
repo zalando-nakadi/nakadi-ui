@@ -34,6 +34,7 @@ import Stores.EventType
 import Stores.StarredEventTypes
 import Stores.StarredSubscriptions
 import Stores.Subscription
+import Stores.Team
 import User.Messages
 import User.Update
 
@@ -178,6 +179,13 @@ updateComponents message model =
             in
             ( { model | subscriptionStore = subModel }, Cmd.map SubscriptionStoreMsg msCmd )
 
+        TeamStoreMsg subMsg ->
+            let
+                ( subModel, msCmd ) =
+                    Stores.Team.update subMsg model.teamStore
+            in
+            ( { model | teamStore = subModel }, Cmd.map TeamStoreMsg msCmd )
+
         SubscriptionCreateMsg subMsg ->
             let
                 ( newModel, subCmd ) =
@@ -269,6 +277,7 @@ interComponentMessaging message ( model, cmd ) =
                 [ RoutingMsg (OutRouteChanged model.route)
                 , EventTypeStoreMsg Store.FetchData
                 , SubscriptionStoreMsg Stores.Subscription.FetchData
+                , TeamStoreMsg Store.FetchData
                 , StarredEventTypesStoreMsg StoreLocal.FetchData
                 , StarredSubscriptionsStoreMsg StoreLocal.FetchData
                 ]

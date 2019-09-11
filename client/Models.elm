@@ -13,6 +13,7 @@ import Pages.SubscriptionList.Models
 import Routing.Models
 import Stores.EventType
 import Stores.Subscription
+import Stores.Team
 import User.Models
 
 
@@ -31,6 +32,7 @@ type alias AppModel =
     , multiSearch : MultiSearch.Models.Model
     , eventTypeStore : Stores.EventType.Model
     , subscriptionStore : Stores.Subscription.Model
+    , teamStore : Stores.Team.Model
     , starredEventTypesStore : Helpers.StoreLocal.Model
     , starredSubscriptionsStore : Helpers.StoreLocal.Model
     }
@@ -52,6 +54,7 @@ initialModel key =
     , multiSearch = MultiSearch.Models.initialModel
     , eventTypeStore = Stores.EventType.initialModel
     , subscriptionStore = Stores.Subscription.initialModel
+    , teamStore = Stores.Team.initialModel
     , starredEventTypesStore = Helpers.StoreLocal.initialModel
     , starredSubscriptionsStore = Helpers.StoreLocal.initialModel
     }
