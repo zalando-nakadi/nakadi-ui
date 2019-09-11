@@ -27,6 +27,8 @@ import Pages.SubscriptionDetails.Update as PageSubscriptionDetails
 import Pages.SubscriptionList.Messages as SubscriptionListPageMessages exposing (Msg(..))
 import Pages.SubscriptionList.Models
 import Pages.SubscriptionList.Update as PageSubscriptionList
+import Pages.TeamDetails.Messages
+import Pages.TeamDetails.Update as PageTeamDetails
 import Routing.Messages exposing (Msg(..))
 import Routing.Models exposing (Route(..))
 import Routing.Update
@@ -252,6 +254,13 @@ updateComponents message model =
                     PageSubscriptionDetails.update subMsg model.subscriptionDetailsPage
             in
             ( { model | subscriptionDetailsPage = state, newRoute = newRoute }, Cmd.map SubscriptionDetailsMsg subCmd )
+
+        TeamDetailsMsg subMsg ->
+            let
+                ( state, subCmd ) =
+                    PageTeamDetails.update subMsg model.teamDetailsPage
+            in
+            ( { model | teamDetailsPage = state }, Cmd.map TeamDetailsMsg subCmd )
 
 
 interComponentMessaging : AppMsg -> ( AppModel, Cmd AppMsg ) -> ( AppModel, Cmd AppMsg )
@@ -481,6 +490,9 @@ interComponentMessaging message ( model, cmd ) =
 
                 SubscriptionCloneRoute param ->
                     send [ SubscriptionCreateMsg (Pages.SubscriptionCreate.Messages.OnRouteChange (Pages.SubscriptionCreate.Models.Clone param.id)) ]
+
+                TeamDetailsRoute param ->
+                    send [ TeamDetailsMsg (Pages.TeamDetails.Messages.OnRouteChange model.newRoute) ]
 
                 QueryCreateRoute ->
                     send

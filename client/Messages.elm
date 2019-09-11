@@ -9,6 +9,7 @@ import Pages.Partition.Messages
 import Pages.SubscriptionCreate.Messages
 import Pages.SubscriptionDetails.Messages
 import Pages.SubscriptionList.Messages
+import Pages.TeamDetails.Messages
 import Routing.Messages
 import Stores.EventType
 import Stores.Subscription
@@ -29,6 +30,7 @@ type Msg
     | EventTypeStoreMsg Stores.EventType.Msg
     | SubscriptionStoreMsg Stores.Subscription.Msg
     | TeamStoreMsg Stores.Team.Msg
+    | TeamDetailsMsg Pages.TeamDetails.Messages.Msg
     | SubscriptionCreateMsg Pages.SubscriptionCreate.Messages.Msg
     | StarredEventTypesStoreMsg Helpers.StoreLocal.Msg
     | StarredSubscriptionsStoreMsg Helpers.StoreLocal.Msg

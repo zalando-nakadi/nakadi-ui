@@ -7,6 +7,7 @@ import Pages.EventTypeList.Models as EventTypeList
 import Pages.Partition.Models as Partition
 import Pages.SubscriptionDetails.Models as SubscriptionDetails
 import Pages.SubscriptionList.Models as SubscriptionList
+import Pages.TeamDetails.Models as TeamDetails
 import Url exposing (percentEncode)
 
 
@@ -17,6 +18,7 @@ type alias Model =
 type Route
     = HomeRoute
     | EventTypeListRoute EventTypeList.UrlQuery
+    | TeamDetailsRoute TeamDetails.UrlParams
     | EventTypeDetailsRoute EventTypeDetails.UrlParams EventTypeDetails.UrlQuery
     | EventTypeCreateRoute
     | EventTypeUpdateRoute EventTypeDetails.UrlParams
@@ -87,6 +89,10 @@ routingConfig =
       , \( params, query ) ->
             SubscriptionUpdateRoute (SubscriptionDetails.dictToParams params)
       )
+    , ( "teams/:id"
+      , \( params, query ) ->
+            TeamDetailsRoute (TeamDetails.dictToParams params)
+      )
     , ( "createsubscription"
       , \( params, query ) ->
             SubscriptionCreateRoute
@@ -144,6 +150,9 @@ routeToUrl route =
         SubscriptionCloneRoute params ->
             "#subscriptions/" ++ percentEncode params.id ++ "/clone"
 
+        TeamDetailsRoute params ->
+            "#teams/" ++ percentEncode params.id
+
         QueryCreateRoute ->
             "#createquery"
 
@@ -195,6 +204,9 @@ routeToTitle route =
 
                 SubscriptionCloneRoute params ->
                     " - Clone Subscription - " ++ params.id
+
+                TeamDetailsRoute params ->
+                    " - Team - " ++ params.id
 
                 QueryCreateRoute ->
                     " - Create SQL Query"

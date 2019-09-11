@@ -10,6 +10,7 @@ import Pages.Partition.Models
 import Pages.SubscriptionCreate.Models
 import Pages.SubscriptionDetails.Models
 import Pages.SubscriptionList.Models
+import Pages.TeamDetails.Models
 import Routing.Models
 import Stores.EventType
 import Stores.Subscription
@@ -25,6 +26,7 @@ type alias AppModel =
     , subscriptionListPage : Pages.SubscriptionList.Models.Model
     , subscriptionDetailsPage : Pages.SubscriptionDetails.Models.Model
     , subscriptionCreatePage : Pages.SubscriptionCreate.Models.Model
+    , teamDetailsPage : Pages.TeamDetails.Models.Model
     , userStore : User.Models.Model
     , newRoute : Routing.Models.Model
     , route : Routing.Models.Model
@@ -47,6 +49,7 @@ initialModel key =
     , subscriptionListPage = Pages.SubscriptionList.Models.initialModel
     , subscriptionDetailsPage = Pages.SubscriptionDetails.Models.initialModel
     , subscriptionCreatePage = Pages.SubscriptionCreate.Models.initialModel
+    , teamDetailsPage = Pages.TeamDetails.Models.initialModel
     , userStore = User.Models.initialModel
     , newRoute = Routing.Models.NotFoundRoute
     , route = Routing.Models.NotFoundRoute

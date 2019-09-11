@@ -12,6 +12,7 @@ import Pages.Partition.View
 import Pages.SubscriptionCreate.View
 import Pages.SubscriptionDetails.View
 import Pages.SubscriptionList.View
+import Pages.TeamDetails.View
 import Routing.Models exposing (Route(..))
 import Types exposing (..)
 
@@ -69,6 +70,10 @@ view model =
         SubscriptionCloneRoute param ->
             Html.map SubscriptionCreateMsg <|
                 Pages.SubscriptionCreate.View.view model
+
+        TeamDetailsRoute param ->
+            Html.map TeamDetailsMsg <|
+                Pages.TeamDetails.View.view model
 
         NotFoundRoute ->
             Pages.NotFound.View.view model

@@ -28,8 +28,8 @@ function logsApi(options) {
     const conf = Object.assign({}, defaults, options);
 
     return express()
-        .get('/', listTeams);
-        //.get('/:id', getTeam);
+        .get('/', listTeams)
+        .get('/:id', getTeam);
 
     /**
      * Return list of teams at Zalando
@@ -41,6 +41,23 @@ function logsApi(options) {
      */
     function listTeams(req, res) {
         fetch('https://teams.auth.zalando.com/api/teams', {
+                method: 'get',
+                headers: { 'Authorization': 'Bearer ' + req.authorizationToken }
+            })
+            .then(pipe(res))
+            .catch(errorHandler(res));
+    }
+
+    /**
+     * Return team details
+     *
+     * @api
+     *
+     * @param {Request} req
+     * @param {Response} res
+     */
+    function getTeam(req, res) {
+        fetch(`https://teams.auth.zalando.com/api/teams/${req.params.id}`, {
                 method: 'get',
                 headers: { 'Authorization': 'Bearer ' + req.authorizationToken }
             })
