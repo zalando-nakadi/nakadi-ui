@@ -1,4 +1,4 @@
-fdescribe('Reset subscription offset form', function() {
+describe('Reset subscription offset form', function() {
 
     const session = require('./helpers/session');
     beforeAll(session.startAll);
