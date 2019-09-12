@@ -29,7 +29,8 @@ function logsApi(options) {
 
     return express()
         .get('/', listTeams)
-        .get('/:id', getTeam);
+        .get('/:id', getTeam)
+        .post('/', createUser);
 
     /**
      * Return list of teams at Zalando
@@ -63,6 +64,10 @@ function logsApi(options) {
             })
             .then(pipe(res))
             .catch(errorHandler(res));
+    }
+
+    function createUser(req, res) {
+        res.send('OK')
     }
 
     /**
