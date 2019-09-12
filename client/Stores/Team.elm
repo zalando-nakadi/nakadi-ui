@@ -1,11 +1,12 @@
-module Stores.Team exposing (Model, Team, Page, Msg, initialModel, update)
+module Stores.Team exposing (Model, Msg, Page, Team, initialModel, update)
 
-import Helpers.Store as Store
 import Config
-import Dict
 import Constants
+import Dict
+import Helpers.Store as Store
 import Json.Decode exposing (Decoder, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
+
 
 type alias Team =
     { dn : String
@@ -17,22 +18,29 @@ type alias Team =
     , mail : List String
     }
 
+
 type alias Page =
     { items : List Team
     }
 
-type alias Msg = Store.Msg Team
 
-type alias Model = Store.Model Team
+type alias Msg =
+    Store.Msg Team
+
+
+type alias Model =
+    Store.Model Team
 
 
 initialModel : Model
-initialModel = Store.initialModel
+initialModel =
+    Store.initialModel
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update =
     Store.update config
+
 
 config : Dict.Dict String String -> Store.Config Team
 config params =
@@ -42,9 +50,10 @@ config params =
     , headers = []
     }
 
+
 collectionDecoder : Decoder (List Team)
 collectionDecoder =
-    (list memberDecoder)
+    list memberDecoder
 
 
 memberDecoder : Decoder Team
