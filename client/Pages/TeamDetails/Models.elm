@@ -7,11 +7,21 @@ import Stores.TeamDetails
 
 
 type alias Model =
-    Stores.TeamDetails.Model
+    { store : Stores.TeamDetails.Model
+    , filter : String
+    , sortBy : Maybe String
+    , sortReverse : Bool
+    , page : Int
+    }
 
 
 initialModel =
-    Stores.TeamDetails.initialModel
+    { page = 0
+    , filter = ""
+    , sortBy = Nothing
+    , sortReverse = False
+    , store = Stores.TeamDetails.initialModel
+    }
 
 
 type alias UrlParams =
