@@ -109,6 +109,8 @@ FORBID_DELETE_URL=https://nakadi-faq.docs.example.com/#how-to-delete-et
 # Module name and configuration of Passport.js auth plugin (see /server/auth.js).
 # Required
 AUTH_STRATEGY="passport-google-oauth20"
+# Zalando employees can use OAuth for easiness of setup
+#AUTH_STRATEGY="../tests/mocks/devPassportStrategy.js"
 AUTH_OPTIONS_clientID="YOUR client id.apps.googleusercontent.com"
 AUTH_OPTIONS_clientSecret="YOUR client secret"
 AUTH_OPTIONS_scope="profile email"
@@ -144,7 +146,7 @@ HTTPS_PRIVATE_KEY_FILE="deploy/certs/privkey.pem"
 HTTPS_PUBLIC_KEY_FILE="deploy/certs/cert.pem"
 ```
 
-*HINT*: [Create self-signed SSL certificates](http://www.akadia.com/services/ssh_test_certificate.html)
+*HINT*: Use openssl `openssl req -x509 -newkey rsa:4096 -keyout privkey.pem -out cert.pem -days 365 -subj '/CN=localhost' -nodes`
 Copy SSL keys `privkey.pem` and `cert.pem` to `deploy/certs` folder.
 
 ## Run
