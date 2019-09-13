@@ -1,6 +1,5 @@
 module Tests.View exposing (all)
 
-import Expect
 import Html exposing (div)
 import Messages exposing (Msg(..))
 import Models exposing (initialModel)
