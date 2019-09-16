@@ -75,7 +75,8 @@
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-dev-middleware": "^3.6.1",
-    "webpack-hot-middleware": "^2.24.3"
+    "webpack-hot-middleware": "^2.24.3",
+    "codecov": "^3.5.0"
   },
   "engineStrict": true,
   "engines": {

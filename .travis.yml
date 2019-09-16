@@ -24,5 +24,6 @@ script:
   - npm run validate
   - npm run build
   - npm run test:ci
+  - codecov
   - docker build -t "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" .
   - docker tag "nakadi/nakadi-ui:${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}" nakadi/nakadi-ui:latest
