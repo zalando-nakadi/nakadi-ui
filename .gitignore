@@ -8,3 +8,4 @@ deploy/
 .idea
 npm-debug.log
 reports
+.coverage

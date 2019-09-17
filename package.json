@@ -14,7 +14,7 @@
     "start:prod": "NODE_ENV=production node ./server/server.js",
     "test:ci": "CI=true npm test",
     "test": "npm run test:client && npm run test:server",
-    "test:client": "elm-test",
+    "test:client": "elm-coverage ./client",
     "test:server": "istanbul cover --include-all-sources tests/runner.js",
     "validate": "elm-format --validate ."
   },
@@ -36,6 +36,7 @@
     "body-parser": "^1.18.2",
     "client-sessions": "^0.8.0",
     "dotenv": "^4.0.0",
+    "elm-coverage": "^0.2.0",
     "express": "^4.15.4",
     "express-http-proxy": "^1.0.2",
     "express-request-id": "^1.4.0",
