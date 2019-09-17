@@ -17,7 +17,7 @@
     "test:client": "elm-coverage -r codecov ./client",
     "test:server": "istanbul cover --include-all-sources tests/runner.js",
     "validate": "elm-format --validate .",
-    "codecov" : "codecov -f reports/coverage.raw.json -f reports/lcov.info -f .coverage/codecov.json -f .coverage/info.json "
+    "codecov" : "codecov -f reports/coverage.raw.json && codecov -f reports/lcov.info&& codecov -f .coverage/codecov.json && codecov -f .coverage/info.json"
   },
   "repository": {
     "type": "git",
