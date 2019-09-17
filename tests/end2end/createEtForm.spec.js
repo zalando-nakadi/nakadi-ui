@@ -68,7 +68,7 @@ describe('Create Event type form', function() {
         .logout(done)
     });
 
-    fit('should show additional field if "hash" strategy is selected', function(done) {
+    it('should show additional field if "hash" strategy is selected', function(done) {
         const strategyInput = '#eventTypeCreateFormFieldPartitionStrategy';
         const keyInput = '#eventTypeCreateFormFieldPartitionKeyFields';
 
