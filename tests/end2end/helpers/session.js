@@ -63,7 +63,7 @@ module.exports = {
             .call(done);
         });
 
-        this.browser.sleep(500).setViewportSize({
+        this.browser.setViewportSize({
             width: 1400,
             height: 900
         }).then(done);

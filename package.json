@@ -13,10 +13,11 @@
     "build": "webpack --config=./webpack.config.prod.js",
     "start:prod": "NODE_ENV=production node ./server/server.js",
     "test:ci": "CI=true npm test",
-    "test": "npm run test:client && npm run test:server",
-    "test:client": "elm-coverage ./client",
+    "test": "npm run build && npm run test:client && npm run test:server",
+    "test:client": "elm-coverage -r codecov ./client",
     "test:server": "istanbul cover --include-all-sources tests/runner.js",
-    "validate": "elm-format --validate ."
+    "validate": "elm-format --validate .",
+    "codecov" : "codecov -f reports/coverage.raw.json -f reports/lcov.info -f .coverage/codecov.json -f .coverage/info.json "
   },
   "repository": {
     "type": "git",

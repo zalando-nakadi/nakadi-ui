@@ -3,10 +3,10 @@
 ## Prerequisites
 To run this web server, you need to have [Node.js](https://nodejs.org/) version 6.4 or newer
 installed.
-Also it is better to have [Elm](http://elm-lang.org/) v0.18 installed globally for an easy use later.
+Also it is better to have [Elm](http://elm-lang.org/) installed globally for an easy use later.
 
 ```bash
-npm install elm@0.18 -g
+npm install elm@0.19 -g
 ```
 
 ## Get the source code
