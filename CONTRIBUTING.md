@@ -44,6 +44,12 @@ If there is already a ticket, use this number at the start of the subject line.
 
 When creating a pull request, its comment should reference the corresponding issue id.
 
+### Test Coverage
+
+Nakadi UI server test coverage report is published to https://codecov.io/gh/zalando-nakadi/nakadi-ui
+
+The client elm-test coverage report will be created in `.coverage` folder.
+
 ## Development
 ### Run development server
 Start the development server.
