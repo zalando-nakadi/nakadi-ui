@@ -8,11 +8,11 @@ describe('Reset subscription offset form', function() {
     it('should close on cancel click', function(done) {
 
         this.browser.login('#subscriptions/2151d17e-a6a2-4661-bdc8-010101010101')
-        .waitForVisible('button=Change',1000)
+        .waitForVisible('button=Change')
         .click('button=Change')
-        .waitForVisible('#subscriptionEditOffset',1000)
+        .waitForVisible('#subscriptionEditOffset')
         .click('button=Cancel')
-        .waitForVisible('span=000000000000000009',1000)
+        .waitForVisible('span=000000000000000009')
         .catch(fail)
         .logout(done)
     });
@@ -20,13 +20,13 @@ describe('Reset subscription offset form', function() {
     it('should change offset', function(done) {
 
         this.browser.login('#subscriptions/2151d17e-a6a2-4661-bdc8-010101010101')
-        .waitForVisible('button=Change',1000)
+        .waitForVisible('button=Change')
         .click('button=Change')
-        .waitForVisible('#subscriptionEditOffset',1000)
+        .waitForVisible('#subscriptionEditOffset')
         .setValue('#subscriptionEditOffset', '000000000000000001')
-        .sleep(500) //valiadition and animation
+        .waitForExist('button=Set offset')
         .click('button=Set offset')
-        .waitForVisible('span=000000000000000001', 5000)
+        .waitForExist('span=000000000000000001')
         .catch(fail)
         .logout(done)
     });
@@ -34,12 +34,13 @@ describe('Reset subscription offset form', function() {
     it('should display the server error message', function(done) {
 
         this.browser.login('#subscriptions/2151d17e-a6a2-4661-bdc8-010101010101')
-        .waitForVisible('button=Change',1000)
+        .waitForVisible('button=Change')
         .click('button=Change')
-        .waitForVisible('#subscriptionEditOffset',1000)
+        .waitForVisible('#subscriptionEditOffset')
         .setValue('#subscriptionEditOffset','crazy')
+        .waitForExist('button=Set offset')
         .click('button=Set offset')
-        .waitForVisible('h1=Assertion fail', 5000)
+        .waitForExist('h1=Assertion fail')
         .catch(fail)
         .logout(done)
     });
