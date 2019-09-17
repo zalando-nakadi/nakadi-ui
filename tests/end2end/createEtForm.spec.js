@@ -68,27 +68,25 @@ describe('Create Event type form', function() {
         .logout(done)
     });
 
-    it('should show additional field if "hash" strategy is selected', function(done) {
+    fit('should show additional field if "hash" strategy is selected', function(done) {
         const strategyInput = '#eventTypeCreateFormFieldPartitionStrategy';
         const keyInput = '#eventTypeCreateFormFieldPartitionKeyFields';
 
         this.browser.login('#createtype')
+        .waitForVisible(strategyInput)
         .selectByValue(strategyInput, 'hash')
-        .sleep()
-        .isVisible(keyInput).then(function(visible) {
+        .waitForExist(keyInput)
+        .then(function(visible) {
             expect(visible).toBeTruthy('The partition key field should be visible if the strategy is "hash".');
         })
         .selectByValue(strategyInput, 'random')
-        .sleep()
-        .isVisible(keyInput).then(function(visible) {
+        .isExisting(keyInput).then(function(visible) {
             expect(visible).toBeFalsy('The partition key field should NOT be visible if the strategy is "random".');
         })
         .selectByValue(strategyInput, 'user_defined')
-        .sleep()
-        .isVisible(keyInput).then(function(visible) {
+        .isExisting(keyInput).then(function(visible) {
             expect(visible).toBeFalsy('The partition key field should NOT be visible if the strategy is "user_defined".');
         })
-
         .catch(fail)
         .logout(done)
     });
