@@ -74,14 +74,17 @@ describe('Create Event type form', function() {
 
         this.browser.login('#createtype')
         .selectByValue(strategyInput, 'hash')
+        .sleep()
         .isVisible(keyInput).then(function(visible) {
             expect(visible).toBeTruthy('The partition key field should be visible if the strategy is "hash".');
         })
         .selectByValue(strategyInput, 'random')
+        .sleep()
         .isVisible(keyInput).then(function(visible) {
             expect(visible).toBeFalsy('The partition key field should NOT be visible if the strategy is "random".');
         })
         .selectByValue(strategyInput, 'user_defined')
+        .sleep()
         .isVisible(keyInput).then(function(visible) {
             expect(visible).toBeFalsy('The partition key field should NOT be visible if the strategy is "user_defined".');
         })
