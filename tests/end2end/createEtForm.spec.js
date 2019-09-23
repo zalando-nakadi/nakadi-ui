@@ -73,19 +73,20 @@ describe('Create Event type form', function() {
         const keyInput = '#eventTypeCreateFormFieldPartitionKeyFields';
 
         this.browser.login('#createtype')
+        .waitForVisible(strategyInput)
         .selectByValue(strategyInput, 'hash')
-        .isVisible(keyInput).then(function(visible) {
+        .waitForExist(keyInput)
+        .then(function(visible) {
             expect(visible).toBeTruthy('The partition key field should be visible if the strategy is "hash".');
         })
         .selectByValue(strategyInput, 'random')
-        .isVisible(keyInput).then(function(visible) {
+        .isExisting(keyInput).then(function(visible) {
             expect(visible).toBeFalsy('The partition key field should NOT be visible if the strategy is "random".');
         })
         .selectByValue(strategyInput, 'user_defined')
-        .isVisible(keyInput).then(function(visible) {
+        .isExisting(keyInput).then(function(visible) {
             expect(visible).toBeFalsy('The partition key field should NOT be visible if the strategy is "user_defined".');
         })
-
         .catch(fail)
         .logout(done)
     });

@@ -13,7 +13,7 @@ describe('Create Subscription form', function() {
         this.browser.login('')
         .waitForVisible('h4=Welcome to Nakadi, a distributed, open-source event messaging service!', 1000)
         .click('button=Create')
-        .sleep(300) //waiting for the menu animation to finish
+        .waitForVisible('a=Subscription')
         .click('a=Subscription')
         .waitForVisible('h4=Create Subscription', 10000)
         .isEnabled('button=Create Subscription').then(function(enabled) {
@@ -37,12 +37,12 @@ describe('Create Subscription form', function() {
     it('should check for required fields', function(done) {
 
         this.browser.login('#createsubscription')
+        .waitForExist('#subscriptionCreateFormFieldOwningApplication')
         .setValue('#subscriptionCreateFormFieldOwningApplication', ' ')
-        .sleep()
-        .isVisible('.form-create__field-fieldeventtypes .dc--text-error').then(function(visible) {
+        .waitForVisible('.form-create__field-fieldeventtypes .dc--text-error').then(function(visible) {
             expect(visible).toBeTruthy('Should show error if the event type name is empty.');
         })
-        .isVisible('.form-create__field-fieldowningapplication .dc--text-error').then(function(visible) {
+        .waitForVisible('.form-create__field-fieldowningapplication .dc--text-error').then(function(visible) {
             expect(visible).toBeTruthy('Should show error if the owning app field is empty.');
         })
         .isEnabled('button=Create Subscription').then(function(enabled) {
@@ -58,13 +58,14 @@ describe('Create Subscription form', function() {
         const eventTypeName2 = 'aruha.test-event-test5.ver_6';
 
         this.browser.login('#createsubscription')
+        .waitForExist('#addEventType-input')
         .setValue('#addEventType-input', eventTypeName)
         .waitForVisible('#addEventType-dropdown .multi-search__item--selected')
         .click('b=aruha.test-event.ver_5')
         .setValue('#addEventType-input', eventTypeName2)
         .waitForVisible('#addEventType-dropdown .multi-search__item--selected')
         .click('b=aruha.test-event-test5.ver_6')
-        .sleep()
+        .waitForValue('#subscriptionCreateFormFieldEventTypes')
         .getValue('#subscriptionCreateFormFieldEventTypes').then(function(value) {
             const expected = `${eventTypeName}\n${eventTypeName2}`;
             expect(value).toBe(expected, 'Should be newline-separated names');
@@ -78,9 +79,9 @@ describe('Create Subscription form', function() {
         const cursorsInput = '#subscriptionCreateFormFieldCursors';
 
         this.browser.login('#createsubscription')
-        .sleep(500) //waiting for data load from api
+        .waitForExist(readFromInput)
         .selectByValue(readFromInput, 'cursors')
-        .isVisible(cursorsInput).then(function(visible) {
+        .waitForVisible(cursorsInput).then(function(visible) {
             expect(visible).toBeTruthy('The cursors field should be visible if the "read from" is "cursors".');
         })
         .selectByValue(readFromInput, 'end')
@@ -101,8 +102,9 @@ describe('Create Subscription form', function() {
         const eventTypeName = 'crazy-type';
 
         this.browser.login('#createsubscription')
+        .waitForExist('#subscriptionCreateFormFieldEventTypes')
         .setValue('#subscriptionCreateFormFieldEventTypes', eventTypeName)
-        .isVisible('.form-create__field-fieldeventtypes .dc--text-error').then(function(visible) {
+        .waitForVisible('.form-create__field-fieldeventtypes .dc--text-error').then(function(visible) {
             expect(visible).toBeTruthy('Should show error if the event type name is empty.');
         })
         .getText('.form-create__field-fieldeventtypes .dc--text-error').then(function(text) {
@@ -118,16 +120,17 @@ describe('Create Subscription form', function() {
         const cursorsIncorrect = '[{"event_type_crazy":"shop.updater.changed", "partition":"0", "offset":"00000000000123456"}]';
 
         this.browser.login('#createsubscription')
+        .waitForExist(readFromInput)
         .selectByValue(readFromInput, 'cursors')
+        .waitForExist('#subscriptionCreateFormFieldCursors')
         .setValue('#subscriptionCreateFormFieldCursors', cursorsCorrect)
         .isVisible('.form-create__field-fieldcursors .dc--text-error').then(function(visible) {
             expect(visible).toBeFalsy('Should NOT show error for correct format.');
         })
         .setValue('#subscriptionCreateFormFieldCursors', cursorsIncorrect)
-        .isVisible('.form-create__field-fieldcursors .dc--text-error').then(function(visible) {
+        .waitForVisible('.form-create__field-fieldcursors .dc--text-error').then(function(visible) {
             expect(visible).toBeTruthy('Should NOT show error for correct format.');
         })
-
         .catch(fail)
         .logout(done)
     });

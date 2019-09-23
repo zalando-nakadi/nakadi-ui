@@ -20,6 +20,7 @@ function getBrowser() {
     port: PORT,
     desiredCapabilities: {
       browserName: 'chrome',
+      acceptSslCerts : true,
       chromeOptions: {
         args
       }
@@ -29,7 +30,7 @@ function getBrowser() {
   const chromium = '/usr/bin/chromium-browser'
   if (fs.existsSync(chromium)) {
     console.log('chromium-browser found.')
-    opts.desiredCapabilities.binary = chromium
+    opts.desiredCapabilities.chromeOptions.binary = chromium
   } else {
     console.log('chromium-browser not found, using default chrome.')
   }

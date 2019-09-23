@@ -45,6 +45,9 @@ If there is already a ticket, use this number at the start of the subject line.
 When creating a pull request, its comment should reference the corresponding issue id.
 
 ## Development
+
+First of all install and configure all dependencies. See [INSTALL.md](INSTALL.md)  
+
 ### Run development server
 Start the development server.
 
@@ -59,22 +62,17 @@ automatically downloaded and applied to the browser without reload. (Hot Module 
 
 ### Run Tests
 
-To run local end-to-end tests you need to download
-[chromedriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)
-and place it to some `bin` directory where your os can find it.
-Run `chromedriver` in a separate terminal
-
-```bash
-npm run chromedriver
-```
-
-Then run tests
+To run all tests
 
 ```bash
 npm test
 ```
 
-It will run Elm tests, server unit tests, server api tests, and full end-to-end tests.
-All test reports and test coverage reports will be stored in `reports` folder.
+It will run Elm tests, server unit tests, server API tests, and full end-to-end tests.
+
+Nakadi UI server test coverage report will be created in `reports` folder and  
+the client elm-test coverage report will be created in `.coverage` folder.
+
+In Travis CI all test reports will be published to `codecov.io` https://codecov.io/gh/zalando-nakadi/nakadi-ui
 
 **Have fun, and happy hacking!**

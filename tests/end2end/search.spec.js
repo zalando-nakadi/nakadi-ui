@@ -27,10 +27,16 @@ describe('MultiSearch', function() {
                 'aruha.test-event-test5.ver_6'
             ], 'wrong elements found');
         })
-        //not found message
-        .sleep()
+        .catch(fail)
+        .logout(done)
+    });
+
+    it('should open popup and show not found message', function(done) {
+
+        this.browser.login()
+        .click('#multiSearch-input')
+        .waitForVisible('#multiSearch-dropdown', 1000)
         .setValue('#multiSearch-input','crazy-input')
-        .sleep()
         .getText('#multiSearch-dropdown').then(function(text) {
             expect(text).toContain('Nothing found for: crazy-input')
         })

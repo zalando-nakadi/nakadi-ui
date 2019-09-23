@@ -13,10 +13,11 @@
     "build": "webpack --config=./webpack.config.prod.js",
     "start:prod": "NODE_ENV=production node ./server/server.js",
     "test:ci": "CI=true npm test",
-    "test": "npm run test:client && npm run test:server",
-    "test:client": "elm-test",
+    "test": "npm run build && npm run test:client && npm run test:server",
+    "test:client": "elm-coverage -r codecov ./client",
     "test:server": "istanbul cover --include-all-sources tests/runner.js",
-    "validate": "elm-format --validate ."
+    "validate": "elm-format --validate .",
+    "codecov" : "codecov -f reports/coverage.raw.json && codecov -f reports/lcov.info&& codecov -f .coverage/codecov.json && codecov -f .coverage/info.json"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "body-parser": "^1.18.2",
     "client-sessions": "^0.8.0",
     "dotenv": "^4.0.0",
+    "elm-coverage": "^0.2.0",
     "express": "^4.15.4",
     "express-http-proxy": "^1.0.2",
     "express-request-id": "^1.4.0",
@@ -75,7 +77,8 @@
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",
     "webpack-dev-middleware": "^3.6.1",
-    "webpack-hot-middleware": "^2.24.3"
+    "webpack-hot-middleware": "^2.24.3",
+    "codecov": "^3.5.0"
   },
   "engineStrict": true,
   "engines": {
