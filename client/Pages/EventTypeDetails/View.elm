@@ -821,7 +821,8 @@ deletePopup model eventType consumersStore subscriptionsStore appsInfoUrl usersI
                                 Nothing ->
                                     none
                             , p [ class "dc-p" ]
-                                [ text "Think twice, notify all consumers and producers."
+                                [ text "Notify all consumers and producers."
+                                , text "Delete all active subscriptions except the one for nakadi-archiver."
                                 ]
                             , div [ style "max-height" "400px", style "overflow" "auto" ]
                                 [ consumers
