@@ -7,13 +7,16 @@ function getBrowser() {
 
   chromedriver.start([
     '--url-base=wd/hub',
+    '--disable-extensions',
+    '--whitelisted-ips',
+    '--verbose',
     `--port=${PORT}`
   ])
 
   const inCI = process.env['CI']
 
   const args = inCI ?
-      ['--headless', '--no-sandbox', '--whitelisted-ips', '--single-process']
+      ['--headless', '--no-sandbox', '--whitelisted-ips', '--disable-extensions', '--single-process']
       : []
 
   const opts = {
