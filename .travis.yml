@@ -18,7 +18,7 @@ cache:
     - $HOME/.elm
     - $HOME/.npm # https://stackoverflow.com/a/42523517/1148249
 before_install:
-  - chromium-browser --whitelisted-ips --headless --no-sandbox --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - chromium-browser --verbose --whitelisted-ips --headless --no-sandbox --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 script:
   - npm run validate
