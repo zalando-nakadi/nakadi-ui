@@ -7,8 +7,6 @@ function getBrowser() {
 
   chromedriver.start([
     '--url-base=wd/hub',
-    '--disable-extensions',
-    '--whitelisted-ips',
     `--port=${PORT}`
   ])
 
