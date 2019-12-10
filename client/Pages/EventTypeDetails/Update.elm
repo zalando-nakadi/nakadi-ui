@@ -178,14 +178,14 @@ update settings message model =
                     ( { model | publishersStore = newSubModel }, Cmd.map PublishersStoreMsg newSubMsg )
 
                 LoadConsumingQueries ->
-                    ( model, dispatch (ConsumingQueriesStoreMsg (loadSubStoreMsg model.name)))
+                    ( model, dispatch (ConsumingQueriesStoreMsg (loadSubStoreMsg model.name)) )
 
                 ConsumingQueriesStoreMsg subMsg ->
                     let
                         ( newSubModel, newSubMsg ) =
                             Stores.ConsumingQuery.update subMsg model.consumingQueriesStore
                     in
-                    ({model | consumingQueriesStore = newSubModel}, Cmd.map ConsumingQueriesStoreMsg newSubMsg)
+                    ( { model | consumingQueriesStore = newSubModel }, Cmd.map ConsumingQueriesStoreMsg newSubMsg )
 
                 LoadConsumers ->
                     ( model, dispatch (ConsumersStoreMsg (loadSubStoreMsg model.name)) )
@@ -267,7 +267,7 @@ update settings message model =
                             { newDeletePopup | isOpen = True }
                     in
                     ( { model | deletePopup = openedDeletePopup }
-                    , Cmd.batch [dispatch LoadConsumers , dispatch LoadConsumingQueries]
+                    , Cmd.batch [ dispatch LoadConsumers, dispatch LoadConsumingQueries ]
                     )
 
                 CloseDeletePopup ->

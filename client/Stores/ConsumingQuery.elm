@@ -1,11 +1,11 @@
-module Stores.ConsumingQuery exposing (ConsumingQuery, Model, initialModel, update, Msg)
+module Stores.ConsumingQuery exposing (ConsumingQuery, Model, Msg, initialModel, update)
 
-import Json.Decode exposing (Decoder, bool, string, succeed, list, field)
-import Json.Decode.Pipeline exposing (required)
-import Helpers.Store as Store
-import Dict
-import Constants
 import Config
+import Constants
+import Dict
+import Helpers.Store as Store
+import Json.Decode exposing (Decoder, bool, field, list, string, succeed)
+import Json.Decode.Pipeline exposing (required)
 
 
 type alias ConsumingQuery =
@@ -15,15 +15,19 @@ type alias ConsumingQuery =
     , outputEventType : OutputEventType
     }
 
+
 type alias OutputEventType =
     { name : String
     }
 
+
 type alias Model =
     Store.Model ConsumingQuery
 
+
 type alias Msg =
     Store.Msg ConsumingQuery
+
 
 config : Dict.Dict String String -> Store.Config ConsumingQuery
 config params =
@@ -37,6 +41,7 @@ config params =
     , headers = []
     }
 
+
 initialModel : Model
 initialModel =
     Store.initialModel
@@ -46,11 +51,15 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update =
     Store.update config
 
+
+
 -- Decoders
+
 
 collectionDecoder : Decoder (List ConsumingQuery)
 collectionDecoder =
     field "items" (list queryDecoder)
+
 
 queryDecoder : Decoder ConsumingQuery
 queryDecoder =
@@ -59,6 +68,7 @@ queryDecoder =
         |> required "sql" string
         |> required "envelope" bool
         |> required "output_event_type" outputEventTypeDecoder
+
 
 outputEventTypeDecoder : Decoder OutputEventType
 outputEventTypeDecoder =

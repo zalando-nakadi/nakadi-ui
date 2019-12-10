@@ -714,15 +714,18 @@ renderSubscription name appsInfoUrl item =
             []
         ]
 
+
 renderSqlQueries : ConsumingQuery -> Html Msg
 renderSqlQueries query =
     tr [ class "dc-table__tr" ]
         [ td [ class "dc-table__td" ]
             [ a
-                [ href (routeToUrl <|
-                    EventTypeDetailsRoute
-                        { name = query.outputEventType.name }
-                        { tab = Just SchemaTab, formatted = Just True, version = Nothing, effective = Nothing })
+                [ href
+                    (routeToUrl <|
+                        EventTypeDetailsRoute
+                            { name = query.outputEventType.name }
+                            { tab = Just SchemaTab, formatted = Just True, version = Nothing, effective = Nothing }
+                    )
                 , class "dc-link"
                 ]
                 [ text query.id ]
@@ -790,19 +793,22 @@ deletePopup model eventType consumersStore subscriptionsStore queryStore appsInf
                         |> List.map (renderSubscription eventType.name appsInfoUrl)
                     )
 
-        sqlQueriesList = Store.items queryStore
+        sqlQueriesList =
+            Store.items queryStore
 
         sqlQueries =
             Helpers.Panel.loadingStatus queryStore <|
-                grid ["Following queries will be deleted!"]
+                grid [ "Following queries will be deleted!" ]
                     (if List.isEmpty sqlQueriesList then
                         [ tr [ class "dc-table__tr" ]
                             [ td [ class "dc-table__td" ]
-                                [ text "No SQL Queries found for this event type."]
+                                [ text "No SQL Queries found for this event type." ]
                             ]
                         ]
-                    else
-                        sqlQueriesList |> List.map renderSqlQueries)
+
+                     else
+                        sqlQueriesList |> List.map renderSqlQueries
+                    )
 
         deleteButton =
             if model.eventTypeDetailsPage.deletePopup.deleteCheckbox then

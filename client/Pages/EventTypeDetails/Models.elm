@@ -7,8 +7,8 @@ import Helpers.Store exposing (ErrorMessage, Status(..))
 import Helpers.String exposing (getMaybeBool, justOrCrash, queryMaybeToUrl)
 import Pages.EventTypeDetails.PublishTab
 import RemoteData exposing (RemoteData(..), WebData)
-import Stores.ConsumingQuery
 import Stores.Consumer
+import Stores.ConsumingQuery
 import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
