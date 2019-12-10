@@ -14,6 +14,7 @@ import Pages.EventTypeDetails.QueryTab exposing (deleteQuery, loadQuery)
 import RemoteData exposing (RemoteData(..), isFailure, isSuccess)
 import Routing.Models exposing (Route(..))
 import Stores.Consumer
+import Stores.ConsumingQuery
 import Stores.Cursor
 import Stores.CursorDistance
 import Stores.EventTypeSchema
@@ -176,6 +177,16 @@ update settings message model =
                     in
                     ( { model | publishersStore = newSubModel }, Cmd.map PublishersStoreMsg newSubMsg )
 
+                LoadConsumingQueries ->
+                    ( model, dispatch (ConsumingQueriesStoreMsg (loadSubStoreMsg model.name)))
+
+                ConsumingQueriesStoreMsg subMsg ->
+                    let
+                        ( newSubModel, newSubMsg ) =
+                            Stores.ConsumingQuery.update subMsg model.consumingQueriesStore
+                    in
+                    ({model | consumingQueriesStore = newSubModel}, Cmd.map ConsumingQueriesStoreMsg newSubMsg)
+
                 LoadConsumers ->
                     ( model, dispatch (ConsumersStoreMsg (loadSubStoreMsg model.name)) )
 
@@ -255,7 +266,9 @@ update settings message model =
                         openedDeletePopup =
                             { newDeletePopup | isOpen = True }
                     in
-                    ( { model | deletePopup = openedDeletePopup }, dispatch LoadConsumers )
+                    ( { model | deletePopup = openedDeletePopup }
+                    , Cmd.batch [dispatch LoadConsumers , dispatch LoadConsumingQueries]
+                    )
 
                 CloseDeletePopup ->
                     ( { model | deletePopup = initialModel.deletePopup }, Cmd.none )

@@ -8,6 +8,7 @@ import Pages.EventTypeDetails.PublishTab
 import RemoteData exposing (WebData)
 import Routing.Models exposing (Route(..))
 import Stores.Consumer
+import Stores.ConsumingQuery
 import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
@@ -28,6 +29,8 @@ type Msg
     | JsonEditorMsg Helpers.JsonEditor.Msg
     | LoadPublishers
     | PublishersStoreMsg Stores.Publisher.Msg
+    | LoadConsumingQueries
+    | ConsumingQueriesStoreMsg Stores.ConsumingQuery.Msg
     | LoadConsumers
     | ConsumersStoreMsg Stores.Consumer.Msg
     | LoadTotals

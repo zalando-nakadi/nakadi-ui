@@ -17,6 +17,7 @@ describe('Config', function() {
             DOCS_URL: "https://nakadi-faq.docs.example.com/",
             SUPPORT_URL: "https://hipchat.example.com/chat/room/12345",
             ALLOW_DELETE_EVENT_TYPE: "yes",
+            DELETE_SUBSCRIPTION_WARN: "Notify all consumers",
             FORBID_DELETE_URL: "https://nakadi-faq.docs.example.com/#how-to-delete-et",
             AUTH_STRATEGY: "passport-google-oauth20",
             AUTH_OPTIONS_clientID: "123.apps.googleusercontent.com",
