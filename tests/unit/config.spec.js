@@ -69,6 +69,7 @@ describe('Config', function() {
                 docsUrl: "https://nakadi-faq.docs.example.com/",
                 supportUrl: "https://hipchat.example.com/chat/room/12345",
                 forbidDeleteUrl: "https://nakadi-faq.docs.example.com/#how-to-delete-et",
+                deleteSubscriptionWarning: "Notify all consumers",
                 allowDeleteEvenType: true,
                 showNakadiSql: false,
                 queryMonitoringUrl: ''
