@@ -24,6 +24,7 @@ import RemoteData exposing (isSuccess)
 import Routing.Helpers exposing (internalLink)
 import Routing.Models exposing (Route(..), routeToUrl)
 import Stores.Consumer
+import Stores.ConsumingQuery exposing (ConsumingQuery)
 import Stores.CursorDistance
 import Stores.EventType
     exposing
@@ -273,6 +274,7 @@ detailsLayout typeName eventType model =
                 eventType
                 pageState.consumersStore
                 model.subscriptionStore
+                pageState.consumingQueriesStore
                 appsInfoUrl
                 usersInfoUrl
             ]
@@ -713,6 +715,24 @@ renderSubscription name appsInfoUrl item =
         ]
 
 
+renderSqlQueries : ConsumingQuery -> Html Msg
+renderSqlQueries query =
+    tr [ class "dc-table__tr" ]
+        [ td [ class "dc-table__td" ]
+            [ a
+                [ href
+                    (routeToUrl <|
+                        EventTypeDetailsRoute
+                            { name = query.outputEventType.name }
+                            { tab = Just SchemaTab, formatted = Just True, version = Nothing, effective = Nothing }
+                    )
+                , class "dc-link"
+                ]
+                [ text query.id ]
+            ]
+        ]
+
+
 authTab : String -> String -> EventType -> Html Msg
 authTab appsInfoUrl usersInfoUrl eventType =
     case eventType.authorization of
@@ -745,10 +765,11 @@ deletePopup :
     -> EventType
     -> Stores.Consumer.Model
     -> Stores.Subscription.Model
+    -> Stores.ConsumingQuery.Model
     -> String
     -> String
     -> Html Msg
-deletePopup model eventType consumersStore subscriptionsStore appsInfoUrl usersInfoUrl =
+deletePopup model eventType consumersStore subscriptionsStore queryStore appsInfoUrl usersInfoUrl =
     let
         consumersList =
             Store.items consumersStore
@@ -770,6 +791,23 @@ deletePopup model eventType consumersStore subscriptionsStore appsInfoUrl usersI
                 grid [ "Consuming application", "Subscription ID", "Consumer group", "" ]
                     (subscriptionsList
                         |> List.map (renderSubscription eventType.name appsInfoUrl)
+                    )
+
+        sqlQueriesList =
+            Store.items queryStore
+
+        sqlQueries =
+            Helpers.Panel.loadingStatus queryStore <|
+                grid [ "Following queries will be deleted!" ]
+                    (if List.isEmpty sqlQueriesList then
+                        [ tr [ class "dc-table__tr" ]
+                            [ td [ class "dc-table__td" ]
+                                [ text "No SQL Queries found for this event type." ]
+                            ]
+                        ]
+
+                     else
+                        sqlQueriesList |> List.map renderSqlQueries
                     )
 
         deleteButton =
@@ -820,9 +858,10 @@ deletePopup model eventType consumersStore subscriptionsStore appsInfoUrl usersI
 
                                 Nothing ->
                                     none
+                            , div [ style "max-height" "400px", style "overflow" "auto" ]
+                                [ sqlQueries ]
                             , p [ class "dc-p" ]
-                                [ text "Think twice, notify all consumers and producers."
-                                ]
+                                [ text model.userStore.user.settings.deleteSubscriptionWarning ]
                             , div [ style "max-height" "400px", style "overflow" "auto" ]
                                 [ consumers
                                 , subscriptions

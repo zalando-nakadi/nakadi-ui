@@ -38,6 +38,7 @@ settingsDecoder =
         |> optional "supportUrl" string emptyString
         |> optional "forbidDeleteUrl" string emptyString
         |> optional "allowDeleteEvenType" bool False
+        |> optional "deleteSubscriptionWarning" string emptyString
         |> optional "showNakadiSql" bool False
         |> optional "queryMonitoringUrl" string emptyString
 

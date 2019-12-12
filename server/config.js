@@ -29,13 +29,15 @@ exports = module.exports = function createConfiguration(env) {
             appsInfoUrl: optional('APPS_INFO_URL', env, ''),
             usersInfoUrl: optional('USERS_INFO_URL', env, ''),
             nakadiApiUrl: required('NAKADI_API_URL', env),
-            monitoringUrl: optional('MONITORING_URL', env,  ''),
-            sloMonitoringUrl: optional('SLO_MONITORING_URL', env,  ''),
+            monitoringUrl: optional('MONITORING_URL', env, ''),
+            sloMonitoringUrl: optional('SLO_MONITORING_URL', env, ''),
             eventTypeMonitoringUrl: optional('EVENT_TYPE_MONITORING_URL', env, ''),
             subscriptionMonitoringUrl: optional('SUBSCRIPTION_MONITORING_URL', env, ''),
             docsUrl: optional('DOCS_URL', env, ''),
             supportUrl: optional('SUPPORT_URL', env, ''),
             allowDeleteEvenType: envToBool(env.ALLOW_DELETE_EVENT_TYPE),
+            deleteSubscriptionWarning: optional('DELETE_SUBSCRIPTION_WARN', env,
+                'Notify all consumers; the following subscriptions will be deleted!'),
             forbidDeleteUrl: optional('FORBID_DELETE_URL', env, ''),
             showNakadiSql: envToBool(env.SHOW_NAKADI_SQL),
             queryMonitoringUrl: optional('QUERY_MONITORING_URL', env, '')
@@ -98,7 +100,7 @@ function required(name, env) {
  * @returns {*}
  */
 function optional(name, env, defaultValue) {
-    if (env[name]===undefined)
+    if (env[name] === undefined)
         return defaultValue;
     return env[name];
 }

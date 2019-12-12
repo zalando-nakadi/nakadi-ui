@@ -8,6 +8,7 @@ import Helpers.String exposing (getMaybeBool, justOrCrash, queryMaybeToUrl)
 import Pages.EventTypeDetails.PublishTab
 import RemoteData exposing (RemoteData(..), WebData)
 import Stores.Consumer
+import Stores.ConsumingQuery
 import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
@@ -25,6 +26,7 @@ initialModel =
     , version = Nothing
     , jsonEditor = JsonEditor.initialModel
     , publishersStore = Stores.Publisher.initialModel
+    , consumingQueriesStore = Stores.ConsumingQuery.initialModel
     , consumersStore = Stores.Consumer.initialModel
     , partitionsStore = Stores.Partition.initialModel
     , eventTypeSchemasStore = Stores.EventTypeSchema.initialModel
@@ -62,6 +64,7 @@ type alias Model =
     , version : Maybe String
     , jsonEditor : JsonEditor.Model
     , publishersStore : Stores.Publisher.Model
+    , consumingQueriesStore : Stores.ConsumingQuery.Model
     , consumersStore : Stores.Consumer.Model
     , partitionsStore : Stores.Partition.Model
     , eventTypeSchemasStore : Stores.EventTypeSchema.Model
