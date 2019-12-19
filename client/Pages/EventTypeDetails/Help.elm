@@ -1,4 +1,4 @@
-module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
+module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, consumingQueries, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
 
 import Config exposing (appPreffix)
 import Helpers.UI exposing (..)
@@ -352,6 +352,11 @@ publishers =
     , newline
     , man "#using_producing-events"
     ]
+
+
+consumingQueries : List (Html msg)
+consumingQueries =
+    [ text "The list of nakadi-sql queries consuming this Event Type." ]
 
 
 consumers : List (Html msg)

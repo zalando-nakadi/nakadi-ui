@@ -91,7 +91,10 @@ update settings message model =
                             dispatch LoadPublishers
 
                         ConsumerTab ->
-                            dispatch LoadConsumers
+                            Cmd.batch
+                                [ dispatch LoadConsumers
+                                , dispatch LoadConsumingQueries
+                                ]
 
                         PublishTab ->
                             Cmd.none
