@@ -247,6 +247,7 @@ detailsLayout typeName eventType model =
                                 eventType
                                 pageState.consumersStore
                                 model.subscriptionStore
+                                pageState.consumingQueriesStore
                                 appsInfoUrl
                                 usersInfoUrl
                             )
@@ -619,11 +620,19 @@ renderPublishers name appsInfoUrl usersInfoUrl item =
         ]
 
 
-consumersTab : EventType -> Stores.Consumer.Model -> Stores.Subscription.Model -> String -> String -> Html Msg
-consumersTab eventType consumersStore subscriptionsStore appsInfoUrl usersInfoUrl =
+consumersTab :
+    EventType
+    -> Stores.Consumer.Model
+    -> Stores.Subscription.Model
+    -> Stores.ConsumingQuery.Model
+    -> String
+    -> String
+    -> Html Msg
+consumersTab eventType consumersStore subscriptionsStore queryStore appsInfoUrl usersInfoUrl =
     div [ class "dc-card" ]
-        [ consumersPanel eventType consumersStore appsInfoUrl usersInfoUrl
-        , subscriptionsPanel eventType subscriptionsStore appsInfoUrl
+        [ subscriptionsPanel eventType subscriptionsStore appsInfoUrl
+        , consumingQueriesPanel queryStore
+        , consumersPanel eventType consumersStore appsInfoUrl usersInfoUrl
         ]
 
 
@@ -712,6 +721,38 @@ renderSubscription name appsInfoUrl item =
         , td [ class "dc-table__td" ] [ text item.consumer_group ]
         , td [ class "dc-table__td" ]
             []
+        ]
+
+
+consumingQueriesPanel : Stores.ConsumingQuery.Model -> Html Msg
+consumingQueriesPanel queryStore =
+    let
+        sqlQueriesList =
+            Store.items queryStore
+
+        count =
+            List.length sqlQueriesList
+
+        countStr =
+            if count == 1 then
+                String.fromInt count
+                    ++ " consuming nakadi-sql query"
+
+            else
+                String.fromInt count
+                    ++ " consuming nakadi-sql queries"
+    in
+    div []
+        [ span []
+            [ text countStr
+            , helpIcon "Consuming queries" Help.consumingQueries BottomRight
+            , refreshButton LoadConsumingQueries
+            ]
+        , div [ class "consumer-tab__list" ]
+            [ Helpers.Panel.loadingStatus queryStore <|
+                grid [ "Consuming nakadi-sql queries" ]
+                    (sqlQueriesList |> List.map renderSqlQueries)
+            ]
         ]
 
 
