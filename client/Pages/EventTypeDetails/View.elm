@@ -734,7 +734,13 @@ consumingQueriesPanel queryStore =
             List.length sqlQueriesList
 
         countStr =
-            pluralCount count "consuming nakadi-sql queries"
+            if count == 1 then
+                String.fromInt count
+                    ++ " consuming nakadi-sql query"
+
+            else
+                String.fromInt count
+                    ++ " consuming nakadi-sql queries"
     in
     div []
         [ span []
