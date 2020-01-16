@@ -414,6 +414,37 @@ audience =
     ]
 
 
+eventAuthField : List (Html msg)
+eventAuthField =
+    [ text "Event Auth Field for per-event authorization."
+    , text "Can be used to point to a string field in the event, which "
+    , text "is used by Nakadi do decide if an authorized consumer "
+    , text "can read a published event. It is optional and "
+    , text "if not specified or field is not present/null, all "
+    , text "authorized consumers can read the event."
+    , newline
+    , bold "The event_auth_field must contain the following fields:"
+    , newline
+    , text "- "
+    , mono "path"
+    , text " path in dot notation of the string field"
+    , text " in an event which will be used to"
+    , text " classify if the consumer is allowed to read the event."
+    , newline
+    , text "- "
+    , mono "type"
+    , text " informational field specifying what type of data the field"
+    , text " represents (eg: team/retailers, etc)"
+    , newline
+    , newline
+    , bold "Key: "
+    , mono "event_auth_field"
+    , bold "optional"
+    , newline
+    , man "#definition_EventAuthField"
+    ]
+
+
 cleanupPolicy : List (Html msg)
 cleanupPolicy =
     [ text "Event type cleanup policy."

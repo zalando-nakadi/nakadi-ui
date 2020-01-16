@@ -171,7 +171,6 @@ viewForm model setup =
 
         appsInfoUrl =
             model.userStore.user.settings.appsInfoUrl
-
         usersInfoUrl =
             model.userStore.user.settings.usersInfoUrl
 

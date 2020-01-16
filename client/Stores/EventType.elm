@@ -25,6 +25,7 @@ type alias EventType =
     , ordering_key_fields : Maybe (List String)
     , default_statistic : Maybe EventTypeStatistics
     , options : Maybe EventTypeOptions
+    , event_auth_field : Maybe EventAuthField
     , authorization :
         Maybe Authorization
     , --enum delete, compact
@@ -49,6 +50,10 @@ type alias EventTypeOptions =
     { retention_time : Maybe Int
     }
 
+type alias EventAuthField =
+    { path : String
+    , type : String
+    }
 
 type alias Model =
     Helpers.Store.Model EventType
@@ -198,6 +203,7 @@ memberDecoder =
         |> optional "authorization" (nullable Stores.Authorization.collectionDecoder) Nothing
         |> optional "cleanup_policy" string cleanupPolicies.delete
         |> optional "audience" (nullable string) Nothing
+        |> optional "event_auth_field" (nullable eventAuthFieldDecoder) Nothing
         |> optional "created_at" (nullable string) Nothing
         |> optional "updated_at" (nullable string) Nothing
 
@@ -215,3 +221,10 @@ optionsDecoder : Decoder EventTypeOptions
 optionsDecoder =
     succeed EventTypeOptions
         |> optional "retention_time" (nullable int) Nothing
+
+
+eventAuthFieldDecoder : Decoder EventAuthField
+eventAuthFieldDecoder =
+    succeed EventAuthField
+        |> required "path" String
+        |> required "type" String

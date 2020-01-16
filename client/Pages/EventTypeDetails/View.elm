@@ -31,6 +31,7 @@ import Stores.EventType
         ( EventType
         , EventTypeOptions
         , EventTypeStatistics
+        , EventAuthField
         , cleanupPolicies
         )
 import Stores.EventTypeSchema
@@ -198,7 +199,9 @@ detailsLayout typeName eventType model =
                             none
                         , infoField "Audience " Help.audience TopRight <|
                             infoStringToText eventType.audience
-                        , infoField "Created " Help.createdAt TopRight <|
+                        , infoField "Event Auth Field " Help.eventAuthField TopRight <|
+                            infoEventAuthFieldToText eventType.eventAuthField
+                        , infoField "Created " Help.createdAt |
                             infoDateToText eventType.created_at
                         , infoField "Updated " Help.updatedAt TopRight <|
                             infoDateToText eventType.updated_at
@@ -376,6 +379,18 @@ infoStatisticsToText maybeStatistics =
                 , infoSubField "Write parallelism:" (String.fromInt stat.write_parallelism)
                 ]
 
+        Nothing ->
+            infoEmpty
+
+
+infoEventAuthFieldToText : Maybe EventAuthField -> Html Msg
+infoEventAuthFieldToText maybeEventAuthField =
+    case eventAuthField of
+        Just auth_field ->
+            div []
+                [ infoSubField "Path: " (String.fromString auth_field.path) 
+                , infoSubField "Type: " (String.fromString auth_field.type)
+                ]
         Nothing ->
             infoEmpty
 
