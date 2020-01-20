@@ -31,7 +31,7 @@ import Stores.EventType
         ( EventType
         , EventTypeOptions
         , EventTypeStatistics
-        , EventAuthField
+        , EventOwnerSelector
         , cleanupPolicies
         )
 import Stores.EventTypeSchema
@@ -199,9 +199,9 @@ detailsLayout typeName eventType model =
                             none
                         , infoField "Audience " Help.audience TopRight <|
                             infoStringToText eventType.audience
-                        , infoField "Event Auth Field " Help.eventAuthField TopRight <|
-                            infoEventAuthFieldToText eventType.eventAuthField
-                        , infoField "Created " Help.createdAt |
+                        , infoField "Event Owner Selector " Help.eventOwnerSelector TopRight <|
+                            infoEventOwnerSelectorToText eventType.event_owner_selector
+                        , infoField "Created " Help.createdAt TopRight <|
                             infoDateToText eventType.created_at
                         , infoField "Updated " Help.updatedAt TopRight <|
                             infoDateToText eventType.updated_at
@@ -383,13 +383,14 @@ infoStatisticsToText maybeStatistics =
             infoEmpty
 
 
-infoEventAuthFieldToText : Maybe EventAuthField -> Html Msg
-infoEventAuthFieldToText maybeEventAuthField =
-    case eventAuthField of
-        Just auth_field ->
+infoEventOwnerSelectorToText : Maybe EventOwnerSelector -> Html Msg
+infoEventOwnerSelectorToText maybeEventOwnerSelector =
+    case maybeEventOwnerSelector of
+        Just owner_selector ->
             div []
-                [ infoSubField "Path: " (String.fromString auth_field.path) 
-                , infoSubField "Type: " (String.fromString auth_field.type)
+                [ infoSubField "Type: " (owner_selector.type_) 
+                , infoSubField "Name: " (owner_selector.name)
+                , infoSubField "Value: " (owner_selector.value)
                 ]
         Nothing ->
             infoEmpty

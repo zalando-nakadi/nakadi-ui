@@ -26,6 +26,7 @@ import Stores.EventType
         , cleanupPolicies
         , compatibilityModes
         , partitionStrategies
+        , allOwnerSelectorTypes
         )
 
 
@@ -264,6 +265,41 @@ viewForm model setup =
                 Required
                 Enabled
                 ("" :: allAudiences)
+            , div [ class "dc-row form-create__input-row" ]
+                [ selectInput formModel
+                    FieldEventOwnerSelectorType
+                    OnInput
+                    "Event Owner Selector Type"
+                    ""
+                    Help.eventOwnerSelector
+                    Optional
+                    Enabled
+                    ("" :: allOwnerSelectorTypes)
+                , div
+                    [ class "dc-column" ]
+                    [textInput formModel
+                        FieldEventOwnerSelectorName
+                        OnInput
+                        "Event Owner Selector Name"
+                        "Example: retailer_id"
+                        ""
+                        Help.eventOwnerSelector
+                        Optional
+                        Enabled
+                    ]
+                , div
+                    [ class "dc-column" ]
+                    [textInput formModel
+                        FieldEventOwnerSelectorValue
+                        OnInput
+                        "Event Owner Selector Value"
+                        "Example: security.owners"
+                        ""
+                        Help.eventOwnerSelector
+                        Optional
+                        Enabled
+                    ]
+                ]
             , selectInput formModel
                 FieldCleanupPolicy
                 OnInput

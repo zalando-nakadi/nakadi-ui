@@ -372,9 +372,30 @@ submitCreate model =
                 |> String.trim
                 |> Json.string
 
+        isEmptyString field =
+            model.values
+                |> getValue field
+                |> String.trim
+                |> String.isEmpty
+
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
                 |> Stores.Authorization.encoder
+
+        event_owner_selector =
+            if isEmptyString FieldEventOwnerSelectorName && 
+                isEmptyString FieldEventOwnerSelectorValue && 
+                    isEmptyString FieldEventOwnerSelectorType then
+                []
+
+            else
+                [ ( "event_owner_selector", Json.object
+                    [ ( "type", asString FieldEventOwnerSelectorType )
+                    , ( "name", asString FieldEventOwnerSelectorName )
+                    , ( "value", asString FieldEventOwnerSelectorValue )
+                    ]
+                  )
+                ]
 
         fields =
             [ ( "name", asString FieldName )
@@ -419,7 +440,7 @@ submitCreate model =
                 ]
 
         body =
-            Json.object (List.concat [ fields, enrichment ])
+            Json.object (List.concat [ fields, enrichment, event_owner_selector ])
     in
     post body
 
@@ -456,10 +477,31 @@ submitUpdate model =
                 |> getValue field
                 |> String.trim
                 |> Json.string
+        
+        isEmptyString field =
+            model.values
+                |> getValue field
+                |> String.trim
+                |> String.isEmpty
 
         auth =
             AccessEditor.unflatten model.accessEditor.authorization
                 |> Stores.Authorization.encoder
+
+        event_owner_selector =
+            if isEmptyString FieldEventOwnerSelectorName && 
+                isEmptyString FieldEventOwnerSelectorValue && 
+                    isEmptyString FieldEventOwnerSelectorType then
+                []
+
+            else
+                [ ( "event_owner_selector", Json.object
+                    [ ( "type", asString FieldEventOwnerSelectorType )
+                    , ( "name", asString FieldEventOwnerSelectorName )
+                    , ( "value", asString FieldEventOwnerSelectorValue )
+                    ]
+                  )
+                ]
 
         fields =
             [ ( "name", asString FieldName )
@@ -496,7 +538,7 @@ submitUpdate model =
                 ]
 
         body =
-            Json.object (List.concat [ fields, enrichment ])
+            Json.object (List.concat [ fields, enrichment, event_owner_selector ])
     in
     put body (getValue FieldName model.values)
 

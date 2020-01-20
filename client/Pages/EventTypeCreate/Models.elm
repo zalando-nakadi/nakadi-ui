@@ -38,6 +38,9 @@ type Field
     | FieldSchema
     | FieldEnvelope
     | FieldAudience
+    | FieldEventOwnerSelectorType
+    | FieldEventOwnerSelectorName
+    | FieldEventOwnerSelectorValue
     | FieldCleanupPolicy
     | FieldSql
     | FieldPartitionCompactionKeyField
@@ -100,6 +103,9 @@ defaultValues =
     , ( FieldEnvelope, boolToString True )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
     , ( FieldAudience, "" )
+    , ( FieldEventOwnerSelectorType, "" )
+    , ( FieldEventOwnerSelectorName, "" )
+    , ( FieldEventOwnerSelectorValue, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
     , ( FieldPartitionCompactionKeyField, emptyString )
     ]

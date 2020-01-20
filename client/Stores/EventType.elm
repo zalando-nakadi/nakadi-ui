@@ -1,4 +1,4 @@
-module Stores.EventType exposing (EventType, EventTypeOptions, EventTypeStatistics, Model, Msg, allAudiences, allCategories, allCleanupPolicies, allModes, audiences, categories, cleanupPolicies, collectionDecoder, compatibilityModes, config, defaultStatisticDecoder, initialModel, memberDecoder, optionsDecoder, partitionStrategies, update)
+module Stores.EventType exposing (EventType, EventTypeOptions, EventTypeStatistics, Model, Msg, allAudiences, allCategories, allCleanupPolicies, allModes, audiences, categories, cleanupPolicies, collectionDecoder, compatibilityModes, config, defaultStatisticDecoder, initialModel, memberDecoder, optionsDecoder, partitionStrategies, EventOwnerSelector, allOwnerSelectorTypes, update)
 
 import Config
 import Constants
@@ -25,7 +25,6 @@ type alias EventType =
     , ordering_key_fields : Maybe (List String)
     , default_statistic : Maybe EventTypeStatistics
     , options : Maybe EventTypeOptions
-    , event_auth_field : Maybe EventAuthField
     , authorization :
         Maybe Authorization
     , --enum delete, compact
@@ -33,6 +32,7 @@ type alias EventType =
     , --enum component-internal, business-unit-internal,
       -- company-internal, external-partner, external-public
       audience : Maybe String
+    , event_owner_selector : Maybe EventOwnerSelector
     , created_at : Maybe String
     , updated_at : Maybe String
     }
@@ -50,10 +50,28 @@ type alias EventTypeOptions =
     { retention_time : Maybe Int
     }
 
-type alias EventAuthField =
-    { path : String
-    , type : String
+
+type alias EventOwnerSelector =
+    { type_ : String
+    , name : String
+    , value : String
     }
+
+
+ownerSelectorTypes :
+    { path : String
+    , static : String
+    }
+ownerSelectorTypes =
+    { path = "path"
+    , static = "static"
+    }
+
+allOwnerSelectorTypes : List String
+allOwnerSelectorTypes =
+    [ ownerSelectorTypes.path
+    , ownerSelectorTypes.static
+    ]
 
 type alias Model =
     Helpers.Store.Model EventType
@@ -203,7 +221,7 @@ memberDecoder =
         |> optional "authorization" (nullable Stores.Authorization.collectionDecoder) Nothing
         |> optional "cleanup_policy" string cleanupPolicies.delete
         |> optional "audience" (nullable string) Nothing
-        |> optional "event_auth_field" (nullable eventAuthFieldDecoder) Nothing
+        |> optional "event_owner_selector" (nullable eventOwnerSelectorDecoder) Nothing
         |> optional "created_at" (nullable string) Nothing
         |> optional "updated_at" (nullable string) Nothing
 
@@ -223,8 +241,9 @@ optionsDecoder =
         |> optional "retention_time" (nullable int) Nothing
 
 
-eventAuthFieldDecoder : Decoder EventAuthField
-eventAuthFieldDecoder =
-    succeed EventAuthField
-        |> required "path" String
-        |> required "type" String
+eventOwnerSelectorDecoder : Decoder EventOwnerSelector
+eventOwnerSelectorDecoder =
+    succeed EventOwnerSelector
+        |> required "type" string
+        |> required "name" string
+        |> required "value" string
