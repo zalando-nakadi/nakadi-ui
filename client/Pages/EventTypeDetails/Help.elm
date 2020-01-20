@@ -427,7 +427,7 @@ eventOwnerSelector =
     , newline
     , text "- "
     , mono "type"
-    , text " Specifies the type of the selector"
+    , text " Specifies the type of the selector (can be 'path' or 'static')"
     , newline
     , text "- "
     , mono "name"
@@ -436,7 +436,7 @@ eventOwnerSelector =
     , newline
     , text "- "
     , mono "value"
-    , text " value in dot notation pointing to a string field"
+    , text " Static value or value in dot notation pointing to a string field"
     , text " in an event which will be used to"
     , text " classify if the consumer is allowed to read the event."
     , newline
