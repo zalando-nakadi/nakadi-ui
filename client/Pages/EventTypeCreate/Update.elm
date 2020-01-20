@@ -383,17 +383,20 @@ submitCreate model =
                 |> Stores.Authorization.encoder
 
         event_owner_selector =
-            if isEmptyString FieldEventOwnerSelectorName && 
-                isEmptyString FieldEventOwnerSelectorValue && 
-                    isEmptyString FieldEventOwnerSelectorType then
+            if
+                isEmptyString FieldEventOwnerSelectorName
+                    && isEmptyString FieldEventOwnerSelectorValue
+                    && isEmptyString FieldEventOwnerSelectorType
+            then
                 []
 
             else
-                [ ( "event_owner_selector", Json.object
-                    [ ( "type", asString FieldEventOwnerSelectorType )
-                    , ( "name", asString FieldEventOwnerSelectorName )
-                    , ( "value", asString FieldEventOwnerSelectorValue )
-                    ]
+                [ ( "event_owner_selector"
+                  , Json.object
+                        [ ( "type", asString FieldEventOwnerSelectorType )
+                        , ( "name", asString FieldEventOwnerSelectorName )
+                        , ( "value", asString FieldEventOwnerSelectorValue )
+                        ]
                   )
                 ]
 
@@ -477,7 +480,7 @@ submitUpdate model =
                 |> getValue field
                 |> String.trim
                 |> Json.string
-        
+
         isEmptyString field =
             model.values
                 |> getValue field
@@ -489,17 +492,20 @@ submitUpdate model =
                 |> Stores.Authorization.encoder
 
         event_owner_selector =
-            if isEmptyString FieldEventOwnerSelectorName && 
-                isEmptyString FieldEventOwnerSelectorValue && 
-                    isEmptyString FieldEventOwnerSelectorType then
+            if
+                isEmptyString FieldEventOwnerSelectorName
+                    && isEmptyString FieldEventOwnerSelectorValue
+                    && isEmptyString FieldEventOwnerSelectorType
+            then
                 []
 
             else
-                [ ( "event_owner_selector", Json.object
-                    [ ( "type", asString FieldEventOwnerSelectorType )
-                    , ( "name", asString FieldEventOwnerSelectorName )
-                    , ( "value", asString FieldEventOwnerSelectorValue )
-                    ]
+                [ ( "event_owner_selector"
+                  , Json.object
+                        [ ( "type", asString FieldEventOwnerSelectorType )
+                        , ( "name", asString FieldEventOwnerSelectorName )
+                        , ( "value", asString FieldEventOwnerSelectorValue )
+                        ]
                   )
                 ]
 

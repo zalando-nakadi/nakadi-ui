@@ -1,4 +1,4 @@
-module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, consumingQueries, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt, eventOwnerSelector)
+module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, consumingQueries, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventOwnerSelector, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
 
 import Config exposing (appPreffix)
 import Helpers.UI exposing (..)

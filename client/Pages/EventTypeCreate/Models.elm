@@ -13,8 +13,8 @@ import Stores.EventType
         , categories
         , cleanupPolicies
         , compatibilityModes
-        , partitionStrategies
         , emptyEventOwnerSelector
+        , partitionStrategies
         )
 import Stores.Partition
 
@@ -127,11 +127,10 @@ loadValues eventType =
                 |> Basics.ceiling
                 |> Basics.clamp 2 4
                 |> String.fromInt
-        
+
         ownerField =
             eventType.event_owner_selector
                 |> Maybe.withDefault emptyEventOwnerSelector
-        
     in
     defaultValues
         |> setValue FieldName eventType.name

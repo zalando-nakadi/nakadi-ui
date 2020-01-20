@@ -22,11 +22,11 @@ import Stores.EventType
         , allCategories
         , allCleanupPolicies
         , allModes
+        , allOwnerSelectorTypes
         , categories
         , cleanupPolicies
         , compatibilityModes
         , partitionStrategies
-        , allOwnerSelectorTypes
         )
 
 
@@ -172,6 +172,7 @@ viewForm model setup =
 
         appsInfoUrl =
             model.userStore.user.settings.appsInfoUrl
+
         usersInfoUrl =
             model.userStore.user.settings.usersInfoUrl
 
@@ -277,7 +278,7 @@ viewForm model setup =
                     ("" :: allOwnerSelectorTypes)
                 , div
                     [ class "dc-column" ]
-                    [textInput formModel
+                    [ textInput formModel
                         FieldEventOwnerSelectorName
                         OnInput
                         "Event Owner Selector Name"
@@ -289,7 +290,7 @@ viewForm model setup =
                     ]
                 , div
                     [ class "dc-column" ]
-                    [textInput formModel
+                    [ textInput formModel
                         FieldEventOwnerSelectorValue
                         OnInput
                         "Event Owner Selector Value"

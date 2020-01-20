@@ -28,10 +28,10 @@ import Stores.ConsumingQuery exposing (ConsumingQuery)
 import Stores.CursorDistance
 import Stores.EventType
     exposing
-        ( EventType
+        ( EventOwnerSelector
+        , EventType
         , EventTypeOptions
         , EventTypeStatistics
-        , EventOwnerSelector
         , cleanupPolicies
         )
 import Stores.EventTypeSchema
@@ -388,10 +388,11 @@ infoEventOwnerSelectorToText maybeEventOwnerSelector =
     case maybeEventOwnerSelector of
         Just owner_selector ->
             div []
-                [ infoSubField "Type: " (owner_selector.type_) 
-                , infoSubField "Name: " (owner_selector.name)
-                , infoSubField "Value: " (owner_selector.value)
+                [ infoSubField "Type: " owner_selector.type_
+                , infoSubField "Name: " owner_selector.name
+                , infoSubField "Value: " owner_selector.value
                 ]
+
         Nothing ->
             infoEmpty
 

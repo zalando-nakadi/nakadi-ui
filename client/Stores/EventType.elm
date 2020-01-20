@@ -1,4 +1,4 @@
-module Stores.EventType exposing (EventType, EventTypeOptions, EventTypeStatistics, Model, Msg, allAudiences, allCategories, allCleanupPolicies, allModes, audiences, categories, cleanupPolicies, collectionDecoder, compatibilityModes, config, defaultStatisticDecoder, initialModel, memberDecoder, optionsDecoder, partitionStrategies, EventOwnerSelector, allOwnerSelectorTypes, update, emptyEventOwnerSelector)
+module Stores.EventType exposing (EventOwnerSelector, EventType, EventTypeOptions, EventTypeStatistics, Model, Msg, allAudiences, allCategories, allCleanupPolicies, allModes, allOwnerSelectorTypes, audiences, categories, cleanupPolicies, collectionDecoder, compatibilityModes, config, defaultStatisticDecoder, emptyEventOwnerSelector, initialModel, memberDecoder, optionsDecoder, partitionStrategies, update)
 
 import Config
 import Constants
@@ -56,6 +56,8 @@ type alias EventOwnerSelector =
     , name : String
     , value : String
     }
+
+
 emptyEventOwnerSelector =
     { type_ = ""
     , name = ""
@@ -72,11 +74,13 @@ ownerSelectorTypes =
     , static = "static"
     }
 
+
 allOwnerSelectorTypes : List String
 allOwnerSelectorTypes =
     [ ownerSelectorTypes.path
     , ownerSelectorTypes.static
     ]
+
 
 type alias Model =
     Helpers.Store.Model EventType
