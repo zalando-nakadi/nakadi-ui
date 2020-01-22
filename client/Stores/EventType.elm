@@ -1,4 +1,4 @@
-module Stores.EventType exposing (EventType, EventTypeOptions, EventTypeStatistics, Model, Msg, allAudiences, allCategories, allCleanupPolicies, allModes, audiences, categories, cleanupPolicies, collectionDecoder, compatibilityModes, config, defaultStatisticDecoder, initialModel, memberDecoder, optionsDecoder, partitionStrategies, update)
+module Stores.EventType exposing (EventOwnerSelector, EventType, EventTypeOptions, EventTypeStatistics, Model, Msg, allAudiences, allCategories, allCleanupPolicies, allModes, allOwnerSelectorTypes, audiences, categories, cleanupPolicies, collectionDecoder, compatibilityModes, config, defaultStatisticDecoder, emptyEventOwnerSelector, initialModel, memberDecoder, optionsDecoder, partitionStrategies, update)
 
 import Config
 import Constants
@@ -32,6 +32,7 @@ type alias EventType =
     , --enum component-internal, business-unit-internal,
       -- company-internal, external-partner, external-public
       audience : Maybe String
+    , event_owner_selector : Maybe EventOwnerSelector
     , created_at : Maybe String
     , updated_at : Maybe String
     }
@@ -48,6 +49,37 @@ type alias EventTypeStatistics =
 type alias EventTypeOptions =
     { retention_time : Maybe Int
     }
+
+
+type alias EventOwnerSelector =
+    { type_ : String
+    , name : String
+    , value : String
+    }
+
+
+emptyEventOwnerSelector =
+    { type_ = ""
+    , name = ""
+    , value = ""
+    }
+
+
+ownerSelectorTypes :
+    { path : String
+    , static : String
+    }
+ownerSelectorTypes =
+    { path = "path"
+    , static = "static"
+    }
+
+
+allOwnerSelectorTypes : List String
+allOwnerSelectorTypes =
+    [ ownerSelectorTypes.path
+    , ownerSelectorTypes.static
+    ]
 
 
 type alias Model =
@@ -198,6 +230,7 @@ memberDecoder =
         |> optional "authorization" (nullable Stores.Authorization.collectionDecoder) Nothing
         |> optional "cleanup_policy" string cleanupPolicies.delete
         |> optional "audience" (nullable string) Nothing
+        |> optional "event_owner_selector" (nullable eventOwnerSelectorDecoder) Nothing
         |> optional "created_at" (nullable string) Nothing
         |> optional "updated_at" (nullable string) Nothing
 
@@ -215,3 +248,11 @@ optionsDecoder : Decoder EventTypeOptions
 optionsDecoder =
     succeed EventTypeOptions
         |> optional "retention_time" (nullable int) Nothing
+
+
+eventOwnerSelectorDecoder : Decoder EventOwnerSelector
+eventOwnerSelectorDecoder =
+    succeed EventOwnerSelector
+        |> required "type" string
+        |> required "name" string
+        |> required "value" string

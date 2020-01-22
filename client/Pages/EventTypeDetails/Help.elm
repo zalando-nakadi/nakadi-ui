@@ -1,4 +1,4 @@
-module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, consumingQueries, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
+module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, consumingQueries, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventOwnerSelector, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
 
 import Config exposing (appPreffix)
 import Helpers.UI exposing (..)
@@ -411,6 +411,41 @@ audience =
     , bold "optional"
     , newline
     , man "#definition_EventType*audience"
+    ]
+
+
+eventOwnerSelector : List (Html msg)
+eventOwnerSelector =
+    [ text "Event Owner Selector for per-event authorization. "
+    , text "Can be used to point to a string field in the event, which "
+    , text "is used by Nakadi do decide if an authorized consumer "
+    , text "can read a published event. It is optional and "
+    , text "if not specified or field is not present/null, all "
+    , text "authorized consumers can read the event."
+    , newline
+    , bold "The event_owner_selector must contain the following fields:"
+    , newline
+    , text "- "
+    , mono "type"
+    , text " Specifies the type of the selector (can be 'path' or 'static')"
+    , newline
+    , text "- "
+    , mono "name"
+    , text " Informational field specifying what type of data the field"
+    , text " represents (eg: team/retailers, etc)"
+    , newline
+    , text "- "
+    , mono "value"
+    , text " Static value or value in dot notation pointing to a string field"
+    , text " in an event which will be used to"
+    , text " classify if the consumer is allowed to read the event."
+    , newline
+    , newline
+    , bold "Key: "
+    , mono "event_owner_selector"
+    , bold "optional"
+    , newline
+    , man "#definition_EventOwnerSelector"
     ]
 
 

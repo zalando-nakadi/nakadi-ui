@@ -13,6 +13,7 @@ import Stores.EventType
         , categories
         , cleanupPolicies
         , compatibilityModes
+        , emptyEventOwnerSelector
         , partitionStrategies
         )
 import Stores.Partition
@@ -38,6 +39,9 @@ type Field
     | FieldSchema
     | FieldEnvelope
     | FieldAudience
+    | FieldEventOwnerSelectorType
+    | FieldEventOwnerSelectorName
+    | FieldEventOwnerSelectorValue
     | FieldCleanupPolicy
     | FieldSql
     | FieldPartitionCompactionKeyField
@@ -100,6 +104,9 @@ defaultValues =
     , ( FieldEnvelope, boolToString True )
     , ( FieldCompatibilityMode, compatibilityModes.forward )
     , ( FieldAudience, "" )
+    , ( FieldEventOwnerSelectorType, "" )
+    , ( FieldEventOwnerSelectorName, "" )
+    , ( FieldEventOwnerSelectorValue, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
     , ( FieldPartitionCompactionKeyField, emptyString )
     ]
@@ -120,6 +127,10 @@ loadValues eventType =
                 |> Basics.ceiling
                 |> Basics.clamp 2 4
                 |> String.fromInt
+
+        ownerField =
+            eventType.event_owner_selector
+                |> Maybe.withDefault emptyEventOwnerSelector
     in
     defaultValues
         |> setValue FieldName eventType.name
@@ -132,6 +143,9 @@ loadValues eventType =
         |> setValue FieldSchema eventType.schema.schema
         |> setValue FieldRetentionTime retentionTime
         |> maybeSetValue FieldAudience eventType.audience
+        |> setValue FieldEventOwnerSelectorType ownerField.type_
+        |> setValue FieldEventOwnerSelectorName ownerField.name
+        |> setValue FieldEventOwnerSelectorValue ownerField.value
         |> setValue FieldCleanupPolicy eventType.cleanup_policy
 
 

@@ -28,7 +28,8 @@ import Stores.ConsumingQuery exposing (ConsumingQuery)
 import Stores.CursorDistance
 import Stores.EventType
     exposing
-        ( EventType
+        ( EventOwnerSelector
+        , EventType
         , EventTypeOptions
         , EventTypeStatistics
         , cleanupPolicies
@@ -198,6 +199,8 @@ detailsLayout typeName eventType model =
                             none
                         , infoField "Audience " Help.audience TopRight <|
                             infoStringToText eventType.audience
+                        , infoField "Event Owner Selector " Help.eventOwnerSelector TopRight <|
+                            infoEventOwnerSelectorToText eventType.event_owner_selector
                         , infoField "Created " Help.createdAt TopRight <|
                             infoDateToText eventType.created_at
                         , infoField "Updated " Help.updatedAt TopRight <|
@@ -374,6 +377,20 @@ infoStatisticsToText maybeStatistics =
                 , infoSubField "Message size:" (String.fromInt stat.message_size)
                 , infoSubField "Read parallelism:" (String.fromInt stat.read_parallelism)
                 , infoSubField "Write parallelism:" (String.fromInt stat.write_parallelism)
+                ]
+
+        Nothing ->
+            infoEmpty
+
+
+infoEventOwnerSelectorToText : Maybe EventOwnerSelector -> Html Msg
+infoEventOwnerSelectorToText maybeEventOwnerSelector =
+    case maybeEventOwnerSelector of
+        Just owner_selector ->
+            div []
+                [ infoSubField "Type: " owner_selector.type_
+                , infoSubField "Name: " owner_selector.name
+                , infoSubField "Value: " owner_selector.value
                 ]
 
         Nothing ->
