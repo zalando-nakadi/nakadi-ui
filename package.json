@@ -17,6 +17,7 @@
     "test:client": "elm-coverage -r codecov ./client",
     "test:server": "istanbul cover --include-all-sources tests/runner.js",
     "validate": "elm-format --validate .",
+    "preinstall": "npx npm-force-resolutions",
     "codecov": "codecov -f reports/coverage.raw.json && codecov -f reports/lcov.info&& codecov -f .coverage/codecov.json && codecov -f .coverage/info.json"
   },
   "repository": {
@@ -54,7 +55,7 @@
     "@babel/preset-env": "^7.3.4",
     "ace-builds": "^1.4.3",
     "babel-loader": "^8.0.5",
-    "chromedriver": "^78.0.1",
+    "chromedriver": "^79.0.1",
     "copy-webpack-plugin": "^5.0.1",
     "css-loader": "^2.1.1",
     "dress-code": "2.1.0",
@@ -83,6 +84,9 @@
   "engineStrict": true,
   "engines": {
     "node": ">=6.0.0"
+  },
+  "resolutions": {
+    "graceful-fs": "4.2.3"
   },
   "browserslist": "> 5%, not dead"
 }
