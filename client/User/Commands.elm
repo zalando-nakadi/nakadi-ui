@@ -41,6 +41,8 @@ settingsDecoder =
         |> optional "deleteSubscriptionWarning" string emptyString
         |> optional "showNakadiSql" bool False
         |> optional "queryMonitoringUrl" string emptyString
+        |> optional "retentionTimeDaysDefault" string emptyString
+        |> optional "retentionTimeDaysValues" string emptyString
 
 
 {-| Redirect browser to logout

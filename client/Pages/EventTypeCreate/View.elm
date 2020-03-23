@@ -330,7 +330,7 @@ viewForm model setup =
                     Help.options
                     Optional
                     Enabled
-                    [ "1", "2", "3", "4" ]
+                    (String.split " " model.userStore.user.settings.retentionTimeDaysValues)
 
               else
                 none
