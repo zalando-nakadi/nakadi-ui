@@ -330,7 +330,7 @@ viewForm model setup =
                     Help.options
                     Optional
                     Enabled
-                    [ "2", "3", "4" ]
+                    [ "1", "2", "3", "4" ]
 
               else
                 none
