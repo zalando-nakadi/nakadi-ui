@@ -42,7 +42,7 @@ exports = module.exports = function createConfiguration(env) {
             showNakadiSql: envToBool(env.SHOW_NAKADI_SQL),
             queryMonitoringUrl: optional('QUERY_MONITORING_URL', env, ''),
             retentionTimeDaysDefault: optional('RETENTION_TIME_DAYS_DEFAULT', env, '3'),
-            retentionTimeDaysValues: optional('RETENTION_TIME_DAYS_DEFAULT', env, '1 2 3 4 5 6 7'),
+            retentionTimeDaysValues: optional('RETENTION_TIME_DAYS_VALUES', env, '1 2 3 4 5 6 7'),
         },
 
         authorize: {
