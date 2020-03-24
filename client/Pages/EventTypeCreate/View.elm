@@ -178,6 +178,10 @@ viewForm model setup =
 
         supportUrl =
             model.userStore.user.settings.supportUrl
+
+        retentionTimeDaysValues =
+            model.userStore.user.settings.retentionTimeDaysValues |> String.split " "
+
     in
     div [ class "dc-column form-create__form-container" ]
         [ div []
@@ -330,7 +334,7 @@ viewForm model setup =
                     Help.options
                     Optional
                     Enabled
-                    (String.split " " model.userStore.user.settings.retentionTimeDaysValues)
+                    retentionTimeDaysValues
 
               else
                 none
