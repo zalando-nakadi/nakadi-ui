@@ -81,7 +81,7 @@ initialModel =
 
 defaultRetentionDays : Int
 defaultRetentionDays =
-    4
+    1
 
 
 defaultApplication : String
