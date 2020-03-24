@@ -181,7 +181,6 @@ viewForm model setup =
 
         retentionTimeDaysValues =
             model.userStore.user.settings.retentionTimeDaysValues |> String.split " "
-
     in
     div [ class "dc-column form-create__form-container" ]
         [ div []
