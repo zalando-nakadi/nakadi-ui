@@ -40,7 +40,9 @@ exports = module.exports = function createConfiguration(env) {
                 'Notify all consumers; the following subscriptions will be deleted!'),
             forbidDeleteUrl: optional('FORBID_DELETE_URL', env, ''),
             showNakadiSql: envToBool(env.SHOW_NAKADI_SQL),
-            queryMonitoringUrl: optional('QUERY_MONITORING_URL', env, '')
+            queryMonitoringUrl: optional('QUERY_MONITORING_URL', env, ''),
+            retentionTimeDaysDefault: optional('RETENTION_TIME_DAYS_DEFAULT', env, '3'),
+            retentionTimeDaysValues: optional('RETENTION_TIME_DAYS_VALUES', env, '1 2 3 4 5 6 7'),
         },
 
         authorize: {

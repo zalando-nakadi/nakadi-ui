@@ -56,6 +56,8 @@ type alias Settings =
     , deleteSubscriptionWarning : String
     , showNakadiSql : Bool
     , queryMonitoringUrl : String
+    , retentionTimeDaysDefault : String
+    , retentionTimeDaysValues : String
     }
 
 
@@ -75,4 +77,6 @@ initialSettings =
     , deleteSubscriptionWarning = emptyString
     , showNakadiSql = False
     , queryMonitoringUrl = emptyString
+    , retentionTimeDaysDefault = emptyString
+    , retentionTimeDaysValues = emptyString
     }

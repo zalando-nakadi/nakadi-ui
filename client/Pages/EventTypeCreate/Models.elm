@@ -125,7 +125,6 @@ loadValues eventType =
                 |> toFloat
                 |> (*) (1 / toFloat Constants.msInDay)
                 |> Basics.ceiling
-                |> Basics.clamp 2 4
                 |> String.fromInt
 
         ownerField =

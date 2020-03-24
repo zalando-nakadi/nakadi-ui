@@ -72,7 +72,9 @@ describe('Config', function() {
                 deleteSubscriptionWarning: "Notify all consumers",
                 allowDeleteEvenType: true,
                 showNakadiSql: false,
-                queryMonitoringUrl: ''
+                queryMonitoringUrl: '',
+                retentionTimeDaysDefault: '3',
+                retentionTimeDaysValues: '1 2 3 4 5 6 7'
             },
             authorize: {
                 strategy: 'myGoogleAdapter',
