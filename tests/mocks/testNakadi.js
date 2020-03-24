@@ -58,7 +58,7 @@ app.post('/event-types', (req, res) => {
         'write_parallelism': 1
       },
       'options': {
-        'retention_time': 345600000
+        'retention_time': 86400000
       },
       'authorization': {
         'readers': [
