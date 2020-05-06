@@ -87,9 +87,6 @@ update settings message model =
                         PartitionsTab ->
                             dispatch (PartitionsStoreMsg (loadSubStoreMsg model.name))
 
-                        PublisherTab ->
-                            dispatch LoadPublishers
-
                         ConsumerTab ->
                             Cmd.batch
                                 [ dispatch LoadConsumers
