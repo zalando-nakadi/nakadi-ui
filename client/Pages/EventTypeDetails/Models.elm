@@ -13,7 +13,6 @@ import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import Stores.Partition
-import Stores.Publisher
 import Stores.Query exposing (Query)
 
 
@@ -25,7 +24,6 @@ initialModel =
     , name = emptyString
     , version = Nothing
     , jsonEditor = JsonEditor.initialModel
-    , publishersStore = Stores.Publisher.initialModel
     , consumingQueriesStore = Stores.ConsumingQuery.initialModel
     , consumersStore = Stores.Consumer.initialModel
     , partitionsStore = Stores.Partition.initialModel
@@ -62,7 +60,6 @@ type alias Model =
     , name : String
     , version : Maybe String
     , jsonEditor : JsonEditor.Model
-    , publishersStore : Stores.Publisher.Model
     , consumingQueriesStore : Stores.ConsumingQuery.Model
     , consumersStore : Stores.Consumer.Model
     , partitionsStore : Stores.Partition.Model

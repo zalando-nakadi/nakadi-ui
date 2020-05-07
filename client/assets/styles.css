@@ -435,11 +435,6 @@ body {
     overflow: auto;
 }
 
-.publisher-tab__list {
-    height: calc(100vh - 400px);
-    overflow: auto;
-}
-
 .consumer-tab__list {
     height: calc((100vh - 400px) / 2);
     overflow: auto;
