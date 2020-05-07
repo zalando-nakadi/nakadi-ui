@@ -1,4 +1,4 @@
-module Pages.EventTypeDetails.View exposing (authTab, consumersPanel, consumersTab, deletePopup, detailsLayout, infoAnyToText, infoDateToText, infoEmpty, infoField, infoListToText, infoOptionsToText, infoStatisticsToText, infoStringToText, infoSubField, issuesTable, partitionsTab, pie, points, publisherTab, renderConsumers, renderPartition, renderPublishers, renderSubscription, schemaTab, severityPanel, subscriptionsPanel, validationPanel, validationSection, view)
+module Pages.EventTypeDetails.View exposing (authTab, consumersPanel, consumersTab, deletePopup, detailsLayout, infoAnyToText, infoDateToText, infoEmpty, infoField, infoListToText, infoOptionsToText, infoStatisticsToText, infoStringToText, infoSubField, issuesTable, partitionsTab, pie, points, renderConsumers, renderPartition, renderSubscription, schemaTab, severityPanel, subscriptionsPanel, validationPanel, validationSection, view)
 
 import Config
 import Constants
@@ -235,14 +235,6 @@ detailsLayout typeName eventType model =
                                 eventType
                                 pageState.partitionsStore
                                 pageState.totalsStore
-                            )
-                          , ( PublisherTab
-                            , "Publishers"
-                            , publisherTab
-                                eventType
-                                pageState.publishersStore
-                                appsInfoUrl
-                                usersInfoUrl
                             )
                           , ( ConsumerTab
                             , "Consumers"
@@ -597,43 +589,6 @@ renderPartition totalsStore eventType partition =
                 ]
                 [ text " Inspect events" ]
             ]
-        ]
-
-
-publisherTab : EventType -> Stores.Publisher.Model -> String -> String -> Html Msg
-publisherTab eventType publishersStore appsInfoUrl usersInfoUrl =
-    let
-        publishersList =
-            Store.items publishersStore
-
-        count =
-            List.length publishersList
-
-        countStr =
-            pluralCount count "Publisher"
-    in
-    div [ class "dc-card" ]
-        [ span []
-            [ text countStr
-            , helpIcon "Publishers" Help.publishers BottomRight
-            , refreshButton LoadPublishers
-            ]
-        , div [ class "publisher-tab__list" ]
-            [ Helpers.Panel.loadingStatus publishersStore <|
-                grid [ "Publisher application", "Http posts in 4 days", "" ]
-                    (publishersList |> List.map (renderPublishers eventType.name appsInfoUrl usersInfoUrl))
-            ]
-        ]
-
-
-renderPublishers : String -> String -> String -> Stores.Publisher.Publisher -> Html Msg
-renderPublishers name appsInfoUrl usersInfoUrl item =
-    tr [ class "dc-table__tr" ]
-        [ td [ class "dc-table__td" ]
-            [ linkToAppOrUser appsInfoUrl usersInfoUrl item.name ]
-        , td [ class "dc-table__td" ] [ text (String.fromInt item.count) ]
-        , td [ class "dc-table__td" ]
-            []
         ]
 
 

@@ -49,7 +49,6 @@ initialModel =
 type Tabs
     = SchemaTab
     | PartitionsTab
-    | PublisherTab
     | ConsumerTab
     | AuthTab
     | PublishTab
@@ -140,9 +139,6 @@ stringToTabs str =
 
         "PartitionsTab" ->
             Just PartitionsTab
-
-        "PublisherTab" ->
-            Just PublisherTab
 
         "ConsumerTab" ->
             Just ConsumerTab
