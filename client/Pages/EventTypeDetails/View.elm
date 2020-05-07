@@ -1,4 +1,4 @@
-module Pages.EventTypeDetails.View exposing (authTab, consumersPanel, consumersTab, deletePopup, detailsLayout, infoAnyToText, infoDateToText, infoEmpty, infoField, infoListToText, infoOptionsToText, infoStatisticsToText, infoStringToText, infoSubField, issuesTable, partitionsTab, pie, points, renderConsumers, renderPartition, renderPublishers, renderSubscription, schemaTab, severityPanel, subscriptionsPanel, validationPanel, validationSection, view)
+module Pages.EventTypeDetails.View exposing (authTab, consumersPanel, consumersTab, deletePopup, detailsLayout, infoAnyToText, infoDateToText, infoEmpty, infoField, infoListToText, infoOptionsToText, infoStatisticsToText, infoStringToText, infoSubField, issuesTable, partitionsTab, pie, points, renderConsumers, renderPartition, renderSubscription, schemaTab, severityPanel, subscriptionsPanel, validationPanel, validationSection, view)
 
 import Config
 import Constants
@@ -589,17 +589,6 @@ renderPartition totalsStore eventType partition =
                 ]
                 [ text " Inspect events" ]
             ]
-        ]
-
-
-renderPublishers : String -> String -> String -> Stores.Publisher.Publisher -> Html Msg
-renderPublishers name appsInfoUrl usersInfoUrl item =
-    tr [ class "dc-table__tr" ]
-        [ td [ class "dc-table__td" ]
-            [ linkToAppOrUser appsInfoUrl usersInfoUrl item.name ]
-        , td [ class "dc-table__td" ] [ text (String.fromInt item.count) ]
-        , td [ class "dc-table__td" ]
-            []
         ]
 
 
