@@ -15,6 +15,7 @@ pipeline:
       - desc: Install deps
         cmd: |
           apt-get update
+          apt-cache policy chromium-browser
           apt-get -yq --no-install-suggests --no-install-recommends install chromium-browser=79.0.3945.130-0ubuntu0.16.04.1
           # Fix for problem with permissions elm-format
           # https://github.com/avh4/elm-format/issues/554
