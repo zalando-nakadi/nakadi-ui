@@ -1,4 +1,4 @@
-module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, consumingQueries, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventOwnerSelector, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, publishers, schema, subscription, updatedAt)
+module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, consumingQueries, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventOwnerSelector, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, schema, subscription, updatedAt)
 
 import Config exposing (appPreffix)
 import Helpers.UI exposing (..)
@@ -341,16 +341,6 @@ partitions =
     , man "#partitions"
     , newline
     , spec "#/event-types/name/partitions_get"
-    ]
-
-
-publishers : List (Html msg)
-publishers =
-    [ text "The list of publishers to this Event Type."
-    , newline
-    , text "This list contains only publishers who posted events in the last four days."
-    , newline
-    , man "#using_producing-events"
     ]
 
 

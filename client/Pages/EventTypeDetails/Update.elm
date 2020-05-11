@@ -20,7 +20,6 @@ import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import Stores.Partition
-import Stores.Publisher
 import Url exposing (percentEncode)
 import User.Commands exposing (logoutIfExpired)
 import User.Models exposing (Settings)
@@ -166,16 +165,6 @@ update settings message model =
                                 Cmd.none
                     in
                     ( { model | loadQueryResponse = resp }, switchTabOnFailure )
-
-                LoadPublishers ->
-                    ( model, dispatch (PublishersStoreMsg (loadSubStoreMsg model.name)) )
-
-                PublishersStoreMsg subMsg ->
-                    let
-                        ( newSubModel, newSubMsg ) =
-                            Stores.Publisher.update subMsg model.publishersStore
-                    in
-                    ( { model | publishersStore = newSubModel }, Cmd.map PublishersStoreMsg newSubMsg )
 
                 LoadConsumingQueries ->
                     ( model, dispatch (ConsumingQueriesStoreMsg (loadSubStoreMsg model.name)) )

@@ -37,7 +37,6 @@ import Stores.EventType
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation exposing (EventTypeValidationIssue)
 import Stores.Partition
-import Stores.Publisher
 import Stores.Subscription
 import String exposing (replace)
 

@@ -31,29 +31,10 @@ module.exports = function logsApi(options) {
     const conf = Object.assign({}, defaults, options);
 
     return express()
-    .get('/event/:id/publishers', getEventPublishers)
     .get('/event/:id/consumers', getEventConsumers)
     .get('/event/:id/', getEventTypeLogs);
 
 
-    /**
-     * Return list of publishers for the selected Event Type
-     *
-     * @api
-     *
-     * @param {Request} req
-     * @param {Response} res
-     */
-    function getEventPublishers(req, res) {
-        const id = escape(req.params.id);
-        const params = {
-            filter: `($method=="POST") and ($eventTypeName=="${id}")`,
-            field: 'app',
-            endTime: req.query.toTime || ''
-        };
-
-        fetchFacetQuery(res, params);
-    }
 
     /**
      * Return list of Consumers for the selected Event Type

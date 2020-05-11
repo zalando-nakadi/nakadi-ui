@@ -13,7 +13,6 @@ import Stores.CursorDistance
 import Stores.EventTypeSchema
 import Stores.EventTypeValidation
 import Stores.Partition
-import Stores.Publisher
 import Stores.Query
 
 
@@ -27,8 +26,6 @@ type Msg
     | TabChange Tabs
     | SchemaVersionChange String
     | JsonEditorMsg Helpers.JsonEditor.Msg
-    | LoadPublishers
-    | PublishersStoreMsg Stores.Publisher.Msg
     | LoadConsumingQueries
     | ConsumingQueriesStoreMsg Stores.ConsumingQuery.Msg
     | LoadConsumers

@@ -119,6 +119,7 @@ all =
                   , authorization = Nothing
                   , cleanup_policy = "delete"
                   , audience = Nothing
+                  , event_owner_selector = Nothing
                   }
                 , { category = "business"
                   , name = "eventlog.e6810a_generic_time_allocation"
@@ -180,6 +181,7 @@ all =
                             }
                   , cleanup_policy = "compact"
                   , audience = Just "company-internal"
+                  , event_owner_selector = Nothing
                   }
                 ]
             )
