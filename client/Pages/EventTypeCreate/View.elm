@@ -60,6 +60,14 @@ view model =
             Update name ->
                 findEventType name viewFormUpdate
 
+            UpdateConfirm name ->
+                div []
+                    [ div [ class "dc--is-hidden" ]
+                        [ findEventType name viewFormUpdate
+                        ]
+                    , dialog
+                    ]
+
             Clone name ->
                 Helpers.Panel.loadingStatus formModel.partitionsStore <|
                     findEventType name viewFormClone
@@ -67,6 +75,53 @@ view model =
             CreateQuery ->
                 container <|
                     viewQueryForm model
+
+
+dialog : Html Msg
+dialog =
+    div []
+        [ div [ class "dc-overlay" ] []
+        , div [ class "dc-dialog" ]
+            [ div [ class "dc-dialog__content", style "min-width" "600px" ]
+                [ div [ class "dc-dialog__body" ]
+                    [ div [ class "dc-dialog__close" ]
+                        [ i
+                            [ onClick Reset
+                            , class "dc-icon dc-icon--close dc-icon--interactive dc-dialog__close__icon"
+                            ]
+                            []
+                        ]
+                    , h3 [ class "dc-dialog__title" ]
+                        [ text "Schema change confirmation" ]
+                    , div [ class "dc-msg dc-msg--error" ]
+                        [ div [ class "dc-msg__inner" ]
+                            [ div [ class "dc-msg__icon-frame" ]
+                                [ i [ class "dc-icon dc-msg__icon dc-icon--warning" ] []
+                                ]
+                            , div [ class "dc-msg__bd" ]
+                                [ h1 [ class "dc-msg__title blinking" ] [ text "Warning! Dangerous Action!" ]
+                                , p [ class "dc-msg__text" ]
+                                    [ text
+                                        ("Schema changes cannot be undone and may have undesirable side effects "
+                                            ++ "such as instructing Nakadi to refuse the ingestion of soon to become "
+                                            ++ "incompatible events."
+                                        )
+                                    , text " Please make sure to validate this change in a test environment first."
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                , div [ class "dc-dialog__actions" ]
+                    [ button
+                        [ onClick Submit
+                        , class "dc-btn dc-btn--primary"
+                        ]
+                        [ text "Confirm" ]
+                    ]
+                ]
+            ]
+        ]
 
 
 viewFormCreate : AppModel -> Html Msg

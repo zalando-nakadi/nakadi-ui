@@ -71,10 +71,24 @@ update message model eventTypeStore user =
                     ( Store.onFetchStart model, submitCreate model )
 
                 Update name ->
-                    ( Store.onFetchStart model, submitUpdate model )
+                    let
+                        editedSchema =
+                            formValuesFromEventType name eventTypeStore |> getValue FieldSchema
+
+                        originalSchema =
+                            getValue FieldSchema model.values
+                    in
+                    if editedSchema == originalSchema then
+                        ( Store.onFetchStart model, submitUpdate model )
+
+                    else
+                        ( { model | operation = UpdateConfirm name }, Cmd.none )
 
                 CreateQuery ->
                     ( Store.onFetchStart model, submitQueryCreate model )
+
+                UpdateConfirm name ->
+                    ( Store.onFetchStart model, submitUpdate model )
 
         Reset ->
             let
@@ -87,6 +101,11 @@ update message model eventTypeStore user =
                             { initialModel
                                 | operation = model.operation
                                 , values = formValuesFromEventType name eventTypeStore
+                            }
+
+                        UpdateConfirm name ->
+                            { model
+                                | operation = Update name
                             }
 
                         Clone name ->
@@ -108,6 +127,9 @@ update message model eventTypeStore user =
                         Update name ->
                             authorizationFromEventType (Just name) eventTypeStore emptyAuthorization
 
+                        UpdateConfirm name ->
+                            authorizationFromEventType (Just name) eventTypeStore (userAuthorization user.id)
+
                         Clone name ->
                             authorizationFromEventType (Just name) eventTypeStore (userAuthorization user.id)
 
@@ -120,6 +142,9 @@ update message model eventTypeStore user =
                             Cmd.none
 
                         Update name ->
+                            Cmd.none
+
+                        UpdateConfirm name ->
                             Cmd.none
 
                         Clone name ->
@@ -251,6 +276,15 @@ validate model eventTypeStore =
                     checkAll
 
                 Update name ->
+                    Dict.empty
+                        |> checkPartitionStrategy model
+                        |> checkPartitionKeys model
+                        |> checkSchemaFormat model
+                        |> isNotEmpty FieldSchema model
+                        |> isNotEmpty FieldOwningApplication model
+                        |> isNotEmpty FieldAudience model
+
+                UpdateConfirm name ->
                     Dict.empty
                         |> checkPartitionStrategy model
                         |> checkPartitionKeys model
