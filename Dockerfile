@@ -34,6 +34,7 @@ ENV SUBSCRIPTION_MONITORING_URL="https://zmon.example.com/grafana/dashboard/db/n
 ENV MONITORING_URL="https://zmon.example.com/grafana/dashboard/db/nakadi-live"
 ENV SLO_MONITORING_URL="https://zmon.example.com/grafana/dashboard/db/nakadi-slos"
 ENV DOCS_URL=https://nakadi-faq.docs.example.com/
+ENV SCHEMA_EVOLUTION_DOCS="https://nakadi.io/manual.html#compatibility-modes"
 ENV SUPPORT_URL=https://hipchat.example.com/chat/room/12345
 ENV ALLOW_DELETE_EVENT_TYPE=yes
 ENV DISALLOW_DELETE_URL=https://nakadi-faq.docs.example.com/#how-to-delete-et

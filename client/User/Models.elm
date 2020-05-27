@@ -50,6 +50,7 @@ type alias Settings =
     , eventTypeMonitoringUrl : String
     , subscriptionMonitoringUrl : String
     , docsUrl : String
+    , schemaEvolutionDocs : String
     , supportUrl : String
     , forbidDeleteUrl : String
     , allowDeleteEvenType : Bool
@@ -71,6 +72,7 @@ initialSettings =
     , eventTypeMonitoringUrl = emptyString
     , subscriptionMonitoringUrl = emptyString
     , docsUrl = emptyString
+    , schemaEvolutionDocs = emptyString
     , supportUrl = emptyString
     , forbidDeleteUrl = emptyString
     , allowDeleteEvenType = False

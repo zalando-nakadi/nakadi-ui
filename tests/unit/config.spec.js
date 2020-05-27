@@ -67,6 +67,7 @@ describe('Config', function() {
                 eventTypeMonitoringUrl: "https://zmon.example.com/grafana/dashboard/db/nakadi-et/?var-stack=nakadi-staging&var-et={et}",
                 subscriptionMonitoringUrl: "https://zmon.example.com/grafana/dashboard/db/nakadi-subscription/?var-stack=nakadi-staging&var-id={id}",
                 docsUrl: "https://nakadi-faq.docs.example.com/",
+                schemaEvolutionDocs: "https://nakadi-faq.docs.example.com",
                 supportUrl: "https://hipchat.example.com/chat/room/12345",
                 forbidDeleteUrl: "https://nakadi-faq.docs.example.com/#how-to-delete-et",
                 deleteSubscriptionWarning: "Notify all consumers",
