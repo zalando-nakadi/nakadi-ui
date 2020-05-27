@@ -15,6 +15,7 @@ describe('Config', function() {
             EVENT_TYPE_MONITORING_URL: "https://zmon.example.com/grafana/dashboard/db/nakadi-et/?var-stack=nakadi-staging&var-et={et}",
             SUBSCRIPTION_MONITORING_URL: "https://zmon.example.com/grafana/dashboard/db/nakadi-subscription/?var-stack=nakadi-staging&var-id={id}",
             DOCS_URL: "https://nakadi-faq.docs.example.com/",
+            SCHEMA_EVOLUTION_DOCS: "https://nakadi-faq.docs.example.com",
             SUPPORT_URL: "https://hipchat.example.com/chat/room/12345",
             ALLOW_DELETE_EVENT_TYPE: "yes",
             DELETE_SUBSCRIPTION_WARN: "Notify all consumers",
