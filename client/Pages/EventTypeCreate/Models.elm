@@ -24,6 +24,7 @@ type Operation
     | Update String
     | Clone String
     | CreateQuery
+    | UpdateConfirm String
 
 
 type Field

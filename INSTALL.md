@@ -6,7 +6,7 @@ installed.
 Also it is better to have [Elm](http://elm-lang.org/) installed globally for an easy use later.
 
 ```bash
-npm install elm@0.19 -g
+npm install elm@latest-0.19.1
 ```
 
 ## Get the source code
