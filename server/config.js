@@ -34,6 +34,7 @@ exports = module.exports = function createConfiguration(env) {
             eventTypeMonitoringUrl: optional('EVENT_TYPE_MONITORING_URL', env, ''),
             subscriptionMonitoringUrl: optional('SUBSCRIPTION_MONITORING_URL', env, ''),
             docsUrl: optional('DOCS_URL', env, ''),
+            schemaEvolutionDocs: optional('SCHEMA_EVOLUTION_DOCS', env, ''),
             supportUrl: optional('SUPPORT_URL', env, ''),
             allowDeleteEvenType: envToBool(env.ALLOW_DELETE_EVENT_TYPE),
             deleteSubscriptionWarning: optional('DELETE_SUBSCRIPTION_WARN', env,

@@ -72,13 +72,16 @@ update message model eventTypeStore user =
 
                 Update name ->
                     let
+                        compatibilityMode =
+                            getValue FieldCompatibilityMode model.values
+
                         editedSchema =
                             formValuesFromEventType name eventTypeStore |> getValue FieldSchema
 
                         originalSchema =
                             getValue FieldSchema model.values
                     in
-                    if editedSchema == originalSchema then
+                    if editedSchema == originalSchema || compatibilityMode == "none" then
                         ( Store.onFetchStart model, submitUpdate model )
 
                     else

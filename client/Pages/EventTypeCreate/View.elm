@@ -65,7 +65,7 @@ view model =
                     [ div [ class "dc--is-hidden" ]
                         [ findEventType name viewFormUpdate
                         ]
-                    , dialog
+                    , dialog model
                     ]
 
             Clone name ->
@@ -77,8 +77,8 @@ view model =
                     viewQueryForm model
 
 
-dialog : Html Msg
-dialog =
+dialog : AppModel -> Html Msg
+dialog model =
     div []
         [ div [ class "dc-overlay" ] []
         , div [ class "dc-dialog" ]
@@ -106,14 +106,23 @@ dialog =
                                             ++ "such as instructing Nakadi to refuse the ingestion of soon to become "
                                             ++ "incompatible events."
                                         )
-                                    , text " Please make sure to validate this change in a test environment first."
+                                    , text
+                                        (" Please make sure to validate this change in a test environment first. "
+                                            ++ "To learn more about schema evolution, please "
+                                        )
+                                    , externalLink "read the docs." model.userStore.user.settings.schemaEvolutionDocs
                                     ]
                                 ]
                             ]
                         ]
                     ]
                 , div [ class "dc-dialog__actions" ]
-                    [ button
+                    [ p
+                        [ onClick Reset
+                        , class "dc-link dc-dialog__actions__link"
+                        ]
+                        [ text "Cancel" ]
+                    , button
                         [ onClick Submit
                         , class "dc-btn dc-btn--primary"
                         ]

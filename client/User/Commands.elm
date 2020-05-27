@@ -35,6 +35,7 @@ settingsDecoder =
         |> optional "eventTypeMonitoringUrl" string emptyString
         |> optional "subscriptionMonitoringUrl" string emptyString
         |> optional "docsUrl" string emptyString
+        |> optional "schemaEvolutionDocs" string emptyString
         |> optional "supportUrl" string emptyString
         |> optional "forbidDeleteUrl" string emptyString
         |> optional "allowDeleteEvenType" bool False
