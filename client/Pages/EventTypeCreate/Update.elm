@@ -91,7 +91,10 @@ update message model eventTypeStore user =
                     ( Store.onFetchStart model, submitQueryCreate model )
 
                 UpdateConfirm name ->
-                    ( Store.onFetchStart model, submitUpdate model )
+                    let
+                        m = Store.onFetchStart model
+                    in
+                    ( { m | operation = Update name }, submitUpdate model )
 
         Reset ->
             let
