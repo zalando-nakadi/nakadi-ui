@@ -92,7 +92,8 @@ update message model eventTypeStore user =
 
                 UpdateConfirm name ->
                     let
-                        m = Store.onFetchStart model
+                        m =
+                            Store.onFetchStart model
                     in
                     ( { m | operation = Update name }, submitUpdate model )
 
