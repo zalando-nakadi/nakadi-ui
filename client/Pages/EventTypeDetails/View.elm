@@ -100,6 +100,13 @@ detailsLayout typeName eventType model =
         isQueryOutput =
             showNakadiSql && isSuccess pageState.loadQueryResponse
 
+        eventTypeMonitoringLink =
+            if isQueryOutput then
+                replace "{query}" eventType.name settings.queryMonitoringUrl
+
+            else
+                replace "{et}" eventType.name model.userStore.user.settings.eventTypeMonitoringUrl
+
         tab =
             pageState.tab
 
@@ -156,7 +163,7 @@ detailsLayout typeName eventType model =
                         [ title "Monitoring Graphs"
                         , class "icon-link dc-icon dc-icon--interactive"
                         , target "_blank"
-                        , href <| replace "{et}" eventType.name model.userStore.user.settings.eventTypeMonitoringUrl
+                        , href <| eventTypeMonitoringLink
                         ]
                         [ i [ class "icon icon--chart" ] [] ]
                     , starIcon OutAddToFavorite OutRemoveFromFavorite model.starredEventTypesStore eventType.name
