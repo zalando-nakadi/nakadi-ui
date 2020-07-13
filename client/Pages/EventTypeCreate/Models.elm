@@ -44,6 +44,7 @@ type Field
     | FieldEventOwnerSelectorName
     | FieldEventOwnerSelectorValue
     | FieldCleanupPolicy
+    | FieldReadFrom
     | FieldSql
     | FieldPartitionCompactionKeyField
 
