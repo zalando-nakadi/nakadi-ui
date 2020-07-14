@@ -1,4 +1,4 @@
-module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, consumingQueries, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventOwnerSelector, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, schema, subscription, updatedAt)
+module Pages.EventTypeDetails.Help exposing (audience, authorization, category, cleanupPolicy, cleanupPolicyCompact, compatibilityMode, consumers, consumingQueries, createdAt, defaultStatistic, enrichmentStrategies, envelope, eventOwnerSelector, eventType, options, orderingKeyFields, owningApplication, partitionCompactionKeyField, partitionKeyFields, partitionStrategy, partitions, readFrom, schema, subscription, updatedAt)
 
 import Config exposing (appPreffix)
 import Helpers.UI exposing (..)
@@ -467,6 +467,27 @@ cleanupPolicy =
     , mono "delete"
     , newline
     , man "#definition_EventType*cleanup_policy"
+    ]
+
+
+readFrom : List (Html msg)
+readFrom =
+    [ text "This field indicates where the query should start from."
+    , newline
+    , bold "Currently supported values:"
+    , newline
+    , text "- "
+    , mono "begin"
+    , text " read from the oldest available event. This means that once the query starts, it processes all available"
+    , text " events in the input event types. When creating queries with JOINs, this is highly likely to be the option"
+    , text " that matches most users expectations."
+    , newline
+    , text "- "
+    , mono "end"
+    , text " read from the most recent offset. This means that this query processes only events sent after its"
+    , text " creation and "
+    , bold "does not"
+    , text " processes all the events within the retention time of the input event type."
     ]
 
 

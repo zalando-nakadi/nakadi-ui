@@ -21,6 +21,7 @@ import Models exposing (AppModel)
 import Pages.EventTypeCreate.Messages exposing (..)
 import Pages.EventTypeCreate.Models exposing (..)
 import Pages.EventTypeDetails.Help as Help
+import Pages.SubscriptionCreate.Models exposing (readFrom)
 import Stores.Authorization exposing (Authorization)
 import Stores.EventType exposing (EventType, allAudiences, categories, cleanupPolicies)
 
@@ -68,6 +69,17 @@ viewQueryForm model =
                 Enabled
                 [ cleanupPolicies.compact
                 , cleanupPolicies.delete
+                ]
+            , selectInput formModel
+                FieldReadFrom
+                OnInput
+                "Read from"
+                ""
+                Help.readFrom
+                Required
+                Enabled
+                [ readFrom.end
+                , readFrom.begin
                 ]
             , selectInput formModel
                 FieldEnvelope
@@ -260,6 +272,7 @@ encodeQuery model =
                     , ( "owning_application", asString FieldOwningApplication )
                     , ( "category", asString FieldCategory )
                     , ( "cleanup_policy", asString FieldCleanupPolicy )
+                    , ( "read_from", asString FieldReadFrom )
                     , ( "retention_time", daysToRetentionTimeJson model.values )
                     , ( "partition_compaction_key_field", asString FieldPartitionCompactionKeyField )
                     , ( "ordering_key_fields", orderingKeyFields )

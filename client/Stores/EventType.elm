@@ -178,6 +178,16 @@ cleanupPolicies =
     }
 
 
+readFrom :
+    { end : String
+    , begin : String
+    }
+readFrom =
+    { end = "end"
+    , begin = "begin"
+    }
+
+
 allCleanupPolicies : List String
 allCleanupPolicies =
     [ cleanupPolicies.delete
