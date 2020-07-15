@@ -69,6 +69,7 @@ viewQueryForm model =
                 Enabled
                 [ cleanupPolicies.compact
                 , cleanupPolicies.delete
+                , cleanupPolicies.compact_delete
                 ]
             , selectInput formModel
                 FieldReadFrom
@@ -103,7 +104,8 @@ viewQueryForm model =
 
               else
                 none
-            , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.delete then
+            , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.delete || 
+                 getValue FieldCleanupPolicy formModel.values == cleanupPolicies.compact_delete then
                 selectInput formModel
                     FieldRetentionTime
                     OnInput

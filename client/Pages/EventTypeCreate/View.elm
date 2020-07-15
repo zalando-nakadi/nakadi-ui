@@ -388,7 +388,8 @@ viewForm model setup =
 
               else
                 none
-            , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.delete then
+            , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.delete ||
+                 getValue FieldCleanupPolicy formModel.values == cleanupPolicies.compact_delete then
                 selectInput formModel
                     FieldRetentionTime
                     OnInput

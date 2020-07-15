@@ -27,7 +27,7 @@ type alias EventType =
     , options : Maybe EventTypeOptions
     , authorization :
         Maybe Authorization
-    , --enum delete, compact
+    , --enum delete, compact, compact_and_delete
       cleanup_policy : String
     , --enum component-internal, business-unit-internal,
       -- company-internal, external-partner, external-public
@@ -171,10 +171,12 @@ allAudiences =
 cleanupPolicies :
     { delete : String
     , compact : String
+    , compact_delete : String
     }
 cleanupPolicies =
     { delete = "delete"
     , compact = "compact"
+    , compact_delete = "compact_and_delete"
     }
 
 
@@ -192,6 +194,7 @@ allCleanupPolicies : List String
 allCleanupPolicies =
     [ cleanupPolicies.delete
     , cleanupPolicies.compact
+    , cleanupPolicies.compact_delete
     ]
 
 
