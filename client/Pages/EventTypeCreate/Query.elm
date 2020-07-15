@@ -272,7 +272,6 @@ encodeQuery model =
                     , ( "owning_application", asString FieldOwningApplication )
                     , ( "category", asString FieldCategory )
                     , ( "cleanup_policy", asString FieldCleanupPolicy )
-                    , ( "read_from", asString FieldReadFrom )
                     , ( "retention_time", daysToRetentionTimeJson model.values )
                     , ( "partition_compaction_key_field", asString FieldPartitionCompactionKeyField )
                     , ( "ordering_key_fields", orderingKeyFields )
@@ -282,6 +281,7 @@ encodeQuery model =
             , ( "sql", asString FieldSql )
             , ( "authorization", auth )
             , ( "envelope", asBool FieldEnvelope )
+            , ( "read_from", asString FieldReadFrom )
             ]
     in
     Json.object fields
