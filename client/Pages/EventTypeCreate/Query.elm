@@ -91,7 +91,12 @@ viewQueryForm model =
                 Required
                 Enabled
                 [ "true", "false" ]
-            , if getValue FieldCleanupPolicy formModel.values == cleanupPolicies.compact then
+            , if
+                getValue FieldCleanupPolicy formModel.values
+                    == cleanupPolicies.compact
+                    || getValue FieldCleanupPolicy formModel.values
+                    == cleanupPolicies.compact_delete
+              then
                 textInput formModel
                     FieldPartitionCompactionKeyField
                     OnInput
