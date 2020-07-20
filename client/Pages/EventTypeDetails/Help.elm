@@ -458,6 +458,15 @@ cleanupPolicy =
     , text " field of "
     , link "event metadata." (Config.urlManual ++ "#definition_EventMetadata")
     , newline
+    , text "- "
+    , mono "compact_and_delete"
+    , text " the log will be compacted, but the cleanup process also follows the retention time settings."
+    , text " The key that will be used as a compaction key should be"
+    , text " specified in "
+    , link "partition_compaction_key" (Config.urlManual ++ "#definition_EventMetadata*partition_compaction_key")
+    , text " field of "
+    , link "event metadata." (Config.urlManual ++ "#definition_EventMetadata")
+    , newline
     , newline
     , bold "Key: "
     , mono "cleanup_policy"
