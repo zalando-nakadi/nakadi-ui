@@ -111,7 +111,7 @@ defaultValues =
     , ( FieldEventOwnerSelectorValue, "" )
     , ( FieldCleanupPolicy, cleanupPolicies.delete )
     , ( FieldPartitionCompactionKeyField, emptyString )
-    , ( FieldReadFrom, "end")
+    , ( FieldReadFrom, "end" )
     ]
         |> toValuesDict
 
