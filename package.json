@@ -43,8 +43,6 @@
     "express-http-proxy": "^1.0.2",
     "express-request-id": "^1.4.0",
     "express-winston": "^2.4.0",
-    "lodash": "^4.17.19",
-    "minimist": "^1.2.5",
     "node-fetch": "^2.0.0-alpha.8",
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
