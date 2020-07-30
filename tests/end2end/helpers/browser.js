@@ -35,7 +35,7 @@ function getBrowser() {
     console.log('chromium-browser not found, using default chrome.')
   }
 
-  return webdriverio.remote(opts).init()
+  return webdriverio.remote(opts)
 }
 
 module.exports = {
