@@ -27,53 +27,53 @@ module.exports = {
         const app = App(conf);
         this.server = app.listen(conf.port);
 
-        this.browser = await require('./../helpers/browser').getBrowser().catch(err => console.log("Hello", err));
-
-        console.log("hello", this.browser)
-        this.browser.sleep ||
-        this.browser.addCommand("sleep", function async(time) {
-            //default 100 ms
-            time = time || DELAY;
-            let p = new Promise(function(resolve) {
-                setTimeout(function() {
-                    resolve(true)
-                }, time)
-            }, false);
-
-            return this.waitUntil(function() {
-                return p;
-            })
-        });
-
-        this.browser.login ||
-        this.browser.addCommand("login", function async(url) {
-            return this.url(baseUrl + (url || ''))
-            .waitForVisible('=Login', COMPILE_TIMEOUT)
-            .click('=Login')
-            .waitForVisible('.user-menu', TIMEOUT)
-            .catch(fail)
-        }, false);
-
-        this.browser.logout ||
-        this.browser.addCommand("logout", function async(done) {
-            return this.click('.user-menu')
-            .waitForVisible('.user-menu__logout', TIMEOUT)
-            .click('.user-menu__logout')
-            .waitForVisible('section.login .login-btn', TIMEOUT)
-            .catch(fail)
-            .call(done);
-        }, false);
-
-        this.browser.setViewportSize({
-            width: 1400,
-            height: 900
-        }).then(done);
+        // this.browser = await require('./../helpers/browser').getBrowser().catch(err => console.log("Hello", err));
+        //
+        // console.log("hello", this.browser)
+        // this.browser.sleep ||
+        // this.browser.addCommand("sleep", function async(time) {
+        //     //default 100 ms
+        //     time = time || DELAY;
+        //     let p = new Promise(function(resolve) {
+        //         setTimeout(function() {
+        //             resolve(true)
+        //         }, time)
+        //     }, false);
+        //
+        //     return this.waitUntil(function() {
+        //         return p;
+        //     })
+        // });
+        //
+        // this.browser.login ||
+        // this.browser.addCommand("login", function async(url) {
+        //     return this.url(baseUrl + (url || ''))
+        //     .waitForVisible('=Login', COMPILE_TIMEOUT)
+        //     .click('=Login')
+        //     .waitForVisible('.user-menu', TIMEOUT)
+        //     .catch(fail)
+        // }, false);
+        //
+        // this.browser.logout ||
+        // this.browser.addCommand("logout", function async(done) {
+        //     return this.click('.user-menu')
+        //     .waitForVisible('.user-menu__logout', TIMEOUT)
+        //     .click('.user-menu__logout')
+        //     .waitForVisible('section.login .login-btn', TIMEOUT)
+        //     .catch(fail)
+        //     .call(done);
+        // }, false);
+        //
+        // this.browser.setViewportSize({
+        //     width: 1400,
+        //     height: 900
+        // }).then(done);
     },
 
     stopAll: function(done) {
         this.nakadiServer.close();
         this.ipmServer.close();
         this.server.close();
-        this.browser.end().call(done);
+        // this.browser.end().call(done);
     }
 };
