@@ -1,9 +1,5 @@
 describe('Create Event type form', function() {
 
-    const session = require('./helpers/session');
-    beforeAll(session.startAll);
-
-    afterAll(session.stopAll);
 
     it('should submit default data (happy scenario)', function(done) {
 

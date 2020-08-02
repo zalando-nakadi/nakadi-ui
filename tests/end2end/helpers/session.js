@@ -1,6 +1,6 @@
 module.exports = {
 
-    startAll: function(done) {
+    startAll: async function(done) {
         //time needed to re-compile Elm code 5 minutes
         const COMPILE_TIMEOUT = 5 * 60 * 60 * 1000;
         //browser redraw TIMEOUT 3 seconds
@@ -27,8 +27,9 @@ module.exports = {
         const app = App(conf);
         this.server = app.listen(conf.port);
 
-        this.browser = require('./../helpers/browser').getBrowser();
+        this.browser = await require('./../helpers/browser').getBrowser().catch(err => console.log("Hello", err));
 
+        console.log("hello", this.browser)
         this.browser.sleep ||
         this.browser.addCommand("sleep", function async(time) {
             //default 100 ms
@@ -37,7 +38,7 @@ module.exports = {
                 setTimeout(function() {
                     resolve(true)
                 }, time)
-            });
+            }, false);
 
             return this.waitUntil(function() {
                 return p;
@@ -51,7 +52,7 @@ module.exports = {
             .click('=Login')
             .waitForVisible('.user-menu', TIMEOUT)
             .catch(fail)
-        });
+        }, false);
 
         this.browser.logout ||
         this.browser.addCommand("logout", function async(done) {
@@ -61,7 +62,7 @@ module.exports = {
             .waitForVisible('section.login .login-btn', TIMEOUT)
             .catch(fail)
             .call(done);
-        });
+        }, false);
 
         this.browser.setViewportSize({
             width: 1400,
