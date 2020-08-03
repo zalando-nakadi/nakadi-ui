@@ -1,41 +1,25 @@
-const webdriverio = require('webdriverio')
-const chromedriver = require('chromedriver')
-const fs = require('fs')
+const { remote } = require('webdriverio')
 
-function getBrowser() {
-  const PORT = 9515
-
-  chromedriver.start([
-    '--url-base=wd/hub',
-    `--port=${PORT}`
-  ])
-
+const getBrowser = async() => {
   const inCI = process.env['CI']
 
-  const args = inCI ?
-      ['--headless', '--no-sandbox', '--single-process']
-      : []
+  const argsForCI = inCI ? {
+    headless: true,
+    maxInstances: 1,
+    maxInstancesPerCapability: 1
+  } : {}
 
   const opts = {
-    port: PORT,
-    desiredCapabilities: {
+    ...argsForCI,
+    logLevel: 'trace',
+    waitforTimeout: 30000,
+    waitforInterval: 100,
+    capabilities: {
       browserName: 'chrome',
-      acceptSslCerts : true,
-      chromeOptions: {
-        args
-      }
     }
   }
-
-  const chromium = '/usr/bin/chromium-browser'
-  if (fs.existsSync(chromium)) {
-    console.log('chromium-browser found.')
-    opts.desiredCapabilities.chromeOptions.binary = chromium
-  } else {
-    console.log('chromium-browser not found, using default chrome.')
-  }
-
-  return webdriverio.remote(opts).init()
+  const browser = await remote(opts)
+  return browser
 }
 
 module.exports = {

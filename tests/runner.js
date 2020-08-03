@@ -39,4 +39,4 @@ jasmine.addReporter(termReporter);
 jasmine.execute();
 
 //for development you can run specific test
-//jasmine.execute(['tests/end2end/createEtForm.spec.js', 'a spec name']);
+// jasmine.execute(['tests/end2end/createEtForm.spec.js']);

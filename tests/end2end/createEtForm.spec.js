@@ -5,34 +5,42 @@ describe('Create Event type form', function() {
 
     afterAll(session.stopAll);
 
-    it('should submit default data (happy scenario)', function(done) {
+    it('should submit default data (happy scenario)', async function(done) {
 
         const eventTypeName = 'test.event-type_name';
+        // const expect = require('expect-webdriverio')
 
         this.browser.login('')
-        .waitForVisible('h4=Welcome to Nakadi, a distributed, open-source event messaging service!', 1000)
-        .click('button=Create')
-        .click('a=Event Type')
-        .waitForVisible('h4=Create Event Type', 1000)
-        .isEnabled('button=Create Event Type').then(function(enabled) {
-            expect(enabled).toBeFalsy('Submit btn should be disabled by default')
-        })
-        .setValue('#eventTypeCreateFormFieldName', eventTypeName)
-        .isEnabled('button=Create Event Type').then(function(enabled) {
-            expect(enabled).toBeFalsy('Submit btn should be still disabled if name is set but no Audience selected')
-        })
-        .selectByValue("#eventTypeCreateFormFieldAudience", 'component-internal')
-        .isEnabled('button=Create Event Type').then(function(enabled) {
-            expect(enabled).toBeTruthy('Submit btn should be enabled if name is set')
-        })
-        .click('button=Create Event Type')
-        .waitForVisible(`span*=${eventTypeName}`, 10000)
-        .getUrl().then(function(url) {
-            const hash = url.split('#')[1];
-            expect(hash).toBe(`types/${eventTypeName}`)
-        })
-        .catch(fail)
-        .logout(done)
+        const welcomeMessage = await this.browser.$('h4=Welcome to Nakadi, a distributed, open-source event messaging service!')
+        await welcomeMessage.waitForExist()
+
+        const createButton = await this.browser.$('button=Create')
+        await createButton.click()
+        const createButtonET = await this.browser.$('a=Event Type')
+        await createButtonET.click()
+        const createEventTypeH4 = await this.browser.$('h4=Create Event Type')
+        await createEventTypeH4.waitForExist({ timeout: 10000})
+        await expect(this.browser).toHaveUrl('wwer')
+        // .isEnabled('button=Create Event Type').then(function(enabled) {
+        //     expect(enabled).toBeFalsy('Submit btn should be disabled by default')
+        // })
+        // .setValue('#eventTypeCreateFormFieldName', eventTypeName)
+        // .isEnabled('button=Create Event Type').then(function(enabled) {
+        //     expect(enabled).toBeFalsy('Submit btn should be still disabled if name is set but no Audience selected')
+        // })
+        // .selectByValue("#eventTypeCreateFormFieldAudience", 'component-internal')
+        // .isEnabled('button=Create Event Type').then(function(enabled) {
+        //     expect(enabled).toBeTruthy('Submit btn should be enabled if name is set')
+        // })
+        // .click('button=Create Event Type')
+        // .waitForVisible(`span*=${eventTypeName}`, 10000)
+        // .getUrl().then(function(url) {
+        //     const hash = url.split('#')[1];
+        //     expect(hash).toBe(`types/${eventTypeName}`)
+        // })
+        // .catch(fail)
+        await this.browser.logout(done)
+        console.log("FINISHED TEST")
     });
 
     it('should check for required fields', function(done) {
