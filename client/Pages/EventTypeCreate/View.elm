@@ -150,21 +150,6 @@ viewFormCreate model =
 viewFormUpdate : AppModel -> EventType -> Html Msg
 viewFormUpdate model originalEventType =
     let
-        originalMode =
-            originalEventType.compatibility_mode |> Maybe.withDefault emptyString
-
-        compatibilityModeOptions =
-            if originalMode == compatibilityModes.none then
-                allModes
-
-            else if originalMode == compatibilityModes.forward then
-                [ compatibilityModes.forward
-                , compatibilityModes.compatible
-                ]
-
-            else
-                [ compatibilityModes.compatible ]
-
         partitionStrategyEditing =
             if
                 (originalEventType.partition_strategy |> Maybe.withDefault emptyString)
@@ -192,7 +177,7 @@ viewFormUpdate model originalEventType =
         , formTitle = "Update Event Type"
         , successMessage = "Event Type Updated!"
         , categoriesOptions = categoriesOptions
-        , compatibilityModeOptions = compatibilityModeOptions
+        , compatibilityModeOptions = allModes
         , cleanupPoliciesOptions = cleanupPoliciesOptions
         , partitionStrategyEditing = partitionStrategyEditing
         , partitionNumberEditing = Disabled
