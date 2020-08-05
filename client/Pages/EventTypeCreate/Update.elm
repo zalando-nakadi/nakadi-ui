@@ -338,7 +338,7 @@ checkNameFormat model dict =
             model.values |> getValue FieldName |> String.trim
 
         pattern =
-            Helpers.Regex.fromString "^[a-zA-Z][-0-9a-zA-Z_]*(\\.[a-zA-Z][-0-9a-zA-Z_]*)*$"
+            Helpers.Regex.fromString "^[a-zA-Z][-0-9a-zA-Z_]*(\\.[0-9a-zA-Z][-0-9a-zA-Z_]*)*$"
     in
     if Regex.contains pattern name then
         dict
