@@ -174,6 +174,7 @@ viewFormUpdate model originalEventType =
                 [ cleanupPolicies.delete
                 , cleanupPolicies.compact_delete
                 ]
+
             else
                 [ originalEventType.cleanup_policy ]
     in
