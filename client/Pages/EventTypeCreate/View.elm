@@ -170,7 +170,13 @@ viewFormUpdate model originalEventType =
                 [ originalEventType.category ]
 
         cleanupPoliciesOptions =
-            [ originalEventType.cleanup_policy ]
+            if originalEventType.cleanup_policy == cleanupPolicies.delete then
+                [ cleanupPolicies.delete
+                , cleanupPolicies.compact_delete
+                ]
+
+            else
+                [ originalEventType.cleanup_policy ]
     in
     viewForm model
         { nameEditing = Disabled
