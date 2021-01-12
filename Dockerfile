@@ -1,4 +1,4 @@
-FROM registry.opensource.zalan.do/library/node:12.20.1-alpine-20210107 as builder
+FROM registry.opensource.zalan.do/library/node-12.20-alpine:12.20.1-alpine-20210107 as builder
 WORKDIR /src
 
 COPY client client
@@ -9,7 +9,7 @@ COPY webpack.config.prod.js webpack.config.prod.js
 COPY elm.json elm.json
 RUN npm install && npm run build
 
-FROM registry.opensource.zalan.do/library/node:12.20.1-alpine-20210107
+FROM registry.opensource.zalan.do/library/node-12.20-alpine:12.20.1-alpine-20210107
 MAINTAINER Sergii Kamenskyi <sergukam@sergukam.com>
 LABEL Description="This Nakadi UI does not check auth by default. Please use Auth plugins for use in production."
 
