@@ -101,7 +101,7 @@ viewQueryForm model =
                     FieldPartitionCompactionKeyField
                     OnInput
                     "Partition Compaction Key Field"
-                    "Example: metadata.partition_compaction_key"
+                    "Example: payload.metadata.partition_compaction_key"
                     "Field to be used as partition_compaction_key"
                     Help.partitionCompactionKeyField
                     Required
