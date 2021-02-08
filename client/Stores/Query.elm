@@ -8,6 +8,7 @@ type alias Query =
     { id : String
     , sql : String
     , envelope : Bool
+    , status : String
     }
 
 
@@ -17,3 +18,4 @@ queryDecoder =
         |> required "id" string
         |> required "sql" string
         |> required "envelope" bool
+        |> required "status" string

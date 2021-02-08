@@ -46,7 +46,7 @@ queryTabHeader settings model query =
         [ span [] [ text "SQL Query" ]
         , helpIcon "Nakadi SQL" queryHelp BottomRight
         , label [ class "query-tab__label" ] [ text " Status: " ]
-        , span [ class statClass ] [ text "active" ]
+        , span [ class statClass ] [ text query.status ]
         , helpIcon "Envelope" Help.envelope BottomRight
         , label [ class "query-tab__label" ] [ text " Envelope: " ]
         , span [] [ text (boolToString query.envelope) ]
