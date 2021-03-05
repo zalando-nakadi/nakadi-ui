@@ -14,7 +14,8 @@ const issueType = {
     MISC_SCHEMA_NOT_COMPATIBLE: 302,
     MISC_NAME_IS_NOT_LOWERCASE: 303,
     MISC_NAME_CONTAINS_VERSION: 304,
-    MISC_NO_AUDIENCE: 305
+    MISC_NO_AUDIENCE: 305,
+    MISC_DATA_NO_ORDERING_KEY: 306
 };
 
 const MANUAL = "https://nakadi.io/manual.html";
@@ -271,6 +272,19 @@ function miscChecks(eventType, issues) {
             " Please update the event type and set an audience",
 
             link: "https://opensource.zalando.com/restful-api-guidelines/#219",
+            group: "misc",
+            severity: 20
+        });
+    }
+
+    if (eventType.category === "data" && !eventType.ordering_key_fields) {
+        issues.push({
+            id: issueType.MISC_DATA_NO_ORDERING_KEY,
+            title: "Set the ordering key fields for the data change event type",
+            message:
+            "The ordering key fields for this data change event type are not set. " +
+                "Please update the event type and set ordering_key_fields"
+            link: "https://opensource.zalando.com/restful-api-guidelines/#203",
             group: "misc",
             severity: 20
         });

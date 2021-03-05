@@ -191,8 +191,8 @@ describe('Event Type validation', function() {
                     [
                         {
                             id: 306,
-                            title: 'Set the ordering_key_fields the data change event type',
-                            message: 'XXX',
+                            title: 'Set the ordering key fields for the data change event type',
+                            message: 'The ordering key fields for this data change event type are not set. Please update the event type and set ordering_key_fields',
                             link: 'https://opensource.zalando.com/restful-api-guidelines/#203',
                             group: 'misc',
                             severity: 20
