@@ -151,4 +151,72 @@ describe('Event Type validation', function() {
             });
         }
     });
+
+    it('should require ordering key fields for data category', function(done) {
+
+        const et = {
+            "name": "example-data-change-event",
+            "owning_application": "does-not-matter",
+            "category": "data",
+            "enrichment_strategies": [],
+            "partition_strategy": "random",
+            "partition_key_fields": [],
+            "schema": {
+                "type": "json_schema",
+                "schema": "{ \"type\": \"object\", \"properties\": { \"whatever\": { \"type\": \"string\" } } }",
+                "version": "1.0.0",
+                "created_at": "2021-03-05T11:12:33.230Z"
+            },
+            "default_statistic": {
+                "messages_per_minute": 5000,
+                "message_size": 20000,
+                "read_parallelism": 8,
+                "write_parallelism": 8
+            },
+            "options": {"retention_time": 345600000},
+            "authorization": {
+                "readers": [{"data_type": "user", "value": "testuser"}],
+                "writers": [{"data_type": "user", "value": "testuser"}],
+                "admins":  [{"data_type": "user", "value": "testuser"}]
+            },
+            "audience": "component-internal",
+            "compatibility_mode": "compatible",
+            "updated_at": "2021-03-05T11:12:33.230Z",
+            "created_at": "2021-03-05T11:12:33.230Z"
+        };
+
+        const expectContent = {
+                name: 'example-data-change-event',
+                issues:
+                    [
+                        {
+                            id: 306,
+                            title: 'Set the ordering_key_fields the data change event type',
+                            message: 'XXX',
+                            link: 'https://opensource.zalando.com/restful-api-guidelines/#203',
+                            group: 'misc',
+                            severity: 20
+                        }
+                    ]
+            }
+        ;
+
+        agent
+        .get('/auth/callback?code=111').end(loginEnd);
+
+
+        function loginEnd(err, res) {
+            if (err) return err;
+
+            agent
+            .post('/api/validation')
+            .set('Accept', 'application/json')
+            .send(et)
+            .expect(200, expectContent, function(err, res) {
+                nakadiMock.close();
+                if (err) done.fail(err);
+                done();
+            });
+        }
+    });
 });
