@@ -159,11 +159,11 @@ describe('Event Type validation', function() {
             "owning_application": "does-not-matter",
             "category": "data",
             "enrichment_strategies": [],
-            "partition_strategy": "random",
-            "partition_key_fields": [],
+            "partition_strategy": "hash",
+            "partition_key_fields": ["whatever"],
             "schema": {
                 "type": "json_schema",
-                "schema": "{ \"type\": \"object\", \"properties\": { \"whatever\": { \"type\": \"string\" } } }",
+                "schema": "{ \"type\": \"object\", \"properties\": { \"whatever\": { \"type\": \"string\" } }, \"required\": [\"whatever\"] }",
                 "version": "1.0.0",
                 "created_at": "2021-03-05T11:12:33.230Z"
             },
