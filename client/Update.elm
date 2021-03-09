@@ -31,6 +31,7 @@ import Routing.Messages exposing (Msg(..))
 import Routing.Models exposing (Route(..))
 import Routing.Update
 import Stores.EventType
+import Stores.Query
 import Stores.StarredEventTypes
 import Stores.StarredSubscriptions
 import Stores.Subscription
@@ -171,6 +172,13 @@ updateComponents message model =
             in
             ( { model | eventTypeStore = subModel }, Cmd.map EventTypeStoreMsg msCmd )
 
+        QueryStoreMsg subMsg ->
+            let
+                ( subModel, msCmd ) =
+                    Stores.Query.update subMsg model.queryStore
+            in
+            ( { model | queryStore = subModel }, Cmd.map QueryStoreMsg msCmd )
+
         SubscriptionStoreMsg subMsg ->
             let
                 ( subModel, msCmd ) =
@@ -268,6 +276,7 @@ interComponentMessaging message ( model, cmd ) =
             send
                 [ RoutingMsg (OutRouteChanged model.route)
                 , EventTypeStoreMsg Store.FetchData
+                , QueryStoreMsg Stores.Query.FetchData
                 , SubscriptionStoreMsg Stores.Subscription.FetchData
                 , StarredEventTypesStoreMsg StoreLocal.FetchData
                 , StarredSubscriptionsStoreMsg StoreLocal.FetchData

@@ -11,6 +11,7 @@ import Pages.SubscriptionDetails.Messages
 import Pages.SubscriptionList.Messages
 import Routing.Messages
 import Stores.EventType
+import Stores.Query
 import Stores.Subscription
 import User.Messages
 
@@ -26,6 +27,7 @@ type Msg
     | UserMsg User.Messages.Msg
     | MultiSearchMsg MultiSearch.Messages.Msg
     | EventTypeStoreMsg Stores.EventType.Msg
+    | QueryStoreMsg Stores.Query.Msg
     | SubscriptionStoreMsg Stores.Subscription.Msg
     | SubscriptionCreateMsg Pages.SubscriptionCreate.Messages.Msg
     | StarredEventTypesStoreMsg Helpers.StoreLocal.Msg

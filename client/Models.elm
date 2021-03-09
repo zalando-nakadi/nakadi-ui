@@ -13,6 +13,7 @@ import Pages.SubscriptionDetails.Models
 import Pages.SubscriptionList.Models
 import Routing.Models
 import Stores.EventType
+import Stores.Query
 import Stores.Subscription
 import User.Models
 
@@ -32,6 +33,7 @@ type alias AppModel =
     , routerKey : Maybe Key
     , multiSearch : MultiSearch.Models.Model
     , eventTypeStore : Stores.EventType.Model
+    , queryStore : Stores.Query.Model
     , subscriptionStore : Stores.Subscription.Model
     , starredEventTypesStore : Helpers.StoreLocal.Model
     , starredSubscriptionsStore : Helpers.StoreLocal.Model
@@ -54,6 +56,7 @@ initialModel key =
     , routerKey = key
     , multiSearch = MultiSearch.Models.initialModel
     , eventTypeStore = Stores.EventType.initialModel
+    , queryStore = Stores.Query.initialModel
     , subscriptionStore = Stores.Subscription.initialModel
     , starredEventTypesStore = Helpers.StoreLocal.initialModel
     , starredSubscriptionsStore = Helpers.StoreLocal.initialModel

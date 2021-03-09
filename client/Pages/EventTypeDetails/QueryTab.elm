@@ -13,7 +13,7 @@ import Pages.EventTypeDetails.Help as Help
 import Pages.EventTypeDetails.Messages exposing (..)
 import Pages.EventTypeDetails.Models exposing (Model)
 import RemoteData exposing (WebData)
-import Stores.Query exposing (Query, queryDecoder)
+import Stores.Query exposing (Query)
 import String exposing (replace)
 import Url exposing (percentEncode)
 import User.Models exposing (Settings)
@@ -109,7 +109,7 @@ sqlView sql =
 
 loadQuery : (WebData Query -> msg) -> String -> Cmd msg
 loadQuery tagger id =
-    Http.get (Config.urlNakadiSqlApi ++ "queries/" ++ percentEncode id) queryDecoder
+    Http.get (Config.urlNakadiSqlApi ++ "queries/" ++ percentEncode id) Stores.Query.memberDecoder
         |> RemoteData.sendRequest
         |> Cmd.map tagger
 

@@ -57,8 +57,12 @@ view model =
                         , UI.externalLink " Support " model.userStore.user.settings.supportUrl
                         ]
                     , div []
-                        [ text " SQL API URL:"
+                        [ text " Nakadi SQL API URL:"
                         , span [ class "help-code" ] [ text model.userStore.user.settings.nakadiApiSqlUrl ]
+                        , text " | "
+                        , text "Queries: "
+                        , span [ class "help-code" ]
+                            [ text (model.queryStore |> Helpers.Store.size |> String.fromInt) ]
                         ]
                     ]
                 ]
