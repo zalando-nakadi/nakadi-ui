@@ -6,8 +6,8 @@ import MultiSearch.Models
 import Pages.EventTypeCreate.Models
 import Pages.EventTypeDetails.Models
 import Pages.EventTypeList.Models
-import Pages.QueryDetails.Models
 import Pages.Partition.Models
+import Pages.QueryDetails.Models
 import Pages.SubscriptionCreate.Models
 import Pages.SubscriptionDetails.Models
 import Pages.SubscriptionList.Models
