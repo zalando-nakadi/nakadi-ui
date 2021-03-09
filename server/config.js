@@ -29,6 +29,7 @@ exports = module.exports = function createConfiguration(env) {
             appsInfoUrl: optional('APPS_INFO_URL', env, ''),
             usersInfoUrl: optional('USERS_INFO_URL', env, ''),
             nakadiApiUrl: required('NAKADI_API_URL', env),
+            nakadiApiSqlUrl: optional('NAKADI_SQL_API_URL', env, ''),
             monitoringUrl: optional('MONITORING_URL', env, ''),
             sloMonitoringUrl: optional('SLO_MONITORING_URL', env, ''),
             eventTypeMonitoringUrl: optional('EVENT_TYPE_MONITORING_URL', env, ''),

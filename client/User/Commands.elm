@@ -28,6 +28,7 @@ settingsDecoder : Decoder Settings
 settingsDecoder =
     succeed Settings
         |> required "nakadiApiUrl" string
+        |> optional "nakadiApiSqlUrl" string emptyString
         |> optional "appsInfoUrl" string emptyString
         |> optional "usersInfoUrl" string emptyString
         |> optional "monitoringUrl" string emptyString

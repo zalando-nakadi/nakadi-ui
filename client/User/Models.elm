@@ -43,6 +43,7 @@ initialUser =
 
 type alias Settings =
     { nakadiApiUrl : String
+    , nakadiApiSqlUrl : String
     , appsInfoUrl : String
     , usersInfoUrl : String
     , monitoringUrl : String
@@ -65,6 +66,7 @@ type alias Settings =
 initialSettings : Settings
 initialSettings =
     { nakadiApiUrl = emptyString
+    , nakadiApiSqlUrl = emptyString
     , appsInfoUrl = emptyString
     , usersInfoUrl = emptyString
     , monitoringUrl = emptyString
