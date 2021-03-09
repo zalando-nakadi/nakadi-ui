@@ -6,6 +6,7 @@ import MultiSearch.Models
 import Pages.EventTypeCreate.Models
 import Pages.EventTypeDetails.Models
 import Pages.EventTypeList.Models
+import Pages.QueryDetails.Models
 import Pages.Partition.Models
 import Pages.SubscriptionCreate.Models
 import Pages.SubscriptionDetails.Models
@@ -20,6 +21,7 @@ type alias AppModel =
     { eventTypeListPage : Pages.EventTypeList.Models.Model
     , eventTypeDetailsPage : Pages.EventTypeDetails.Models.Model
     , eventTypeCreatePage : Pages.EventTypeCreate.Models.Model
+    , queryDetailsPage : Pages.QueryDetails.Models.Model
     , partitionPage : Pages.Partition.Models.Model
     , subscriptionListPage : Pages.SubscriptionList.Models.Model
     , subscriptionDetailsPage : Pages.SubscriptionDetails.Models.Model
@@ -41,6 +43,7 @@ initialModel key =
     { eventTypeListPage = Pages.EventTypeList.Models.initialModel
     , eventTypeDetailsPage = Pages.EventTypeDetails.Models.initialModel
     , eventTypeCreatePage = Pages.EventTypeCreate.Models.initialModel
+    , queryDetailsPage = Pages.QueryDetails.Models.initialModel
     , partitionPage = Pages.Partition.Models.initialModel
     , subscriptionListPage = Pages.SubscriptionList.Models.initialModel
     , subscriptionDetailsPage = Pages.SubscriptionDetails.Models.initialModel
