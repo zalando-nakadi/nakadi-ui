@@ -3,11 +3,13 @@ module Stores.Query exposing (Model, Msg(..), Query, initialModel, memberDecoder
 import Config
 import Constants
 import Dict
+import Helpers.Regex
 import Helpers.Store as Store
 import Helpers.Task exposing (dispatch)
 import Http
 import Json.Decode exposing (Decoder, at, bool, list, map, maybe, nullable, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
+import Regex
 import Stores.Authorization exposing (Authorization)
 import User.Commands exposing (logoutIfExpired)
 
@@ -92,11 +94,27 @@ addPageToStore store list =
     { store | dict = newDict }
 
 
+
+--
+-- We proxy requests to Nakadi SQL API via our own backend, but the response
+-- might contain the link to the next page with the hostname of the actual
+-- API, instead of just the path.  The next request to fetch it may be blocked
+-- by the browser's CORS policy, unless we replace the host before path with
+-- our own.
+--
+-- Parsing the URL properly seems to be too involved, so we rely on a regex.
+--
+
+
+urlBeforePathRegex =
+    Helpers.Regex.fromString "^(https?://[^/]+)?/"
+
+
 fetchNext : String -> Cmd Msg
 fetchNext next =
     let
         url =
-            String.dropRight 1 Config.urlNakadiSqlApi ++ next
+            Regex.replace urlBeforePathRegex (\_ -> Config.urlNakadiSqlApi) next
     in
     Http.get url pageDecoder |> Http.send FetchDone
 
