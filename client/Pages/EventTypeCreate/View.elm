@@ -315,6 +315,30 @@ viewForm model setup =
                 Help.orderingKeyFields
                 Optional
                 Enabled
+            , if
+                getValue FieldCategory formModel.values
+                    == categories.data
+                    && (getValue FieldOrderingKeyFields formModel.values
+                            |> String.trim
+                            |> String.isEmpty
+                       )
+              then
+                div [ class "dc-msg dc-msg--error" ]
+                    [ h3 [ class "blinking" ] [ text "Warning!" ]
+                    , p [ class "dc-p" ]
+                        [ text "The 'ordering key' information defines the transactional"
+                        , text " business order that finally leads to the event creation, and"
+                        , text " is used e.g. for analytics change data capture, i.e. keeping"
+                        , text " transactional data in sync as source for analytics. The"
+                        , text " information is recommended for (external) data change events"
+                        , text "\u{00A0}-- see "
+                        , externalLink "API/Event Guidelines" "https://opensource.zalando.com/restful-api-guidelines/#203"
+                        , text "."
+                        ]
+                    ]
+
+              else
+                none
             , selectInput formModel
                 FieldAudience
                 OnInput
