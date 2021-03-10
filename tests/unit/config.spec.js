@@ -8,6 +8,7 @@ describe('Config', function() {
             HTTP_PORT: "3000",
             BASE_URL: "https://localhost:3000",
             NAKADI_API_URL: "https://nakadi-staging.example.com",
+            NAKADI_SQL_API_URL: "https://nakadi-sql-staging.example.com",
             APPS_INFO_URL: "https://yourturn.example.com",
             USERS_INFO_URL: "https://people.example.com",
             MONITORING_URL: "https://zmon.example.com/grafana/dashboard/db/nakadi-staging",
@@ -45,7 +46,7 @@ describe('Config', function() {
             port: '3000',
             baseUrl: 'https://localhost:3000',
             nakadiApiUrl: 'https://nakadi-staging.example.com',
-            nakadiApiSqlUrl:'',
+            nakadiApiSqlUrl: 'https://nakadi-sql-staging.example.com',
             serverOptions: {
                 key: 'test fake private certificate',
                 cert: 'test fake public certificate'
@@ -63,6 +64,7 @@ describe('Config', function() {
                 appsInfoUrl: "https://yourturn.example.com",
                 usersInfoUrl: "https://people.example.com",
                 nakadiApiUrl: 'https://nakadi-staging.example.com',
+                nakadiApiSqlUrl: 'https://nakadi-sql-staging.example.com',
                 monitoringUrl: "https://zmon.example.com/grafana/dashboard/db/nakadi-staging",
                 sloMonitoringUrl: "https://zmon.example.com/grafana/dashboard/db/nakadi-slos",
                 eventTypeMonitoringUrl: "https://zmon.example.com/grafana/dashboard/db/nakadi-et/?var-stack=nakadi-staging&var-et={et}",
