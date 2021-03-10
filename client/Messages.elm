@@ -4,6 +4,7 @@ import Helpers.StoreLocal
 import MultiSearch.Messages
 import Pages.EventTypeCreate.Messages
 import Pages.EventTypeDetails.Messages
+import Pages.QueryDetails.Messages
 import Pages.EventTypeList.Messages
 import Pages.Partition.Messages
 import Pages.SubscriptionCreate.Messages
@@ -20,6 +21,7 @@ type Msg
     = RoutingMsg Routing.Messages.Msg
     | EventTypeListMsg Pages.EventTypeList.Messages.Msg
     | EventTypeDetailsMsg Pages.EventTypeDetails.Messages.Msg
+    | QueryDetailsMsg Pages.QueryDetails.Messages.Msg
     | EventTypeCreateMsg Pages.EventTypeCreate.Messages.Msg
     | PartitionMsg Pages.Partition.Messages.Msg
     | SubscriptionListMsg Pages.SubscriptionList.Messages.Msg

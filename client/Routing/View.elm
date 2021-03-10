@@ -5,6 +5,7 @@ import Messages exposing (Msg(..))
 import Models exposing (AppModel)
 import Pages.EventTypeCreate.View
 import Pages.EventTypeDetails.View
+import Pages.QueryDetails.View
 import Pages.EventTypeList.View
 import Pages.Home.View
 import Pages.NotFound.View
@@ -41,6 +42,10 @@ view model =
         EventTypeCloneRoute param ->
             Html.map EventTypeCreateMsg <|
                 Pages.EventTypeCreate.View.view model
+
+        QueryDetailsRoute param query ->
+            Html.map QueryDetailsMsg <|
+                Pages.QueryDetails.View.view model
 
         QueryCreateRoute ->
             Html.map EventTypeCreateMsg <|

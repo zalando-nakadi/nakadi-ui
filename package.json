@@ -16,6 +16,7 @@
     "test": "npm run build && npm run test:client && npm run test:server",
     "test:client": "elm-coverage -r codecov ./client",
     "test:server": "istanbul cover --include-all-sources tests/runner.js",
+    "format": "elm-format .",
     "validate": "elm-format --validate .",
     "preinstall": "npx npm-force-resolutions",
     "codecov": "codecov -f reports/coverage.raw.json && codecov -f reports/lcov.info&& codecov -f .coverage/codecov.json && codecov -f .coverage/info.json"

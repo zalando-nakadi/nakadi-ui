@@ -14,6 +14,9 @@ import Pages.EventTypeCreate.Update as PageEventTypeCreate
 import Pages.EventTypeDetails.Messages as EventTypeDetailsPageMessages exposing (Msg(..))
 import Pages.EventTypeDetails.Models
 import Pages.EventTypeDetails.Update as PageEventTypeDetails
+import Pages.QueryDetails.Messages as QueryDetailsPageMessages exposing (Msg(..))
+import Pages.QueryDetails.Models
+import Pages.QueryDetails.Update as PageQueryDetails
 import Pages.EventTypeList.Messages as EventTypeListPageMessages exposing (Msg(..))
 import Pages.EventTypeList.Models
 import Pages.EventTypeList.Update as PageEventTypeList
@@ -77,6 +80,14 @@ isInactivePageMsg message route =
         EventTypeDetailsMsg _ ->
             case route of
                 EventTypeDetailsRoute _ _ ->
+                    False
+
+                _ ->
+                    True
+
+        QueryDetailsMsg _ ->
+            case route of
+                QueryDetailsRoute _ _ ->
                     False
 
                 _ ->
@@ -224,6 +235,13 @@ updateComponents message model =
                     PageEventTypeDetails.update model.userStore.user.settings subMsg model.eventTypeDetailsPage
             in
             ( { model | eventTypeDetailsPage = newModel, newRoute = newRoute }, Cmd.map EventTypeDetailsMsg subCmd )
+
+        QueryDetailsMsg subMsg ->
+            let
+                ( newModel, subCmd, newRoute ) =
+                    PageQueryDetails.update model.userStore.user.settings subMsg model.queryDetailsPage
+            in
+            ( { model | queryDetailsPage = newModel, newRoute = newRoute }, Cmd.map QueryDetailsMsg subCmd )
 
         EventTypeCreateMsg subMsg ->
             let
@@ -441,6 +459,9 @@ interComponentMessaging message ( model, cmd ) =
 
                 EventTypeDetailsRoute param query ->
                     send [ EventTypeDetailsMsg (EventTypeDetailsPageMessages.OnRouteChange model.newRoute) ]
+
+                QueryDetailsRoute param query ->
+                    send [ QueryDetailsMsg (QueryDetailsPageMessages.OnRouteChange model.newRoute) ]
 
                 EventTypeCreateRoute ->
                     send

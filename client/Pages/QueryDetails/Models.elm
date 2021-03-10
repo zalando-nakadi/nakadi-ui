@@ -13,7 +13,8 @@ type Tabs
 
 
 type alias Model =
-    { name : String
+    { id : String
+    , tab : Tabs
     , loadQueryResponse : WebData Query
     , deleteQueryPopupOpen : Bool
     , deleteQueryPopupCheck : Bool
@@ -23,7 +24,8 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { name = emptyString
+    { id = emptyString
+    , tab = QueryTab
     , loadQueryResponse = NotAsked
     , deleteQueryPopupOpen = False
     , deleteQueryPopupCheck = False
@@ -32,7 +34,7 @@ initialModel =
 
 
 type alias UrlParams =
-    { name : String
+    { id : String
     }
 
 
@@ -63,8 +65,8 @@ queryToUrl query =
 
 dictToParams : Dict.Dict String String -> UrlParams
 dictToParams dict =
-    { name =
-        get Constants.name dict |> justOrCrash "Incorrect url template. Missing /:name/"
+    { id =
+        get Constants.id dict |> justOrCrash "Incorrect url template. Missing /:id/"
     }
 
 

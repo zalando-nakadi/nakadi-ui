@@ -54,7 +54,7 @@ initialModel =
 
 startUrl : String
 startUrl =
-    "/subscriptions?limit=1000"
+    "/subscriptions?limit=1"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

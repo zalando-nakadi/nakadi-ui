@@ -4,6 +4,7 @@ import Constants exposing (emptyString)
 import Helpers.String exposing (Params)
 import Pages.EventTypeDetails.Models as EventTypeDetails
 import Pages.EventTypeList.Models as EventTypeList
+import Pages.QueryDetails.Models as QueryDetails
 import Pages.Partition.Models as Partition
 import Pages.SubscriptionDetails.Models as SubscriptionDetails
 import Pages.SubscriptionList.Models as SubscriptionList
@@ -27,6 +28,7 @@ type Route
     | SubscriptionCreateRoute
     | SubscriptionUpdateRoute SubscriptionDetails.UrlParams
     | SubscriptionCloneRoute SubscriptionDetails.UrlParams
+    | QueryDetailsRoute QueryDetails.UrlParams QueryDetails.UrlQuery
     | QueryCreateRoute
     | NotFoundRoute
 
@@ -58,6 +60,10 @@ routingConfig =
     , ( "createtype"
       , \( params, query ) ->
             EventTypeCreateRoute
+      )
+    , ( "queries/:id"
+      , \( params, query ) ->
+            QueryDetailsRoute (QueryDetails.dictToParams params) (QueryDetails.dictToQuery query)
       )
     , ( "createquery"
       , \( params, query ) ->
@@ -144,6 +150,9 @@ routeToUrl route =
         SubscriptionCloneRoute params ->
             "#subscriptions/" ++ percentEncode params.id ++ "/clone"
 
+        QueryDetailsRoute params query ->
+            "#types/" ++ percentEncode params.id ++ QueryDetails.queryToUrl query
+
         QueryCreateRoute ->
             "#createquery"
 
@@ -195,6 +204,9 @@ routeToTitle route =
 
                 SubscriptionCloneRoute params ->
                     " - Clone Subscription - " ++ params.id
+
+                QueryDetailsRoute params query ->
+                    " - SQL Query - " ++ params.id
 
                 QueryCreateRoute ->
                     " - Create SQL Query"
