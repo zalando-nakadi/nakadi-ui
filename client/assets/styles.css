@@ -404,6 +404,12 @@ body {
     overflow: auto;
 }
 
+.query-details__info-form {
+    height: calc(100vh - 280px);
+    max-width: 280px;
+    overflow: auto;
+}
+
 .schema-box {
     width: calc(100vw - 490px);
     height: calc(100vh - 400px);

@@ -125,6 +125,12 @@ detailsLayout queryId query model =
                         , href <| monitoringLink
                         ]
                         [ i [ class "icon icon--chart" ] [] ]
+                    , button
+                        [ onClick (CopyToClipboard query.sql)
+                        , class "icon-link dc-icon dc-icon--interactive"
+                        , title "Copy To Clipboard"
+                        ]
+                        [ i [ class "icon icon--clipboard" ] [] ]
 
                     --, starIcon OutAddToFavorite OutRemoveFromFavorite model.starredEventTypesStore eventType.name
                     --, deleteQueryButton
@@ -134,10 +140,12 @@ detailsLayout queryId query model =
                 ]
             , div [ class "dc-row dc-row--collapse" ]
                 [ div [ class "dc-column dc-column--shrink" ]
-                    [ div [ class "event-type-details__info-form" ]
-                        [ infoField "Created " Help.createdAt TopRight <|
+                    [ div [ class "query-details__info-form" ]
+                        [ infoField "Envelope " Help.envelope BottomRight <|
+                            text (boolToString query.envelope)
+                        , infoField "Created " Help.createdAt BottomRight <|
                             infoDateToText query.created
-                        , infoField "Updated " Help.updatedAt TopRight <|
+                        , infoField "Updated " Help.updatedAt BottomRight <|
                             infoDateToText query.updated
                         ]
                     ]
@@ -193,16 +201,6 @@ infoEmpty =
     span [ class "info-field--no-value" ] [ text Constants.noneLabel ]
 
 
-infoStringToText : Maybe String -> Html msg
-infoStringToText maybeInfo =
-    case maybeInfo of
-        Just info ->
-            text info
-
-        Nothing ->
-            infoEmpty
-
-
 infoDateToText : String -> Html msg
 infoDateToText info =
     span [ title info ] [ text (formatDateTime info) ]
@@ -234,10 +232,6 @@ infoAnyToText maybeInfo =
 
 queryTab : String -> Query -> Html Msg
 queryTab monitoringUrl query =
-    let
-        statClass =
-            "schema-tab__value dc-status dc-status--active"
-    in
     div [ class "dc-card" ]
         [ --showRemoteDataStatus
           --pageState.loadQueryResponse
@@ -246,32 +240,7 @@ queryTab monitoringUrl query =
             [ span [] [ text "SQL Query" ]
             , helpIcon "Nakadi SQL" Help.sqlQuery BottomRight
             , label [ class "query-tab__label" ] [ text " Status: " ]
-            , span [ class statClass ] [ text query.status ]
-            , helpIcon "Envelope" Help.envelope BottomRight
-            , label [ class "query-tab__label" ] [ text " Envelope: " ]
-            , span [] [ text (boolToString query.envelope) ]
-            , span [ class "query-tab__value toolbar" ]
-                [ a
-                    [ title "View Query as raw JSON"
-                    , class "icon-link dc-icon dc-icon--interactive"
-                    , target "_blank"
-                    , href <| Config.urlNakadiSqlApi ++ "queries/" ++ query.id
-                    ]
-                    [ i [ class "icon icon--source" ] [] ]
-                , a
-                    [ title "Query Monitoring Graphs"
-                    , class "icon-link dc-icon dc-icon--interactive"
-                    , target "_blank"
-                    , href <| replace "{query}" query.id monitoringUrl
-                    ]
-                    [ i [ class "icon icon--chart" ] [] ]
-                , button
-                    [ onClick (CopyToClipboard query.sql)
-                    , class "icon-link dc-icon dc-icon--interactive"
-                    , title "Copy To Clipboard"
-                    ]
-                    [ i [ class "icon icon--clipboard" ] [] ]
-                ]
+            , span [ class "query-tab__value dc-status dc-status--active" ] [ text query.status ]
             , sqlView query.sql
             ]
         ]
