@@ -14,14 +14,14 @@ import Pages.EventTypeCreate.Update as PageEventTypeCreate
 import Pages.EventTypeDetails.Messages as EventTypeDetailsPageMessages exposing (Msg(..))
 import Pages.EventTypeDetails.Models
 import Pages.EventTypeDetails.Update as PageEventTypeDetails
-import Pages.QueryDetails.Messages as QueryDetailsPageMessages exposing (Msg(..))
-import Pages.QueryDetails.Models
-import Pages.QueryDetails.Update as PageQueryDetails
 import Pages.EventTypeList.Messages as EventTypeListPageMessages exposing (Msg(..))
 import Pages.EventTypeList.Models
 import Pages.EventTypeList.Update as PageEventTypeList
 import Pages.Partition.Messages exposing (Msg(..))
 import Pages.Partition.Update as PagePartition
+import Pages.QueryDetails.Messages as QueryDetailsPageMessages exposing (Msg(..))
+import Pages.QueryDetails.Models
+import Pages.QueryDetails.Update as PageQueryDetails
 import Pages.SubscriptionCreate.Messages
 import Pages.SubscriptionCreate.Models
 import Pages.SubscriptionCreate.Update as PageSubscriptionCreate

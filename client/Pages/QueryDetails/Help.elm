@@ -1,4 +1,4 @@
-module Pages.QueryDetails.Help exposing (authorization, query, createdAt, updatedAt, envelope)
+module Pages.QueryDetails.Help exposing (authorization, createdAt, envelope, query, sqlQuery, updatedAt)
 
 import Config exposing (appPreffix)
 import Helpers.UI exposing (..)
@@ -9,6 +9,22 @@ import Html.Attributes exposing (..)
 query : List (Html msg)
 query =
     [ text "Id of this SQL Query."
+    ]
+
+
+sqlQuery : List (Html msg)
+sqlQuery =
+    [ text "Nakadi SQL API provides a self-serviceable SQL interface for stream processing Nakadi event"
+    , text " types. By expressing transformations as SQL, this service enables a broader audience to analyse"
+    , text " and process streaming data in real-time. Nakadi SQL is scalable, elastic and fault-tolerant."
+    , text " It is planned to support a wide range of streaming operations, including data filtering,"
+    , text " transformations, aggregations, joins, windowing, and sessionization."
+    , newline
+    , text "A query describes a set of operations to be performed on one or more EventTypes."
+    , newline
+    , text "The output events are written to an output EventType, which can be accessed via Nakadi."
+    , newline
+    , link "More in the API Manual" "https://apis.zalando.net/apis/3d932e38-b9db-42cf-84bb-0898a72895fb/ui"
     ]
 
 
@@ -39,9 +55,10 @@ authorization =
     , newline
     , bold "Key: "
     , mono "authorization"
-    , bold "optional"
-    , newline
-    , man "#using_authorization"
+    , bold "required"
+
+    --, newline
+    --, man "#using_authorization"
     ]
 
 
@@ -53,6 +70,7 @@ createdAt =
     , bold "Key: "
     , mono "created"
     , bold "readonly"
+
     --, newline
     --, man "#definition_EventType*created_at"
     ]
@@ -66,6 +84,7 @@ updatedAt =
     , bold "Key: "
     , mono "updated_at"
     , bold "readonly"
+
     --, newline
     --, man "#definition_EventType*updated_at"
     ]

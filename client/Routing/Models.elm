@@ -4,8 +4,8 @@ import Constants exposing (emptyString)
 import Helpers.String exposing (Params)
 import Pages.EventTypeDetails.Models as EventTypeDetails
 import Pages.EventTypeList.Models as EventTypeList
-import Pages.QueryDetails.Models as QueryDetails
 import Pages.Partition.Models as Partition
+import Pages.QueryDetails.Models as QueryDetails
 import Pages.SubscriptionDetails.Models as SubscriptionDetails
 import Pages.SubscriptionList.Models as SubscriptionList
 import Url exposing (percentEncode)

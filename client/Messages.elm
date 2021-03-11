@@ -4,9 +4,9 @@ import Helpers.StoreLocal
 import MultiSearch.Messages
 import Pages.EventTypeCreate.Messages
 import Pages.EventTypeDetails.Messages
-import Pages.QueryDetails.Messages
 import Pages.EventTypeList.Messages
 import Pages.Partition.Messages
+import Pages.QueryDetails.Messages
 import Pages.SubscriptionCreate.Messages
 import Pages.SubscriptionDetails.Messages
 import Pages.SubscriptionList.Messages

@@ -8,7 +8,7 @@ import Constants
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Panel exposing (loadingStatus, warningMessage)
 import Helpers.Store as Store exposing (Id, Status(..))
-import Helpers.String exposing (formatDateTime, periodToString, pluralCount)
+import Helpers.String exposing (boolToString, formatDateTime, periodToString, pluralCount)
 import Helpers.UI exposing (PopupPosition(..), externalLink, grid, helpIcon, linkToApp, linkToAppOrUser, none, onChange, popup, refreshButton, starIcon, tabs)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -17,7 +17,6 @@ import Models exposing (AppModel)
 import Pages.QueryDetails.Help as Help
 import Pages.QueryDetails.Messages exposing (..)
 import Pages.QueryDetails.Models exposing (Model, Tabs(..))
-import Pages.QueryDetails.QueryTab exposing (queryTab)
 import RemoteData exposing (isSuccess)
 import Routing.Helpers exposing (internalLink)
 import Routing.Models exposing (Route(..), routeToUrl)
@@ -64,7 +63,6 @@ detailsLayout queryId query model =
         --         , title "Delete SQL Query"
         --         ]
         --         []
-
         settings =
             model.userStore.user.settings
 
@@ -95,25 +93,25 @@ detailsLayout queryId query model =
             [ div [ class "dc-row dc-row--collapse" ]
                 [ ul [ class "dc-breadcrumb" ]
                     [ li [ class "dc-breadcrumb__item" ]
-                         [ text "SQL Queries"
-                          -- internalLink "SQL Queries" (EventTypeListRoute Pages.EventTypeList.Models.emptyQuery)
-                         ]
+                        [ text "SQL Queries"
+
+                        -- internalLink "SQL Queries" (EventTypeListRoute Pages.EventTypeList.Models.emptyQuery)
+                        ]
                     , li [ class "dc-breadcrumb__item" ]
                         [ span [] [ text queryId, helpIcon "SQL Query id" Help.query BottomRight ]
                         ]
                     ]
                 , span [ class "toolbar" ]
-                    [
-                     -- a
-                     --    [ title "Update SQL Query"
-                     --    , class "icon-link dc-icon dc-icon--interactive"
-                     --    , href <|
-                     --        routeToUrl <|
-                     --            EventTypeUpdateRoute { id = query.id }
-                     --    ]
-                     --    [ i [ class "icon icon--edit" ] [] ]
-                     --,
-                         a
+                    [ -- a
+                      --    [ title "Update SQL Query"
+                      --    , class "icon-link dc-icon dc-icon--interactive"
+                      --    , href <|
+                      --        routeToUrl <|
+                      --            EventTypeUpdateRoute { id = query.id }
+                      --    ]
+                      --    [ i [ class "icon icon--edit" ] [] ]
+                      --,
+                      a
                         [ title "View as raw JSON"
                         , class "icon-link dc-icon dc-icon--interactive"
                         , target "_blank"
@@ -127,9 +125,11 @@ detailsLayout queryId query model =
                         , href <| monitoringLink
                         ]
                         [ i [ class "icon icon--chart" ] [] ]
+
                     --, starIcon OutAddToFavorite OutRemoveFromFavorite model.starredEventTypesStore eventType.name
                     --, deleteQueryButton
                     ]
+
                 --, span [ class "flex-col--stretched" ] [ refreshButton OutRefreshEventTypes ]
                 ]
             , div [ class "dc-row dc-row--collapse" ]
@@ -144,17 +144,20 @@ detailsLayout queryId query model =
                 , tabs tabOptions (Just tab) <|
                     [ ( QueryTab
                       , "SQL Query"
-                      , queryTab settings pageState
+                      , queryTab
+                            settings.queryMonitoringUrl
+                            query
                       )
                     , ( AuthTab
                       , "Authorization"
                       , authTab
-                          appsInfoUrl
-                              usersInfoUrl
-                                  query
+                            appsInfoUrl
+                            usersInfoUrl
+                            query
                       )
                     ]
                 ]
+
             -- , deletePopup model
             --     eventType
             --     pageState.consumersStore
@@ -227,6 +230,64 @@ infoAnyToText maybeInfo =
 
         Nothing ->
             infoEmpty
+
+
+queryTab : String -> Query -> Html Msg
+queryTab monitoringUrl query =
+    let
+        statClass =
+            "schema-tab__value dc-status dc-status--active"
+    in
+    div [ class "dc-card" ]
+        [ --showRemoteDataStatus
+          --pageState.loadQueryResponse
+          --   (queryTabHeader setting pageState)
+          div []
+            [ span [] [ text "SQL Query" ]
+            , helpIcon "Nakadi SQL" Help.sqlQuery BottomRight
+            , label [ class "query-tab__label" ] [ text " Status: " ]
+            , span [ class statClass ] [ text query.status ]
+            , helpIcon "Envelope" Help.envelope BottomRight
+            , label [ class "query-tab__label" ] [ text " Envelope: " ]
+            , span [] [ text (boolToString query.envelope) ]
+            , span [ class "query-tab__value toolbar" ]
+                [ a
+                    [ title "View Query as raw JSON"
+                    , class "icon-link dc-icon dc-icon--interactive"
+                    , target "_blank"
+                    , href <| Config.urlNakadiSqlApi ++ "queries/" ++ query.id
+                    ]
+                    [ i [ class "icon icon--source" ] [] ]
+                , a
+                    [ title "Query Monitoring Graphs"
+                    , class "icon-link dc-icon dc-icon--interactive"
+                    , target "_blank"
+                    , href <| replace "{query}" query.id monitoringUrl
+                    ]
+                    [ i [ class "icon icon--chart" ] [] ]
+                , button
+                    [ onClick (CopyToClipboard query.sql)
+                    , class "icon-link dc-icon dc-icon--interactive"
+                    , title "Copy To Clipboard"
+                    ]
+                    [ i [ class "icon icon--clipboard" ] [] ]
+                ]
+            , sqlView query.sql
+            ]
+        ]
+
+
+sqlView : String -> Html msg
+sqlView sql =
+    pre [ class "sql-view" ]
+        [ node "ace-editor"
+            [ value sql
+            , attribute "theme" "ace/theme/dawn"
+            , attribute "mode" "ace/mode/sql"
+            , readonly True
+            ]
+            []
+        ]
 
 
 authTab : String -> String -> Query -> Html Msg

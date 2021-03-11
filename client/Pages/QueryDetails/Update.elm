@@ -1,5 +1,7 @@
 module Pages.QueryDetails.Update exposing (update)
 
+--import Pages.QueryDetails.QueryTab exposing (deleteQuery, loadQuery)
+
 import Config
 import Constants
 import Helpers.Http exposing (postString)
@@ -8,7 +10,6 @@ import Helpers.Task exposing (dispatch)
 import Http
 import Pages.QueryDetails.Messages exposing (Msg(..))
 import Pages.QueryDetails.Models exposing (Model, Tabs(..), initialModel)
---import Pages.QueryDetails.QueryTab exposing (deleteQuery, loadQuery)
 import RemoteData exposing (RemoteData(..), isFailure, isSuccess)
 import Routing.Models exposing (Route(..))
 import Url exposing (percentEncode)
@@ -21,7 +22,6 @@ update settings message model =
     let
         -- deletePopup =
         --     model.deletePopup
-
         ( resultModel, resultCmd ) =
             case message of
                 OnRouteChange route ->
@@ -36,8 +36,8 @@ update settings message model =
                             else
                                 Cmd.batch
                                     [ --dispatch CloseDeletePopup
-                                    --,
-                                          dispatch Reload
+                                      --,
+                                      dispatch Reload
                                     ]
                     in
                     ( updatedModel, cmd )
@@ -69,48 +69,41 @@ update settings message model =
                         --         [ dispatch LoadConsumers
                         --         , dispatch LoadConsumingQueries
                         --         ]
-
                         AuthTab ->
                             Cmd.none
                     )
 
-                -- OpenDeletePopup ->
-                --     let
-                --         newDeletePopup =
-                --             initialModel.deletePopup
-
-                --         openedDeletePopup =
-                --             { newDeletePopup | isOpen = True }
-                --     in
-                --     ( { model | deletePopup = openedDeletePopup }
-                --     , Cmd.batch [ dispatch LoadConsumers, dispatch LoadConsumingQueries ]
-                --     )
-
-                -- CloseDeletePopup ->
-                --     ( { model | deletePopup = initialModel.deletePopup }, Cmd.none )
-
-                -- ConfirmDelete ->
-                --     let
-                --         newPopup =
-                --             { deletePopup | deleteCheckbox = not deletePopup.deleteCheckbox }
-                --     in
-                --     ( { model | deletePopup = newPopup }, Cmd.none )
-
-                -- Delete ->
-                --     ( { model | deletePopup = Store.onFetchStart deletePopup }, callDelete model.name )
-
-                -- DeleteDone result ->
-                --     case result of
-                --         Ok () ->
-                --             ( { model | deletePopup = Store.onFetchStart deletePopup }
-                --             , Cmd.batch
-                --                 [ dispatch OutOnQueryDeleted
-                --                 , dispatch CloseDeletePopup
-                --                 ]
-                --             )
-
-                --         Err error ->
-                --             ( { model | deletePopup = Store.onFetchErr deletePopup error }, logoutIfExpired error )
+        -- OpenDeletePopup ->
+        --     let
+        --         newDeletePopup =
+        --             initialModel.deletePopup
+        --         openedDeletePopup =
+        --             { newDeletePopup | isOpen = True }
+        --     in
+        --     ( { model | deletePopup = openedDeletePopup }
+        --     , Cmd.batch [ dispatch LoadConsumers, dispatch LoadConsumingQueries ]
+        --     )
+        -- CloseDeletePopup ->
+        --     ( { model | deletePopup = initialModel.deletePopup }, Cmd.none )
+        -- ConfirmDelete ->
+        --     let
+        --         newPopup =
+        --             { deletePopup | deleteCheckbox = not deletePopup.deleteCheckbox }
+        --     in
+        --     ( { model | deletePopup = newPopup }, Cmd.none )
+        -- Delete ->
+        --     ( { model | deletePopup = Store.onFetchStart deletePopup }, callDelete model.name )
+        -- DeleteDone result ->
+        --     case result of
+        --         Ok () ->
+        --             ( { model | deletePopup = Store.onFetchStart deletePopup }
+        --             , Cmd.batch
+        --                 [ dispatch OutOnQueryDeleted
+        --                 , dispatch CloseDeletePopup
+        --                 ]
+        --             )
+        --         Err error ->
+        --             ( { model | deletePopup = Store.onFetchErr deletePopup error }, logoutIfExpired error )
     in
     ( resultModel, resultCmd, modelToRoute resultModel )
 
