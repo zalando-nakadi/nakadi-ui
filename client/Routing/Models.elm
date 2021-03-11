@@ -151,7 +151,7 @@ routeToUrl route =
             "#subscriptions/" ++ percentEncode params.id ++ "/clone"
 
         QueryDetailsRoute params query ->
-            "#types/" ++ percentEncode params.id ++ QueryDetails.queryToUrl query
+            "#queries/" ++ percentEncode params.id ++ QueryDetails.queryToUrl query
 
         QueryCreateRoute ->
             "#createquery"
