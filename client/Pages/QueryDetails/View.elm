@@ -246,7 +246,7 @@ sqlView sql =
             [ value sql
             , attribute "theme" "ace/theme/dawn"
             , attribute "mode" "ace/mode/sql"
-            , readonly True
+            , attribute "readonly" "true"
             ]
             []
         ]
@@ -269,8 +269,8 @@ authTab appsInfoUrl usersInfoUrl query =
                     [ AccessEditor.viewReadOnly
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
-                        , showWrite = True
-                        , showAnyToken = True
+                        , showWrite = False
+                        , showAnyToken = False
                         , help = Help.authorization
                         }
                         (always Reload)
