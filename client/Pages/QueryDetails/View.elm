@@ -138,7 +138,7 @@ detailsLayout queryId query model =
                     , deleteQueryButton
                     ]
 
-                --, span [ class "flex-col--stretched" ] [ refreshButton OutRefreshEventTypes ]
+                --, span [ class "flex-col--stretched" ] [ refreshButton OutRefreshQueries ]
                 ]
             , div [ class "dc-row dc-row--collapse" ]
                 [ div [ class "dc-column dc-column--shrink" ]
@@ -228,10 +228,7 @@ infoAnyToText maybeInfo =
 queryTab : String -> Model -> Query -> Html Msg
 queryTab monitoringUrl model query =
     div [ class "dc-card" ]
-        [ --showRemoteDataStatus
-          --pageState.loadQueryResponse
-          --   (queryTabHeader setting pageState)
-          div []
+        [ div []
             [ span [] [ text "SQL Query" ]
             , helpIcon "Nakadi SQL" Help.sqlQuery BottomRight
             , label [ class "query-tab__label" ] [ text " Status: " ]

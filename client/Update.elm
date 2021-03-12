@@ -452,6 +452,20 @@ interComponentMessaging message ( model, cmd ) =
                 _ ->
                     pass
 
+        QueryDetailsMsg subMsg ->
+            case subMsg of
+                -- QueryDetailsPageMessages.OutRefreshQueries ->
+                --     send [ QueryStoreMsg Stores.Query.FetchData ]
+
+                QueryDetailsPageMessages.OutOnQueryDeleted ->
+                    redirectAndSend
+                        --(QueryListRoute Pages.QueryList.Models.emptyQuery)
+                        HomeRoute
+                        [ QueryStoreMsg Stores.Query.FetchData ]
+
+                _ ->
+                    pass
+
         RoutingMsg (OutRouteChanged location) ->
             case model.newRoute of
                 EventTypeListRoute query ->

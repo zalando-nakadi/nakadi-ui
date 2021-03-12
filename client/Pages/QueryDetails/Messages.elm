@@ -18,3 +18,4 @@ type Msg
     | ConfirmQueryDelete
     | QueryDelete
     | QueryDeleteResponse (WebData ())
+    | OutOnQueryDeleted
