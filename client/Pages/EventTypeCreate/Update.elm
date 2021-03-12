@@ -204,6 +204,14 @@ update message model eventTypeStore user =
                 Err error ->
                     ( Store.onFetchErr model error, Cmd.none )
 
+        SubmitQueryResponse result ->
+            case result of
+                Ok str ->
+                    ( Store.onFetchOk model, dispatch (OutQueryCreated (getValue FieldName model.values)) )
+
+                Err error ->
+                    ( Store.onFetchErr model error, Cmd.none )
+
         TestQuery ->
             let
                 testQuery =
@@ -234,6 +242,9 @@ update message model eventTypeStore user =
             ( { model | operation = operation }, dispatch Reset )
 
         OutEventTypeCreated name ->
+            ( model, Cmd.none )
+
+        OutQueryCreated name ->
             ( model, Cmd.none )
 
 

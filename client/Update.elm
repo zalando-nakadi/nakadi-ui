@@ -400,6 +400,16 @@ interComponentMessaging message ( model, cmd ) =
                     in
                     redirectAndSend route [ EventTypeStoreMsg Store.FetchData ]
 
+                Pages.EventTypeCreate.Messages.OutQueryCreated id ->
+                    let
+                        route =
+                            QueryDetailsRoute { id = id }
+                                Pages.QueryDetails.Models.emptyQuery
+                    in
+                    redirectAndSend route
+                        [ EventTypeStoreMsg Store.FetchData
+                        , QueryStoreMsg Stores.Query.FetchData ]
+
                 _ ->
                     pass
 

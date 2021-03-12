@@ -309,7 +309,7 @@ post body =
         , timeout = Nothing
         , withCredentials = False
         }
-        |> Http.send SubmitResponse
+        |> Http.send SubmitQueryResponse
 
 
 postTest : Json.Value -> Cmd Msg

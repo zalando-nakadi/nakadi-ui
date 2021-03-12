@@ -19,7 +19,9 @@ type Msg
     | OnRouteChange Operation
     | FocusResult (Result Browser.Dom.Error ())
     | SubmitResponse (Result Http.Error ())
+    | SubmitQueryResponse (Result Http.Error ())
     | TestQuery
     | TestQueryResponse (Result Http.Error EventType)
     | OutEventTypeCreated String
+    | OutQueryCreated String
     | PartitionsStoreMsg Stores.Partition.Msg
