@@ -10,7 +10,7 @@ import Helpers.Task exposing (dispatch)
 import Http
 import Pages.QueryDetails.Messages exposing (Msg(..))
 import Pages.QueryDetails.Models exposing (Model, Tabs(..), initialModel)
-import RemoteData exposing (RemoteData(..), isFailure, isSuccess)
+import RemoteData exposing (RemoteData(..), WebData, isFailure, isSuccess)
 import Routing.Models exposing (Route(..))
 import Url exposing (percentEncode)
 import User.Commands exposing (logoutIfExpired)
@@ -73,6 +73,38 @@ update settings message model =
                             Cmd.none
                     )
 
+                OpenDeleteQueryPopup ->
+                    ( { model
+                        | deleteQueryResponse = NotAsked
+                        , deleteQueryPopupCheck = False
+                        , deleteQueryPopupOpen = True
+                      }
+                    , Cmd.none
+                    )
+
+                CloseDeleteQueryPopup ->
+                    ( { model | deleteQueryPopupOpen = False }, Cmd.none )
+
+                ConfirmQueryDelete ->
+                    ( { model | deleteQueryPopupCheck = not model.deleteQueryPopupCheck }, Cmd.none )
+
+                QueryDelete ->
+                    ( model, deleteQuery QueryDeleteResponse model.id )
+
+                QueryDeleteResponse response ->
+                    let
+                        cmd =
+                            if response |> isSuccess then
+                                Cmd.batch
+                                    [ dispatch CloseDeleteQueryPopup
+                                    --, dispatch (LoadQuery model.name)
+                                    ]
+
+                            else
+                                Cmd.none
+                    in
+                    ( { model | deleteQueryResponse = response }, cmd )
+
         -- OpenDeletePopup ->
         --     let
         --         newDeletePopup =
@@ -132,3 +164,18 @@ routeToModel route model =
 
         _ ->
             model
+
+
+deleteQuery : (WebData () -> msg) -> String -> Cmd msg
+deleteQuery tagger id =
+    Http.request
+        { method = "DELETE"
+        , headers = []
+        , url = Config.urlNakadiSqlApi ++ "queries/" ++ percentEncode id
+        , body = Http.emptyBody
+        , expect = Http.expectStringResponse (always (Ok ()))
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> RemoteData.sendRequest
+        |> Cmd.map tagger

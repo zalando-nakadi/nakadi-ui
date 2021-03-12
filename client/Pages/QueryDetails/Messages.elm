@@ -13,11 +13,8 @@ type Msg
     | CopyToClipboard String
     | CopyToClipboardDone HttpStringResult
     | TabChange Tabs
-
-
-
--- | OpenDeleteQueryPopup
--- | CloseDeleteQueryPopup
--- | ConfirmQueryDelete
--- | QueryDelete
--- | QueryDeleteResponse (WebData ())
+    | OpenDeleteQueryPopup
+    | CloseDeleteQueryPopup
+    | ConfirmQueryDelete
+    | QueryDelete
+    | QueryDeleteResponse (WebData ())
