@@ -134,7 +134,6 @@ detailsLayout queryId query model =
                         [ i [ class "icon icon--clipboard" ] [] ]
 
                     --, starIcon OutAddToFavorite OutRemoveFromFavorite model.starredEventTypesStore eventType.name
-
                     , deleteQueryButton
                     ]
 
@@ -156,8 +155,8 @@ detailsLayout queryId query model =
                       , "SQL Query"
                       , queryTab
                             settings.queryMonitoringUrl
-                                pageState
-                                    query
+                            pageState
+                            query
                       )
                     , ( AuthTab
                       , "Authorization"
@@ -367,5 +366,6 @@ deleteQueryPopup model query =
     in
     if model.deleteQueryPopupOpen then
         dialog
+
     else
         none

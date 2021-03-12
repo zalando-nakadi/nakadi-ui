@@ -408,7 +408,8 @@ interComponentMessaging message ( model, cmd ) =
                     in
                     redirectAndSend route
                         [ EventTypeStoreMsg Store.FetchData
-                        , QueryStoreMsg Stores.Query.FetchData ]
+                        , QueryStoreMsg Stores.Query.FetchData
+                        ]
 
                 _ ->
                     pass
@@ -466,7 +467,6 @@ interComponentMessaging message ( model, cmd ) =
             case subMsg of
                 -- QueryDetailsPageMessages.OutRefreshQueries ->
                 --     send [ QueryStoreMsg Stores.Query.FetchData ]
-
                 QueryDetailsPageMessages.OutOnQueryDeleted ->
                     redirectAndSend
                         --(QueryListRoute Pages.QueryList.Models.emptyQuery)
