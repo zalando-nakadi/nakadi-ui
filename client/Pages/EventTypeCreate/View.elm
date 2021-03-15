@@ -330,9 +330,9 @@ viewForm model setup =
                         , text " business order that finally leads to the event creation, and"
                         , text " is used e.g. for analytics change data capture, i.e. keeping"
                         , text " transactional data in sync as source for analytics. The"
-                        , text " information is recommended for (external) data change events"
+                        , text " information must be provided for (external) data change events"
                         , text "\u{00A0}-- see "
-                        , externalLink "API/Event Guidelines" "https://opensource.zalando.com/restful-api-guidelines/#203"
+                        , externalLink "API/Event Guidelines" "https://opensource.zalando.com/restful-api-guidelines/#242"
                         , text "."
                         ]
                     ]

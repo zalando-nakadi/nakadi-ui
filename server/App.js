@@ -7,6 +7,7 @@ const os = require('os');
 const express = require('express');
 const sessions = require('client-sessions');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 
 const logger = require('./logger');
 const auth = require('./auth');
@@ -28,6 +29,11 @@ const staticFiles = require('./staticFiles');
 module.exports = function App(config) {
 
     const app = express()
+    .use(helmet({
+        frameguard: {
+            action: 'DENY'
+        }
+    }))
     .get('/health', getHealth)
     .use(logger.init)
     .use(sessions(config.cookie))
