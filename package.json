@@ -43,6 +43,7 @@
     "express-http-proxy": "^1.0.2",
     "express-request-id": "^1.4.0",
     "express-winston": "^2.4.0",
+    "helmet": "^4.6.0",
     "node-fetch": "^2.0.0-alpha.8",
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
