@@ -105,7 +105,7 @@ describe('Config', function() {
                     path: '/',
                     ephemeral: true,
                     httpOnly: true,
-                    secure: false
+                    secureProxy: true
                 }
             },
             credentialsDir: 'deploy/OAUTH'
