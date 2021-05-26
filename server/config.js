@@ -71,7 +71,7 @@ exports = module.exports = function createConfiguration(env) {
                 //maxAge: 60000, // duration of the cookie in milliseconds, defaults to duration above (cannot be used if 'ephemeral: true')
                 ephemeral: true, // when true, cookie expires when the browser closes (cannot be used with 'maxAge')
                 httpOnly: true, // when true, cookie is not accessible from javascript
-                secure: false // when true, cookie will only be sent over SSL. use key 'secureProxy' instead if you handle SSL not in your node process
+                secureProxy: true // we want our session cookie to be secure and we assert that SSL is handled externally (in our case with skipper)
             }
         },
 
