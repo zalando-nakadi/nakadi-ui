@@ -25,7 +25,7 @@ describe('Create Event type form', function() {
         .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeFalsy('Submit btn should be disabled if owning application is not set')
         })
-        .setValue('#eventTypeCreateFormFieldOwningApplication', 'some-owning-app')
+        .setValue('#eventTypeCreateFormFieldOwningApplication', 'stups_nakadi-ui-elm')
         .isEnabled('button=Create Event Type').then(function(enabled) {
             expect(enabled).toBeTruthy('Submit btn should be enabled if name and owning app are set')
         })

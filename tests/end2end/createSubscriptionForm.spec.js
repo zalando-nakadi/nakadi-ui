@@ -21,7 +21,7 @@ describe('Create Subscription form', function() {
         })
         .setValue('#subscriptionCreateFormFieldConsumerGroup', 'test-group')
         .setValue('#subscriptionCreateFormFieldEventTypes', eventTypeName)
-        .setValue('#subscriptionCreateFormFieldOwningApplication', 'someowningapplication')
+        .setValue('#subscriptionCreateFormFieldOwningApplication', 'stups_nakadi-ui-elm')
         .isEnabled('button=Create Subscription').then(function(enabled) {
             expect(enabled).toBeTruthy('Submit btn should be enabled if name is set')
         })
