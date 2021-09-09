@@ -23,7 +23,11 @@ describe('Create Event type form', function() {
         })
         .selectByValue("#eventTypeCreateFormFieldAudience", 'component-internal')
         .isEnabled('button=Create Event Type').then(function(enabled) {
-            expect(enabled).toBeTruthy('Submit btn should be enabled if name is set')
+            expect(enabled).toBeFalsy('Submit btn should be disabled if owning application is not set')
+        })
+        .setValue('#eventTypeCreateFormFieldOwningApplication', 'some-owning-app')
+        .isEnabled('button=Create Event Type').then(function(enabled) {
+            expect(enabled).toBeTruthy('Submit btn should be enabled if name and owning app are set')
         })
         .click('button=Create Event Type')
         .waitForVisible(`span*=${eventTypeName}`, 10000)

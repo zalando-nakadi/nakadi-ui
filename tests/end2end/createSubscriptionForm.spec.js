@@ -21,6 +21,7 @@ describe('Create Subscription form', function() {
         })
         .setValue('#subscriptionCreateFormFieldConsumerGroup', 'test-group')
         .setValue('#subscriptionCreateFormFieldEventTypes', eventTypeName)
+        .setValue('#subscriptionCreateFormFieldOwningApplication', 'someowningapplication')
         .isEnabled('button=Create Subscription').then(function(enabled) {
             expect(enabled).toBeTruthy('Submit btn should be enabled if name is set')
         })
