@@ -1,4 +1,4 @@
-module Pages.SubscriptionCreate.Models exposing (Field(..), Model, Operation(..), allReadFrom, cloneValues, copyValues, defaultApplication, defaultValues, initialModel, readFrom)
+module Pages.SubscriptionCreate.Models exposing (Field(..), Model, Operation(..), allReadFrom, cloneValues, copyValues, defaultValues, initialModel, readFrom)
 
 import Config exposing (appPreffix)
 import Constants exposing (emptyString)
@@ -76,15 +76,10 @@ allReadFrom =
     ]
 
 
-defaultApplication : String
-defaultApplication =
-    appPreffix ++ "nakadi-ui-elm"
-
-
 defaultValues : ValuesDict
 defaultValues =
     [ ( FieldConsumerGroup, emptyString )
-    , ( FieldOwningApplication, defaultApplication )
+    , ( FieldOwningApplication, emptyString )
     , ( FieldReadFrom, readFrom.end )
     , ( FieldEventTypes, emptyString )
     ]

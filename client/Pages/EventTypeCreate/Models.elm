@@ -1,4 +1,4 @@
-module Pages.EventTypeCreate.Models exposing (Field(..), Model, Operation(..), defaultApplication, defaultRetentionDays, defaultSchema, defaultSql, defaultValues, initialModel, loadValues)
+module Pages.EventTypeCreate.Models exposing (Field(..), Model, Operation(..), defaultRetentionDays, defaultSchema, defaultSql, defaultValues, initialModel, loadValues)
 
 import Config exposing (appPreffix)
 import Constants exposing (emptyString)
@@ -86,15 +86,10 @@ defaultRetentionDays =
     1
 
 
-defaultApplication : String
-defaultApplication =
-    appPreffix ++ "nakadi-ui-elm"
-
-
 defaultValues : ValuesDict
 defaultValues =
     [ ( FieldName, emptyString )
-    , ( FieldOwningApplication, defaultApplication )
+    , ( FieldOwningApplication, "" )
     , ( FieldCategory, categories.business )
     , ( FieldPartitionStrategy, partitionStrategies.random )
     , ( FieldPartitionsNumber, "1" )
