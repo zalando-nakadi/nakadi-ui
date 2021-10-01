@@ -141,10 +141,10 @@ function getMeta(req, res) {
         };
     }
 
-   return {
-       requestId: req.id,
-       user: user
-   }
+    return {
+        requestId: req.id,
+        user: user
+    }
 }
 
 
