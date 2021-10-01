@@ -47,7 +47,8 @@ const winstonInstance = new winston.Logger({
  */
 const loggerConf = {
     winstonInstance: winstonInstance,
-    msg: safeToLogMessage,
+    dynamicMeta: getMeta,
+    msg: getSafeToLogMessage,
     requestFilter: filterSensitiveRequestFields,
     responseWhitelist: ['statusCode']
 };
@@ -123,6 +124,30 @@ function switchOnBodyLogForErrors(req, res, next) {
     next();
 }
 
+/**
+ * Return metadata for request.
+ *
+ * @param {Request} req Request object
+ * @param {Response} res Response object
+ * @returns {Object}
+ */
+function getMeta(req, res) {
+    let user = {};
+
+    if (req.user) {
+        user = {
+            uid: req.user.id,
+            uname: req.user.name
+        };
+    }
+
+   return {
+       requestId: req.id,
+       user: user
+   }
+}
+
+
 const mask = "***";
 
 /**
@@ -145,7 +170,7 @@ function maskAuthCallbackURL(url) {
  * @param {Response} res
  * @returns {String}
  */
-function safeToLogMessage(req, res) {
+function getSafeToLogMessage(req, res) {
     const url = maskAuthCallbackURL(req.url);
     return `HTTP ${req.method} ${url}`;
 }
