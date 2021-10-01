@@ -48,8 +48,9 @@ const winstonInstance = new winston.Logger({
 const loggerConf = {
     winstonInstance: winstonInstance,
     dynamicMeta: getMeta,
-    requestFilter: filterAccessTokens,
-    responseWhitelist: ['statusCode', '_headers']
+    msg: getSafeToLogMessage,
+    requestFilter: filterSensitiveRequestFields,
+    responseWhitelist: ['statusCode']
 };
 
 module.exports = {
@@ -134,19 +135,9 @@ function getMeta(req, res) {
     let user = {};
 
     if (req.user) {
-
-        // It is not allowed to log accessToken
-        // so we log only its sha256 hash to
-        // distinguish user's auth sessions
-        const hash = crypto
-        .createHash('sha256')
-        .update(req.user.accessToken || '')
-        .digest('base64');
-
         user = {
             uid: req.user.id,
-            uname: req.user.name,
-            tokenHash: hash
+            uname: req.user.name
         };
     }
 
@@ -156,28 +147,61 @@ function getMeta(req, res) {
     }
 }
 
+
+const mask = "***";
+
 /**
- * Filter out any log fields with sensitive information
- * replacing authorization and cookie with mask '***'
- * if they are set
+ * Filters out auth code in the authoriztion callback URL
+ * replacing it with a placeholder
+ *
+ * @param {String} url
+ * @returns {String}
+ */
+function maskAuthCallbackURL(url) {
+    const callbackUri = "/auth/callback?";
+    return url.startsWith(callbackUri) ? callbackUri + mask : url;
+}
+
+/**
+ * Returns a message that is safe to log
+ * (not exposing sensitive info in the URL)
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {String}
+ */
+function getSafeToLogMessage(req, res) {
+    const url = maskAuthCallbackURL(req.url);
+    return `HTTP ${req.method} ${url}`;
+}
+
+/**
+ * Filters out any request fields with sensitive information
+ * replacing them with a placeholder '***' if they are set
  *
  * @param {Request} req
  * @param {String} propName
  * @returns {*}
  */
-function filterAccessTokens(req, propName) {
+function filterSensitiveRequestFields(req, propName) {
 
-    if (propName != "headers") {
+    if (propName == "headers") {
+        const keys = ["authorization", "cookie"];
+        const initialHeaders = Object.assign({}, req[propName]);
+        return keys.reduce(maskKey, initialHeaders);
+
+    } else if (propName == "url" || propName == "originalUrl") {
+        return maskAuthCallbackURL(req[propName]);
+
+    } else if (propName == "query") {
+        return maskKey(req[propName], 'code');
+
+    } else {
         return req[propName];
     }
 
-    const keys = ["authorization", "cookie"];
-    const mask = "***";
-    const initialHeaders = Object.assign({}, req[propName]);
-    return keys.reduce(maskKey, initialHeaders);
-
-    function maskKey(headers, key) {
-        headers[key] = headers[key] ? mask : headers[key];
-        return headers;
+    function maskKey(map, key) {
+        map[key] = map[key] ? mask : map[key];
+        return map;
     }
 }

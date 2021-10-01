@@ -14,7 +14,7 @@ pipeline:
     commands:
       - desc: Install deps
         cmd: |
-          apt-get update
+          apt-get update && apt-get dist-upgrade -y # temp fix https://github.bus.zalan.do/zooport/issues/issues/1716
           apt-get -yq --no-install-suggests --no-install-recommends install chromium-browser
           # Fix for problem with permissions elm-format
           # https://github.com/avh4/elm-format/issues/554
