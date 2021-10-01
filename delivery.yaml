@@ -1,7 +1,7 @@
 version: "2017-09-20"
 pipeline:
   - id: build
-    overlay: ci/nodejs
+    #overlay: ci/nodejs
     cache:
       paths:
         - ~/.npm
