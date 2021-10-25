@@ -244,7 +244,7 @@ viewForm model setup =
                 FieldName
                 OnInput
                 "Event Type Name"
-                 "Example: logistics-carrier-tracking.domain-inbound-delivered"
+                "Example: logistics-carrier-tracking.domain-inbound-delivered"
                 "Should be several words (with '-','_' ) separated by dot."
                 Help.eventType
                 Required
