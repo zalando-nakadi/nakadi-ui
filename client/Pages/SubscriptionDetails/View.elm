@@ -232,12 +232,26 @@ statsPanel model =
         list =
             Helpers.Store.items statsStore
 
+        eventTypesCount =
+            List.length list
+
+        partitionsCount =
+            list
+                |> List.map countPartitions
+                |> List.sum
+
+        partitionsStatsString =
+            String.fromInt partitionsCount ++ " partition(s) / " ++ String.fromInt eventTypesCount ++ " event type(s)"
+
         tableLayout =
-            grid [ "Partition ID", "State", "Unconsumed", "Stream ID", "Committed Offset", "" ]
-                (list
-                    |> List.map (renderType model)
-                    |> List.concat
-                )
+            div []
+                [ text partitionsStatsString
+                , grid [ "Partition ID", "State", "Unconsumed", "Stream ID", "Committed Offset", "" ]
+                    (list
+                        |> List.map (renderType model)
+                        |> List.concat
+                    )
+                ]
     in
     div [ class "dc-card panel--expanded" ]
         [ refreshButton Refresh
@@ -247,6 +261,11 @@ statsPanel model =
             ]
         , Helpers.Panel.loadingStatus statsStore tableLayout
         ]
+
+
+countPartitions : Stores.SubscriptionStats.SubscriptionStats -> Int
+countPartitions stat =
+    List.length stat.partitions
 
 
 renderType : Model -> Stores.SubscriptionStats.SubscriptionStats -> List (Html Msg)
