@@ -5,7 +5,7 @@ import Constants
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Panel exposing (loadingStatus, warningMessage)
 import Helpers.Store exposing (Id, Status(..), get)
-import Helpers.String exposing (formatDateTime, periodToShortString)
+import Helpers.String exposing (formatDateTime, periodToShortString, pluralCount)
 import Helpers.UI
     exposing
         ( PopupPosition(..)
@@ -241,7 +241,7 @@ statsPanel model =
                 |> List.sum
 
         partitionsStatsString =
-            String.fromInt partitionsCount ++ " partition(s) / " ++ String.fromInt eventTypesCount ++ " event type(s)"
+            pluralCount partitionsCount "Partition" ++ "/ " ++ pluralCount eventTypesCount "Event type"
 
         tableLayout =
             div []
