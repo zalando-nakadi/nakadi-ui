@@ -5,7 +5,7 @@ import Constants
 import Helpers.AccessEditor as AccessEditor
 import Helpers.Panel exposing (loadingStatus, warningMessage)
 import Helpers.Store exposing (Id, Status(..), get)
-import Helpers.String exposing (formatDateTime, periodToShortString)
+import Helpers.String exposing (formatDateTime, periodToShortString, pluralCount)
 import Helpers.UI
     exposing
         ( PopupPosition(..)
@@ -232,12 +232,26 @@ statsPanel model =
         list =
             Helpers.Store.items statsStore
 
+        eventTypesCount =
+            List.length list
+
+        partitionsCount =
+            list
+                |> List.map countPartitions
+                |> List.sum
+
+        partitionsStatsString =
+            pluralCount partitionsCount "Partition" ++ "/ " ++ pluralCount eventTypesCount "Event type"
+
         tableLayout =
-            grid [ "Partition ID", "State", "Unconsumed", "Stream ID", "Committed Offset", "" ]
-                (list
-                    |> List.map (renderType model)
-                    |> List.concat
-                )
+            div []
+                [ text partitionsStatsString
+                , grid [ "Partition ID", "State", "Unconsumed", "Stream ID", "Committed Offset", "" ]
+                    (list
+                        |> List.map (renderType model)
+                        |> List.concat
+                    )
+                ]
     in
     div [ class "dc-card panel--expanded" ]
         [ refreshButton Refresh
@@ -247,6 +261,11 @@ statsPanel model =
             ]
         , Helpers.Panel.loadingStatus statsStore tableLayout
         ]
+
+
+countPartitions : Stores.SubscriptionStats.SubscriptionStats -> Int
+countPartitions stat =
+    List.length stat.partitions
 
 
 renderType : Model -> Stores.SubscriptionStats.SubscriptionStats -> List (Html Msg)
