@@ -42,6 +42,7 @@ type alias Model =
 type alias Config =
     { appsInfoUrl : String
     , usersInfoUrl : String
+    , teamsInfoUrl : String
     , showWrite : Bool
     , showAnyToken : Bool
     , help : List (Html Msg)
@@ -344,6 +345,9 @@ addRowControls config model =
                 "service" ->
                     "Service Id with '" ++ appPreffix ++ "' prefix, i.e. '" ++ appPreffix ++ "_shop'"
 
+                "team" ->
+                    "Team Id in teams API, e.g. 'aruha'"
+
                 _ ->
                     "Value"
     in
@@ -356,6 +360,7 @@ addRowControls config model =
                 ]
                 [ option [ value "user" ] [ text "User" ]
                 , option [ value "service" ] [ text "Service" ]
+                , option [ value "team" ] [text "Team" ]
                 ]
             , input
                 [ onInput AddValueChange
@@ -420,6 +425,7 @@ accessTable config renderer records =
                 []
             , renderSection User "Users:"
             , renderSection Service "Services:"
+            , renderSection Team "Teams:"
             , renderSection Unknown "Unknown types:"
             ]
         )
@@ -491,6 +497,9 @@ recordName config record =
 
         Service ->
             span [ class "access-editor_name" ] [ UI.linkToApp config.appsInfoUrl record.value ]
+
+        Team ->
+            span [ class "access-editor_name" ] [ UI.linkToApp config.teamsInfoUrl record.value ]
 
         User ->
             span [ class "access-editor_name" ] [ UI.linkToApp config.usersInfoUrl record.value ]
