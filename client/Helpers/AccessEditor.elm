@@ -360,7 +360,7 @@ addRowControls config model =
                 ]
                 [ option [ value "user" ] [ text "User" ]
                 , option [ value "service" ] [ text "Service" ]
-                , option [ value "team" ] [text "Team" ]
+                , option [ value "team" ] [ text "Team" ]
                 ]
             , input
                 [ onInput AddValueChange
