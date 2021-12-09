@@ -16,6 +16,7 @@ type alias AuthorizationAttribute =
 type Key
     = User
     | Service
+    | Team
     | All
     | Unknown
 
@@ -178,6 +179,9 @@ dataTypeToKey str =
 
         "service" ->
             Service
+
+        "team" ->
+            Team
 
         "*" ->
             All
