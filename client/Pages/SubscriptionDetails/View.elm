@@ -77,6 +77,9 @@ detailsLayout id subscription model =
         usersInfoUrl =
             model.userStore.user.settings.usersInfoUrl
 
+        teamsInfoUrl =
+            model.userStore.user.settings.teamsInfoUrl
+
         tabOptions =
             { onChange = \tab -> TabChange tab
             , notSelectedView = Just (div [] [ text "No tab selected" ])
@@ -167,6 +170,7 @@ detailsLayout id subscription model =
                           , authTab
                                 appsInfoUrl
                                 usersInfoUrl
+                                teamsInfoUrl
                                 subscription
                           )
                         ]
@@ -459,8 +463,8 @@ deletePopup model subscription appsInfoUrl =
         none
 
 
-authTab : String -> String -> Subscription -> Html Msg
-authTab appsInfoUrl usersInfoUrl subscription =
+authTab : String -> String -> String -> Subscription -> Html Msg
+authTab appsInfoUrl usersInfoUrl teamsInfoUrl subscription =
     div [ class "dc-card auth-tab" ] <|
         case subscription.authorization of
             Nothing ->
@@ -472,6 +476,7 @@ authTab appsInfoUrl usersInfoUrl subscription =
                     [ AccessEditor.viewReadOnly
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
+                        , teamsInfoUrl = teamsInfoUrl
                         , showWrite = False
                         , showAnyToken = True
                         , help = Help.authorization

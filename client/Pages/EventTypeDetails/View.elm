@@ -94,6 +94,9 @@ detailsLayout typeName eventType model =
         usersInfoUrl =
             settings.usersInfoUrl
 
+        teamsInfoUrl =
+            settings.teamsInfoUrl
+
         showNakadiSql =
             settings.showNakadiSql
 
@@ -257,6 +260,7 @@ detailsLayout typeName eventType model =
                             , authTab
                                 appsInfoUrl
                                 usersInfoUrl
+                                teamsInfoUrl
                                 eventType
                             )
                           ]
@@ -752,8 +756,8 @@ renderSqlQueries query =
         ]
 
 
-authTab : String -> String -> EventType -> Html Msg
-authTab appsInfoUrl usersInfoUrl eventType =
+authTab : String -> String -> String -> EventType -> Html Msg
+authTab appsInfoUrl usersInfoUrl teamsInfoUrl eventType =
     case eventType.authorization of
         Nothing ->
             div [ class "dc-card auth-tab" ]
@@ -769,6 +773,7 @@ authTab appsInfoUrl usersInfoUrl eventType =
                     [ AccessEditor.viewReadOnly
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
+                        , teamsInfoUrl = teamsInfoUrl
                         , showWrite = True
                         , showAnyToken = True
                         , help = Help.authorization

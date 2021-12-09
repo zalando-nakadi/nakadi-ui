@@ -30,6 +30,7 @@ settingsDecoder =
         |> required "nakadiApiUrl" string
         |> optional "appsInfoUrl" string emptyString
         |> optional "usersInfoUrl" string emptyString
+        |> optional "teamsInfoUrl" string emptyString
         |> optional "monitoringUrl" string emptyString
         |> optional "sloMonitoringUrl" string emptyString
         |> optional "eventTypeMonitoringUrl" string emptyString

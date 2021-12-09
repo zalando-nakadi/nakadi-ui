@@ -45,6 +45,7 @@ type alias Settings =
     { nakadiApiUrl : String
     , appsInfoUrl : String
     , usersInfoUrl : String
+    , teamsInfoUrl : String
     , monitoringUrl : String
     , sloMonitoringUrl : String
     , eventTypeMonitoringUrl : String
@@ -67,6 +68,7 @@ initialSettings =
     { nakadiApiUrl = emptyString
     , appsInfoUrl = emptyString
     , usersInfoUrl = emptyString
+    , teamsInfoUrl = emptyString
     , monitoringUrl = emptyString
     , sloMonitoringUrl = emptyString
     , eventTypeMonitoringUrl = emptyString
