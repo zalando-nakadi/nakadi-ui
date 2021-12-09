@@ -205,7 +205,7 @@ viewForm model setup =
               else
                 none
             , eventTypesEditor updateMode model
-            , accessEditor appsInfoUrl usersInfoUrl formModel
+            , accessEditor appsInfoUrl usersInfoUrl teamsInfoUrl formModel
             , hr [ class "dc-divider" ] []
             , div [ class "dc-toast__content dc-toast__content--success" ]
                 [ text successMessage ]
@@ -215,8 +215,8 @@ viewForm model setup =
         ]
 
 
-accessEditor : String -> String -> Model -> Html Msg
-accessEditor appsInfoUrl usersInfoUrl formModel =
+accessEditor : String -> String -> String -> Model -> Html Msg
+accessEditor appsInfoUrl usersInfoUrl teamsInfoUrl formModel =
     AccessEditor.view
         { appsInfoUrl = appsInfoUrl
         , usersInfoUrl = usersInfoUrl

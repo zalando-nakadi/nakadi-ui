@@ -435,7 +435,7 @@ viewForm model setup =
                 compatibilityModeOptions
             , schemaEditor formModel
             , hr [ class "dc-divider" ] []
-            , accessEditor appsInfoUrl usersInfoUrl formModel
+            , accessEditor appsInfoUrl usersInfoUrl teamsInfoUrl formModel
             ]
         , hr [ class "dc-divider" ]
             []
@@ -447,8 +447,8 @@ viewForm model setup =
         ]
 
 
-accessEditor : String -> String -> Model -> Html Msg
-accessEditor appsInfoUrl usersInfoUrl formModel =
+accessEditor : String -> String -> String -> Model -> Html Msg
+accessEditor appsInfoUrl usersInfoUrl teamsInfoUrl formModel =
     AccessEditor.view
         { appsInfoUrl = appsInfoUrl
         , usersInfoUrl = usersInfoUrl

@@ -260,6 +260,7 @@ detailsLayout typeName eventType model =
                             , authTab
                                 appsInfoUrl
                                 usersInfoUrl
+                                teamsInfoUrl
                                 eventType
                             )
                           ]
@@ -755,8 +756,8 @@ renderSqlQueries query =
         ]
 
 
-authTab : String -> String -> EventType -> Html Msg
-authTab appsInfoUrl usersInfoUrl eventType =
+authTab : String -> String -> String -> EventType -> Html Msg
+authTab appsInfoUrl usersInfoUrl teamsInfoUrl eventType =
     case eventType.authorization of
         Nothing ->
             div [ class "dc-card auth-tab" ]

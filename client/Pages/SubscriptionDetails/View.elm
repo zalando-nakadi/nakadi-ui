@@ -170,6 +170,7 @@ detailsLayout id subscription model =
                           , authTab
                                 appsInfoUrl
                                 usersInfoUrl
+                                teamsInfoUrl
                                 subscription
                           )
                         ]
@@ -462,8 +463,8 @@ deletePopup model subscription appsInfoUrl =
         none
 
 
-authTab : String -> String -> Subscription -> Html Msg
-authTab appsInfoUrl usersInfoUrl subscription =
+authTab : String -> String -> String -> Subscription -> Html Msg
+authTab appsInfoUrl usersInfoUrl teamsInfoUrl subscription =
     div [ class "dc-card auth-tab" ] <|
         case subscription.authorization of
             Nothing ->
