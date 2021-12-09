@@ -94,6 +94,9 @@ detailsLayout typeName eventType model =
         usersInfoUrl =
             settings.usersInfoUrl
 
+        teamsInfoUrl =
+            settings.teamsInfoUrl
+
         showNakadiSql =
             settings.showNakadiSql
 
@@ -769,6 +772,7 @@ authTab appsInfoUrl usersInfoUrl eventType =
                     [ AccessEditor.viewReadOnly
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
+                        , teamsInfoUrl = teamsInfoUrl
                         , showWrite = True
                         , showAnyToken = True
                         , help = Help.authorization

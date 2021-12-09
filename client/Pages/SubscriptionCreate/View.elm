@@ -110,6 +110,9 @@ viewForm model setup =
         usersInfoUrl =
             model.userStore.user.settings.usersInfoUrl
 
+        teamsInfoUrl =
+            model.userStore.user.settings.teamsInfoUrl
+
         cursosId =
             "subscriptionCursorFileSelector"
     in
@@ -217,6 +220,7 @@ accessEditor appsInfoUrl usersInfoUrl formModel =
     AccessEditor.view
         { appsInfoUrl = appsInfoUrl
         , usersInfoUrl = usersInfoUrl
+        , teamsInfoUrl = teamsInfoUrl
         , showWrite = False
         , showAnyToken = True
         , help = Help.authorization

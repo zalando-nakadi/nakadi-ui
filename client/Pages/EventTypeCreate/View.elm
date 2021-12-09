@@ -231,6 +231,9 @@ viewForm model setup =
         usersInfoUrl =
             model.userStore.user.settings.usersInfoUrl
 
+        teamsInfoUrl =
+            model.userStore.user.settings.teamsInfoUrl
+
         supportUrl =
             model.userStore.user.settings.supportUrl
 
@@ -449,6 +452,7 @@ accessEditor appsInfoUrl usersInfoUrl formModel =
     AccessEditor.view
         { appsInfoUrl = appsInfoUrl
         , usersInfoUrl = usersInfoUrl
+        , teamsInfoUrl = teamsInfoUrl
         , showWrite = True
         , showAnyToken = True
         , help = Help.authorization

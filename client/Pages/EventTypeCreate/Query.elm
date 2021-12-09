@@ -207,6 +207,7 @@ sqlAccessEditor appsInfoUrl usersInfoUrl formModel =
     AccessEditor.view
         { appsInfoUrl = appsInfoUrl
         , usersInfoUrl = usersInfoUrl
+        , teamsInfoUrl = ""
         , showWrite = False
         , showAnyToken = False
         , help = Help.authorization

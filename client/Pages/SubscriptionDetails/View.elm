@@ -77,6 +77,9 @@ detailsLayout id subscription model =
         usersInfoUrl =
             model.userStore.user.settings.usersInfoUrl
 
+        teamsInfoUrl =
+            model.userStore.user.settings.teamsInfoUrl
+
         tabOptions =
             { onChange = \tab -> TabChange tab
             , notSelectedView = Just (div [] [ text "No tab selected" ])
@@ -472,6 +475,7 @@ authTab appsInfoUrl usersInfoUrl subscription =
                     [ AccessEditor.viewReadOnly
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
+                        , teamsInfoUrl = teamsInfoUrl
                         , showWrite = False
                         , showAnyToken = True
                         , help = Help.authorization
