@@ -339,14 +339,14 @@ addRowControls config model =
 
         placeholderText =
             case model.key of
+                "team" ->
+                    "Team Id in teams API, e.g. 'aruha'"
+
                 "user" ->
                     "User name in LDAP, e.g. 'amerkel'"
 
                 "service" ->
                     "Service Id with '" ++ appPreffix ++ "' prefix, i.e. '" ++ appPreffix ++ "_shop'"
-
-                "team" ->
-                    "Team Id in teams API, e.g. 'aruha'"
 
                 _ ->
                     "Value"
@@ -358,9 +358,9 @@ addRowControls config model =
                 , value model.key
                 , class "dc-select access-editor__add-key"
                 ]
-                [ option [ value "user" ] [ text "User" ]
+                [ option [ value "team" ] [ text "Team" ]
+                , option [ value "user" ] [ text "User" ]
                 , option [ value "service" ] [ text "Service" ]
-                , option [ value "team" ] [ text "Team" ]
                 ]
             , input
                 [ onInput AddValueChange
@@ -423,9 +423,9 @@ accessTable config renderer records =
 
               else
                 []
+            , renderSection Team "Teams:"
             , renderSection User "Users:"
             , renderSection Service "Services:"
-            , renderSection Team "Teams:"
             , renderSection Unknown "Unknown types:"
             ]
         )
