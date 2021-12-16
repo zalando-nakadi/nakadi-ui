@@ -218,7 +218,15 @@ detailsLayout typeName eventType model =
                     ]
                 , tabs tabOptions (Just tab) <|
                     List.concat
-                        [ [ ( SchemaTab
+                        [ if isQueryOutput then
+                            [ ( QueryTab
+                              , "SQL Query"
+                              , queryTab settings pageState
+                              )
+                            ]
+                          else
+                            []
+                        , [ ( SchemaTab
                             , "Schema"
                             , schemaTab
                                 jsonEditorState
@@ -229,15 +237,6 @@ detailsLayout typeName eventType model =
                                 eventType
                             )
                           ]
-                        , if isQueryOutput then
-                            [ ( QueryTab
-                              , "SQL Query"
-                              , queryTab settings pageState
-                              )
-                            ]
-
-                          else
-                            []
                         , [ ( PartitionsTab
                             , "Partitions"
                             , partitionsTab
@@ -262,6 +261,7 @@ detailsLayout typeName eventType model =
                                 usersInfoUrl
                                 teamsInfoUrl
                                 eventType
+                                isQueryOutput
                             )
                           ]
                         , if not isQueryOutput then
@@ -756,8 +756,8 @@ renderSqlQueries query =
         ]
 
 
-authTab : String -> String -> String -> EventType -> Html Msg
-authTab appsInfoUrl usersInfoUrl teamsInfoUrl eventType =
+authTab : String -> String -> String -> EventType -> Bool-> Html Msg
+authTab appsInfoUrl usersInfoUrl teamsInfoUrl eventType isQueryOutput =
     case eventType.authorization of
         Nothing ->
             div [ class "dc-card auth-tab" ]
@@ -770,7 +770,16 @@ authTab appsInfoUrl usersInfoUrl teamsInfoUrl eventType =
         Just authorization ->
             div [ class "dc-card auth-tab" ]
                 [ div [ class "auth-tab__content" ]
-                    [ AccessEditor.viewReadOnly
+                    if isQueryOutput then
+                      [ warningMessage
+                            "This is the Authorization of the output event-type!"
+                            "Authorization of queries are not visible in Nakadi-UI"
+                            Nothing
+                        )
+                      ]
+                    else
+                    []
+                    , [ AccessEditor.viewReadOnly
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
                         , teamsInfoUrl = teamsInfoUrl
