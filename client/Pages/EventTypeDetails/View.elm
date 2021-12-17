@@ -762,18 +762,19 @@ authTab appsInfoUrl usersInfoUrl teamsInfoUrl eventType isQueryOutput =
         Nothing ->
             div [ class "dc-card auth-tab" ]
                 [ warningMessage
-                      "This Event Type is NOT protected!"
-                      "It is open for modification, publication, and consumption by everyone in the company."
-                      Nothing
+                    "This Event Type is NOT protected!"
+                    "It is open for modification, publication, and consumption by everyone in the company."
+                    Nothing
                 ]
 
         Just authorization ->
             div [ class "dc-card auth-tab" ]
                 [ if isQueryOutput then
                     warningMessage
-                      "This is the Authorization of the output event-type!"
-                      "Authorization of queries are not visible in Nakadi-UI"
-                      Nothing
+                        "This is the Authorization of the output event-type!"
+                        "Authorization of queries are not visible in Nakadi-UI"
+                        Nothing
+
                   else
                     div [] []
                 , div [ class "auth-tab__content" ]
