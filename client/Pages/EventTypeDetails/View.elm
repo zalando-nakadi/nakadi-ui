@@ -769,17 +769,15 @@ authTab appsInfoUrl usersInfoUrl teamsInfoUrl eventType isQueryOutput =
 
         Just authorization ->
             div [ class "dc-card auth-tab" ]
-                [ div [ class "auth-tab__content" ]
-                    if isQueryOutput then
-                      [ warningMessage
-                            "This is the Authorization of the output event-type!"
-                            "Authorization of queries are not visible in Nakadi-UI"
-                            Nothing
-                        )
-                      ]
-                    else
-                    []
-                    , [ AccessEditor.viewReadOnly
+                [ if isQueryOutput then
+                    warningMessage
+                      "This is the Authorization of the output event-type!"
+                      "Authorization of queries are not visible in Nakadi-UI"
+                      Nothing
+                  else
+                    div [] []
+                , div [ class "auth-tab__content" ]
+                    [ AccessEditor.viewReadOnly
                         { appsInfoUrl = appsInfoUrl
                         , usersInfoUrl = usersInfoUrl
                         , teamsInfoUrl = teamsInfoUrl
