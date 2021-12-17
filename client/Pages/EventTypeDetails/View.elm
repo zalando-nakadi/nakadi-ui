@@ -756,15 +756,15 @@ renderSqlQueries query =
         ]
 
 
-authTab : String -> String -> String -> EventType -> Bool-> Html Msg
+authTab : String -> String -> String -> EventType -> Bool -> Html Msg
 authTab appsInfoUrl usersInfoUrl teamsInfoUrl eventType isQueryOutput =
     case eventType.authorization of
         Nothing ->
             div [ class "dc-card auth-tab" ]
                 [ warningMessage
-                    "This Event Type is NOT protected!"
-                    "It is open for modification, publication, and consumption by everyone in the company."
-                    Nothing
+                      "This Event Type is NOT protected!"
+                      "It is open for modification, publication, and consumption by everyone in the company."
+                      Nothing
                 ]
 
         Just authorization ->
