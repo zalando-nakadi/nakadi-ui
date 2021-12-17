@@ -218,15 +218,7 @@ detailsLayout typeName eventType model =
                     ]
                 , tabs tabOptions (Just tab) <|
                     List.concat
-                        [ if isQueryOutput then
-                            [ ( QueryTab
-                              , "SQL Query"
-                              , queryTab settings pageState
-                              )
-                            ]
-                          else
-                            []
-                        , [ ( SchemaTab
+                        [ [ ( SchemaTab
                             , "Schema"
                             , schemaTab
                                 jsonEditorState
@@ -237,6 +229,14 @@ detailsLayout typeName eventType model =
                                 eventType
                             )
                           ]
+                        , if isQueryOutput then
+                            [ ( QueryTab
+                              , "SQL Query"
+                              , queryTab settings pageState
+                              )
+                            ]
+                          else
+                            []
                         , [ ( PartitionsTab
                             , "Partitions"
                             , partitionsTab
