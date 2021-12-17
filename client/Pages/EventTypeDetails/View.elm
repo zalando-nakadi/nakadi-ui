@@ -235,6 +235,7 @@ detailsLayout typeName eventType model =
                               , queryTab settings pageState
                               )
                             ]
+
                           else
                             []
                         , [ ( PartitionsTab
