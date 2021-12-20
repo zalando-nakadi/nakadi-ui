@@ -247,8 +247,8 @@ viewForm model setup =
                 FieldName
                 OnInput
                 "Event Type Name"
-                "Example: bazar.price-updater.price_changed"
-                "Should be several words (with '_', '-') separated by dot."
+                "Example: logistics-carrier-tracking.domain-inbound-delivered"
+                "Should be several words (with '-','_' ) separated by dot."
                 Help.eventType
                 Required
                 nameEditing
